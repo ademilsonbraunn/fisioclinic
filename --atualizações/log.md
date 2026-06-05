@@ -2,6 +2,24 @@
 
 ---
 
+## 📅 05/06/2026 — Quinta-feira
+
+### ⏰ 02:05 — Backend / Banco de Dados
+- **Correção crítica — Agenda não permitia inserção de sessões**
+- Causa raiz: `@Enumerated(EnumType.STRING)` no Java persiste enums em MAIÚSCULAS, mas os CHECK constraints do PostgreSQL foram definidos com minúsculas — todo INSERT era rejeitado com violação de constraint
+- Criado `database/migration_fix_sessoes_constraints.sql`: migração que corrige:
+  - CHECK constraint de `sessoes.tipo_sessao`: atualizado para maiúsculas + adicionados `REAVALIACAO` e `ALTA` (que existiam no Java mas faltavam no SQL), removido `RETORNO` (que não existe no Java)
+  - CHECK constraint de `sessoes.status`: atualizado para maiúsculas
+  - DEFAULT values de `sessoes`: `'sessao'` → `'SESSAO'`, `'agendado'` → `'AGENDADO'`
+  - Colunas `senha_hash` e `perfil` adicionadas à tabela `fisioterapeutas` (faltavam no schema, necessárias para autenticação JWT)
+  - Fisioterapeuta admin padrão inserido: `admin@fisioclinic.com` / `admin123`
+  - CHECK constraint e DEFAULT de `salas.tipo` corrigidos para maiúsculas; valores existentes atualizados de lowercase para UPPERCASE
+- Atualizado `database/schema_modulos_2a7.sql`: todas as definições corrigidas para uso futuro
+- Corrigido `SessaoRepository.java`: `JOIN FETCH s.sala` → `LEFT JOIN FETCH s.sala` (sala é nullable — JOIN quebrava listagem se sala fosse null)
+- Corrigido `SessaoService.toResponse()`: null-check para sala (previne NPE latente)
+
+---
+
 ## 📅 05/06/2026 — Sexta-feira
 
 ### ⏰ 23:00 — Backend
