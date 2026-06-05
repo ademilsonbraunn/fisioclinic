@@ -4,6 +4,32 @@
 
 ## 📅 05/06/2026 — Sexta-feira
 
+### ⏰ 14:40 — Backend + Frontend
+- **Módulo 5 — Evolução Clínica (SOAP)**: aba de prontuário implementada e funcional
+
+**Backend:**
+- Criado `model/Evolucao.java`: entidade JPA com FK para `Sessao` (obrigatório), `Paciente` (derivado da sessão), `Fisioterapeuta` (opcional) e `PlanoTratamento` (opcional); campos SOAP: `subjetivo`, `objetivo`, `avaliacao_clinica`, `plano`; `tecnicas_realizadas` como JSONB; `eva_antes` e `eva_depois` com check 0–10; `num_sessao`, `tempo_atendimento_min`, `aparelhos` (TEXT), `codigo_tuss`, `observacoes`
+- Criado `dto/EvolucaoDTO.java`: record de request com `@NotNull`, `@NotBlank`, `@Min/@Max` para EVA
+- Criado `dto/EvolucaoResponse.java`: record de response com nested records `SessaoResumo`, `PacienteResumo`, `FisioterapeutaResumo`
+- Criado `repository/EvolucaoRepository.java`: queries com JOIN FETCH; `findByPacienteId`, `findBySessaoId`, `existsBySessaoId`
+- Criado `service/EvolucaoService.java`: regra de negócio — uma evolução por sessão (`ConflictException` se já existir); paciente derivado da sessão automaticamente
+- Criado `controller/EvolucaoController.java`: `POST /api/evolucoes`, `GET /api/evolucoes/paciente/{id}`, `GET /api/evolucoes/sessao/{id}`
+- Criada migration `database/migration_evolucoes_ajustes.sql`: tornou `fisioterapeuta_id` opcional, converteu `aparelhos` JSONB → TEXT, adicionou `num_sessao`, `observacoes`, `plano_tratamento_id`, `updated_at`
+
+**Frontend:**
+- Criado `js/api/evolucoes.js`: wrapper fetch com `listarEvolucoesPaciente`, `buscarEvolucaoSessao`, `criarEvolucao`
+- Atualizado `prontuario.html`: aba "Evolução" habilitada (removido `disabled`); formulário SOAP completo com selects de sessão/fisioterapeuta/plano, duplo EVA (antes/depois), grid SOAP (S/O/A/P), chips de técnicas, campo de aparelhos e parâmetros, código TUSS
+- Atualizado `prontuario.js`: lógica da aba — `carregarEvolucoes()`, `carregarSessoesPaciente()`; render de cards com accordion; SOAP colorido (S=azul, O=verde, A=âmbar, P=vermelho); EVA bidimensional; `popularSelectSessoes()` filtra apenas sessões REALIZADO sem evolução; validação de campos obrigatórios
+- Atualizado `prontuario.css`: `.form-nova-evolucao`, `.soap-grid` (2 colunas), `.soap-field`, `.soap-letter` (4 variantes coloridas), `.evol-card`, `.soap-display`, `.empty-evolucao`, `.badge-amber`
+
+**Validação:**
+- Compilação: OK
+- Inicialização: OK (`Started FisioclinicApplication in 6.704s`)
+- `POST /api/evolucoes` → HTTP 201 ✅ (dados persistidos com SOAP e EVA)
+- `GET /api/evolucoes/paciente/{id}` → HTTP 200 ✅ (1 evolução retornada)
+- `GET /api/evolucoes/sessao/{id}` → HTTP 200 ✅
+- Banco de dados: dados persistidos corretamente (num_sessao, eva_antes, eva_depois, subjetivo, objetivo) ✅
+
 ### ⏰ 13:30 — Backend + Frontend
 - **Módulo 3 — Diagnóstico e Plano de Tratamento**: implementação completa
 
