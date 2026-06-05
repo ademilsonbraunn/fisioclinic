@@ -4,6 +4,18 @@
 
 ## 📅 05/06/2026 — Sexta-feira
 
+### ⏰ 22:15 — Backend
+- **Módulo 4 — Agendamento**: implementação completa da camada Java (model → controller)
+- Criado `database/migrate_sessoes_enums.sql`: migração que normaliza CHECK constraints da tabela `sessoes` de lowercase para UPPERCASE, adiciona `REAVALIACAO` e `ALTA` ao enum `tipo_sessao`, e atualiza defaults
+- Criado `backend/.../model/Sessao.java`: entidade JPA com `@ManyToOne(LAZY)` para `Paciente`, `Fisioterapeuta` e `Sala`; enums internos `TipoSessao` e `StatusSessao`; auditoria com `@CreatedDate` / `@LastModifiedDate`
+- Criado `backend/.../dto/SessaoDTO.java`: record de request com `@JsonProperty` snake_case e `@NotNull` nos campos obrigatórios
+- Criado `backend/.../dto/StatusDTO.java`: record mínimo para `PATCH /status`
+- Criado `backend/.../dto/SessaoResponse.java`: record de response com nested records `PacienteResumo`, `FisioterapeutaResumo`, `SalaResumo` (campos mínimos que o frontend usa)
+- Criado `backend/.../repository/SessaoRepository.java`: `findByPeriodo` (JOIN FETCH, evita N+1), `findConflitos` e `findConflitosComExclusao` para detecção de conflito de sala
+- Criado `backend/.../service/SessaoService.java`: `listar`, `listarSemana`, `buscarPorId`, `criar`, `atualizar`, `atualizarStatus`, `excluir`; regra de conflito de sala enforced via `ConflictException` (409); cálculo automático de `duracao_minutos`
+- Criado `backend/.../controller/SessaoController.java`: 7 endpoints REST (`GET /`, `GET /semana`, `GET /{id}`, `POST /`, `PATCH /{id}`, `PATCH /{id}/status`, `DELETE /{id}`); `@DateTimeFormat(iso=DATE)` nos parâmetros de data
+- Compilação verificada: `mvn compile` sem erros
+
 ### ⏰ 20:30 — Frontend
 - **Módulo 4 — Agendamento**: implementação completa do frontend (calendário semanal + lista)
 - Criado `frontend/pages/agenda.html`:
