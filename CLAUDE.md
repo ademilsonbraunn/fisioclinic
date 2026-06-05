@@ -35,12 +35,12 @@ Módulos: Cadastro, Anamnese, Plano de Tratamento, Agendamento, Evolução Clín
 
 | # | Módulo                                   | Status              |
 |---|------------------------------------------|---------------------|
-| 1 | Cadastro do paciente                     | 🔨 Em Andamento     |
-| 2 | Anamnese e avaliação inicial             | 🔲 pendente         |
-| 3 | Diagnóstico e plano de tratamento        | 🔲 pendente         |
-| 4 | Agendamento / Recepção                   | 🔲 Pendente         |
-| 5 | Evolução clínica (SOAP)                  | 🔲 pendente         |
-| 6 | Alta e relatórios                        | 🔲 pendente         |
+| 1 | Cadastro do paciente                     | ✅ Concluído        |
+| 2 | Anamnese e avaliação inicial             | 🔨 Em Andamento     |
+| 3 | Diagnóstico e plano de tratamento        | 🔲 Pendente         |
+| 4 | Agendamento / Recepção                   | ✅ Concluído        |
+| 5 | Evolução clínica (SOAP)                  | 🔲 Pendente         |
+| 6 | Alta e relatórios                        | 🔲 Pendente         |
 
 ---
 

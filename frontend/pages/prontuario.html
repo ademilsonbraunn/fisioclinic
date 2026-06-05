@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prontuário — FisioClinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/prontuario.css">
+</head>
+<body>
+
+  <!-- ── Topbar ─────────────────────────────────── -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="7" fill="#2D5BE3"/>
+        <path d="M13 6v14M6 13h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      FisioClinic
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-user" id="topbar-user">
+      <div class="avatar" id="topbar-avatar" style="background:var(--surface2);color:var(--text2);">U</div>
+      <span id="topbar-nome">Usuário</span>
+    </div>
+  </header>
+
+  <!-- ── Sidebar ────────────────────────────────── -->
+  <aside class="sidebar">
+    <nav aria-label="Menu principal">
+      <div class="nav-group">
+        <div class="nav-label">Principal</div>
+        <a href="dashboard.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          Início
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Clínica</div>
+        <a href="pacientes.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Pacientes
+        </a>
+        <a href="agenda.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          Agenda
+        </a>
+        <a href="prontuario.html" class="nav-item active" aria-current="page">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          Prontuário
+        </a>
+        <a href="alta.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="9 11 12 14 22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          Alta
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Sistema</div>
+        <a href="admin.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+          </svg>
+          Administração
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Cabeçalho do paciente -->
+    <div id="patient-header" class="patient-header-card" style="display:none">
+      <div class="patient-header-avatar" id="ph-avatar">?</div>
+      <div class="patient-header-info">
+        <p class="patient-header-nome" id="ph-nome">Carregando...</p>
+        <div class="patient-header-meta">
+          <span id="ph-cpf"></span>
+          <span id="ph-nasc"></span>
+          <span id="ph-pagamento"></span>
+        </div>
+      </div>
+      <a href="pacientes.html" class="patient-header-back">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Pacientes
+      </a>
+    </div>
+
+    <!-- Sem paciente selecionado -->
+    <div id="no-patient" class="card" style="text-align:center;padding:48px 24px;">
+      <svg width="40" height="40" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-bottom:12px">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+      </svg>
+      <p style="color:var(--text2);font-size:.875rem;margin:0 0 16px">Selecione um paciente para ver o prontuário.</p>
+      <a href="pacientes.html" class="btn btn-primary" style="display:inline-flex">Ir para Pacientes</a>
+    </div>
+
+    <!-- Conteúdo do prontuário -->
+    <div id="prontuario-content" style="display:none">
+
+      <!-- Tabs -->
+      <div class="prontuario-tabs" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="anamnese" aria-selected="true">Anamnese</button>
+        <button class="tab-btn" role="tab" data-tab="plano" disabled title="Em breve">Plano de Tratamento</button>
+        <button class="tab-btn" role="tab" data-tab="evolucao" disabled title="Em breve">Evolução</button>
+      </div>
+
+      <!-- Tab: Anamnese -->
+      <div class="tab-panel active" id="tab-anamnese">
+
+        <!-- Formulário inline de nova avaliação -->
+        <div class="form-nova-avaliacao" id="form-nova-avaliacao">
+          <div class="form-section-title" style="margin-bottom:20px;font-size:1rem;font-weight:600">Nova Avaliação Inicial</div>
+
+          <section class="form-section">
+            <div class="form-section-title">Queixa e Histórico</div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label class="form-label" for="inp-queixa">Queixa principal <span style="color:var(--red)">*</span></label>
+              <textarea class="form-input" id="inp-queixa" rows="2" placeholder="Descreva a queixa principal do paciente"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="inp-historico">Histórico da doença atual <span style="color:var(--red)">*</span></label>
+              <textarea class="form-input" id="inp-historico" rows="3" placeholder="Evolução, características, fatores de melhora/piora..."></textarea>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">Antecedentes</div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label" for="inp-tempo">Tempo de início dos sintomas</label>
+                <input type="text" class="form-input" id="inp-tempo" placeholder="ex: 3 semanas, 2 meses...">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-alergias">Alergias</label>
+                <input type="text" class="form-input" id="inp-alergias" placeholder="Medicamentos, alimentos...">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label class="form-label" for="inp-doencas">Doenças preexistentes</label>
+              <input type="text" class="form-input" id="inp-doencas" placeholder="Hipertensão, diabetes, doenças reumáticas...">
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label" for="inp-cirurgias">Cirurgias anteriores</label>
+                <textarea class="form-input" id="inp-cirurgias" rows="2" placeholder="Tipo e ano das cirurgias..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-medicamentos">Medicamentos em uso</label>
+                <textarea class="form-input" id="inp-medicamentos" rows="2" placeholder="Nome, dose e frequência..."></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="inp-historico-fam">Histórico familiar</label>
+              <input type="text" class="form-input" id="inp-historico-fam" placeholder="Doenças relevantes na família...">
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">Avaliação Física</div>
+
+            <!-- EVA -->
+            <div class="form-group">
+              <label class="form-label">Dor — Escala EVA</label>
+              <div class="eva-wrap">
+                <input type="range" class="eva-slider" id="inp-eva" min="0" max="10" step="1" value="0">
+                <div class="eva-value" id="eva-display">0</div>
+              </div>
+              <div class="eva-labels"><span>0 — Sem dor</span><span>10 — Dor máxima</span></div>
+            </div>
+
+            <div class="form-row cols-2" style="margin-top:14px">
+              <div class="form-group">
+                <label class="form-label" for="inp-postura">Postura</label>
+                <textarea class="form-input" id="inp-postura" rows="2" placeholder="Observações posturais..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-adm">ADM (Amplitude de Movimento)</label>
+                <textarea class="form-input" id="inp-adm" rows="2" placeholder="Limitações e valores..."></textarea>
+              </div>
+            </div>
+            <div class="form-row cols-2" style="margin-top:14px">
+              <div class="form-group">
+                <label class="form-label" for="inp-forca">Força muscular</label>
+                <textarea class="form-input" id="inp-forca" rows="2" placeholder="Grupos musculares e graus..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-goniometria">Goniometria</label>
+                <textarea class="form-input" id="inp-goniometria" rows="2" placeholder="Medidas em graus..."></textarea>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="inp-testes">Testes especiais</label>
+              <input type="text" class="form-input" id="inp-testes" placeholder="ex: Lasègue +D, Patrick +D, Neer +E (separe por vírgula)">
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">Profissional Responsável</div>
+            <div class="form-group" style="max-width:340px">
+              <label class="form-label" for="sel-fisio-anamnese">Fisioterapeuta</label>
+              <select class="form-input form-select" id="sel-fisio-anamnese">
+                <option value="">Selecione (opcional)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="inp-obs">Observações adicionais</label>
+              <textarea class="form-input" id="inp-obs" rows="2" placeholder="Informações complementares..."></textarea>
+            </div>
+          </section>
+
+          <!-- Erro do form -->
+          <div id="form-erro" style="display:none;color:var(--red);font-size:.875rem;margin-bottom:12px;padding:10px 14px;background:var(--red-bg);border-radius:var(--radius)"></div>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+            <button type="button" class="btn btn-secondary" id="btn-cancelar-form">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="btn-salvar-anamnese">
+              <span id="btn-salvar-label">Salvar avaliação</span>
+              <span class="spinner" id="btn-salvar-spinner" style="display:none"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de anamneses -->
+        <div class="section-toolbar">
+          <h2>Avaliações registradas</h2>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-nova-avaliacao">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Nova Avaliação
+          </button>
+        </div>
+
+        <div id="lista-anamneses">
+          <!-- preenchido por JS -->
+        </div>
+      </div>
+
+      <!-- Tab: Plano (em breve) -->
+      <div class="tab-panel" id="tab-plano">
+        <div class="coming-soon">
+          <svg width="40" height="40" fill="none" stroke="var(--text3)" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:12px">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          <h3>Plano de Tratamento</h3>
+          <p>Módulo 3 — em desenvolvimento.</p>
+        </div>
+      </div>
+
+      <!-- Tab: Evolução (em breve) -->
+      <div class="tab-panel" id="tab-evolucao">
+        <div class="coming-soon">
+          <svg width="40" height="40" fill="none" stroke="var(--text3)" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:12px">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <h3>Evolução Clínica</h3>
+          <p>Módulo 5 — em desenvolvimento.</p>
+        </div>
+      </div>
+
+    </div><!-- /prontuario-content -->
+  </main>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script type="module" src="../js/pages/prontuario.js"></script>
+</body>
+</html>

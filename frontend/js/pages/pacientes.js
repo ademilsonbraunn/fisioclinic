@@ -149,6 +149,14 @@ function linhaHTML(p) {
       <td class="text-2 text-sm">${formatData(p.createdAt)}</td>
       <td>
         <div class="row-actions">
+          <a class="btn btn-ghost btn-icon btn-sm" href="prontuario.html?paciente_id=${p.id}"
+            title="Ver prontuário" aria-label="Prontuário de ${esc(p.nomeCompleto)}">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </a>
           <button class="btn btn-ghost btn-icon btn-sm" data-action="editar" data-id="${p.id}"
             title="Editar paciente" aria-label="Editar ${esc(p.nomeCompleto)}">
             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
