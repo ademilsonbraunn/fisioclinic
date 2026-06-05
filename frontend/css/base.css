@@ -169,7 +169,7 @@ img  { display: block; max-width: 100%; }
 
 .main {
   margin-top: var(--topbar-h);
-  margin-left: var(--sidebar-w);
+  margin-left: 0;
   padding: 32px;
   min-height: calc(100vh - var(--topbar-h));
 }
@@ -230,6 +230,32 @@ h3 { font-size: 1rem;     font-weight: 600; }
 
 .nav-item svg { flex-shrink: 0; opacity: .75; }
 .nav-item.active svg { opacity: 1; }
+
+/* ── Botão voltar ao início no topbar ──────────────────────────── */
+.topbar-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: var(--text2);
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.topbar-back-btn:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+.topbar-back-btn svg { flex-shrink: 0; }
+
+/* ── Divisor vertical no topbar ────────────────────────────────── */
+.topbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
+}
 
 /* ── Botão admin no topbar (visível apenas para ADMIN via JS) ─── */
 .topbar-admin-btn {
