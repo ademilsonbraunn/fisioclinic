@@ -2,7 +2,9 @@ package com.fisioclinic.controller;
 
 import com.fisioclinic.dto.PacienteDTO;
 import com.fisioclinic.dto.PacienteResponse;
+import com.fisioclinic.dto.SessaoResponse;
 import com.fisioclinic.service.PacienteService;
+import com.fisioclinic.service.SessaoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class PacienteController {
 
     private final PacienteService pacienteService;
+    private final SessaoService   sessaoService;
 
     /**
      * GET /api/pacientes?busca=termo
@@ -59,5 +62,10 @@ public class PacienteController {
         @RequestBody PacienteDTO dto
     ) {
         return ResponseEntity.ok(pacienteService.atualizar(id, dto));
+    }
+
+    @GetMapping("/{id}/sessoes")
+    public ResponseEntity<List<SessaoResponse>> listarSessoes(@PathVariable UUID id) {
+        return ResponseEntity.ok(sessaoService.listarPorPaciente(id));
     }
 }

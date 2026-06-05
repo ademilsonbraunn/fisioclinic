@@ -43,13 +43,20 @@ public class SessaoService {
     // ── Listagem ─────────────────────────────────────────────────────────────
 
     @Transactional(readOnly = true)
-    public List<SessaoResponse> listar(LocalDate dataInicio, LocalDate dataFim) {
-        if (dataInicio == null || dataFim == null) {
-            return listarSemana();
-        }
+    public List<SessaoResponse> listar(LocalDate dataInicio, LocalDate dataFim, UUID pacienteId) {
+        if (pacienteId != null) return listarPorPaciente(pacienteId);
+        if (dataInicio == null || dataFim == null) return listarSemana();
         LocalDateTime inicio = dataInicio.atStartOfDay();
         LocalDateTime fim    = dataFim.plusDays(1).atStartOfDay();
         return sessaoRepository.findByPeriodo(inicio, fim).stream()
+            .map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<SessaoResponse> listarPorPaciente(UUID pacienteId) {
+        pacienteRepository.findById(pacienteId)
+            .orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado"));
+        return sessaoRepository.findByPacienteId(pacienteId).stream()
             .map(this::toResponse).toList();
     }
 

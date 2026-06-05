@@ -25,6 +25,16 @@ public interface SessaoRepository extends JpaRepository<Sessao, UUID> {
 
     @Query("""
         SELECT s FROM Sessao s
+        JOIN FETCH s.paciente
+        JOIN FETCH s.fisioterapeuta
+        JOIN FETCH s.sala
+        WHERE s.paciente.id = :pacienteId
+        ORDER BY s.dataHoraInicio DESC
+    """)
+    List<Sessao> findByPacienteId(@Param("pacienteId") UUID pacienteId);
+
+    @Query("""
+        SELECT s FROM Sessao s
         WHERE s.sala.id = :salaId
           AND s.status NOT IN :statusExcluidos
           AND :inicio < s.dataHoraFim

@@ -25,9 +25,10 @@ public class SessaoController {
     @GetMapping
     public ResponseEntity<List<SessaoResponse>> listar(
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data_inicio,
-        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data_fim
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data_fim,
+        @RequestParam(required = false) UUID paciente_id
     ) {
-        return ResponseEntity.ok(sessaoService.listar(data_inicio, data_fim));
+        return ResponseEntity.ok(sessaoService.listar(data_inicio, data_fim, paciente_id));
     }
 
     @GetMapping("/semana")
