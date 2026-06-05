@@ -4,6 +4,12 @@
 
 ## 📅 05/06/2026 — Sexta-feira
 
+### ⏰ 16:30 — Frontend
+- **Navegação — Sidebar simplificado**: removidos grupos "Principal" (Início) e "Sistema" (Administrador) do sidebar de todas as páginas; sidebar agora exibe apenas os 4 módulos clínicos (Pacientes, Agenda, Prontuário, Alta)
+- **Menu administrador no topbar**: adicionado botão de engrenagem no topbar (oculto por padrão), visível apenas para usuários com perfil `ADMIN` — revelado via `initTopbar()` no `auth.js`; na página `admin.html` exibe estado ativo (azul)
+- **Proteção da página admin**: `admin.js` redireciona para `dashboard.html` qualquer usuário sem perfil `ADMIN` que acesse `admin.html` diretamente
+- **CSS**: adicionadas classes `.topbar-admin-btn` e `.topbar-admin-btn--active` no `base.css`
+
 ### ⏰ 14:40 — Backend + Frontend
 - **Módulo 5 — Evolução Clínica (SOAP)**: aba de prontuário implementada e funcional
 
