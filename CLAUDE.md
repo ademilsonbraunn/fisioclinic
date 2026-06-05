@@ -44,6 +44,58 @@ Módulos: Cadastro, Anamnese, Plano de Tratamento, Agendamento, Evolução Clín
 
 ---
 
+## 🔗 Integração entre módulos (OBRIGATÓRIO)
+
+### Princípio geral
+Todos os módulos fazem parte de um sistema único e devem funcionar de forma integrada. Dados gerados em um módulo são consumidos pelos módulos seguintes — não há módulo isolado. A implementação de qualquer módulo deve respeitar contratos estabelecidos pelos módulos anteriores e antecipar os contratos exigidos pelos módulos seguintes.
+
+### Fluxo de dados entre módulos
+
+```
+M1 Cadastro → M2 Anamnese → M3 Plano de tratamento
+                                      ↓
+M6 Alta ← M5 Evolução ← M4 Agendamento (sessao_id)
+```
+
+| De | Para | Dado compartilhado |
+|----|------|--------------------|
+| M1 | M2, M3, M4 | `paciente.id` (UUID) — chave estrangeira em todas as entidades clínicas |
+| M2 | M3 | Diagnóstico clínico e dados da avaliação informam o plano |
+| M3 | M4 | `plano_tratamento.id`, frequência e nº de sessões orientam o agendamento |
+| M4 | M5 | `sessao.id` — cada evolução pertence a exatamente uma sessão |
+| M5 | M6 | Histórico de evoluções sustenta o relatório e critérios da alta |
+
+### Regras obrigatórias de concordância
+
+1. **Antes de implementar qualquer módulo**, verificar se os modelos, DTOs, endpoints e convenções de nomeação são compatíveis com os módulos já existentes.
+2. **Campos compartilhados** (ex.: `paciente_id`, `sessao_id`, status de sessão) devem usar exatamente os mesmos tipos, nomes e formatos definidos no módulo de origem.
+3. **Enums e listas de opções** (ex.: status de sessão, sexo, tipo de sessão) devem ser centralizados e reutilizados — nunca redefinidos localmente em cada módulo.
+4. **Endpoints** que cruzam módulos (ex.: buscar sessões de um paciente) devem seguir a convenção REST já definida na seção "Endpoints REST (padrão)".
+
+### Procedimento obrigatório ao detectar discordância
+
+Sempre que for identificada uma discordância entre módulos (dados incompatíveis, convenções divergentes, contratos quebrados), **a alteração NÃO deve ser feita silenciosamente**. O procedimento é:
+
+1. **Sinalizar a discordância antes de qualquer código** — descrever:
+   - O que está em conflito (ex.: "O campo `tipo_sessao` no M4 usa string livre, mas o M5 espera um enum")
+   - Quais módulos são afetados
+   - O impacto se não for resolvido
+2. **Propor a resolução** — apresentar a opção de harmonização recomendada
+3. **Aguardar confirmação** antes de implementar a correção
+
+**Formato obrigatório de reporte de discordância:**
+
+```
+⚠️ DISCORDÂNCIA DETECTADA
+Módulos afetados: [M# e M#]
+Problema: [descrição clara do conflito]
+Impacto: [o que quebra ou fica inconsistente]
+Resolução proposta: [abordagem recomendada]
+Aguardando confirmação para prosseguir.
+```
+
+---
+
 ## Estrutura de pastas
 
 ```
@@ -210,17 +262,111 @@ Fonte principal: **DM Sans** (Google Fonts). Fonte mono: **DM Mono**.
 
 ---
 
+## ✅ Validação funcional do backend (OBRIGATÓRIO)
+
+### Princípio geral
+Criar código backend não é suficiente — é obrigatório verificar que o código criado está realmente funcional antes de considerar qualquer tarefa concluída. Todo backend criado ou alterado deve passar pelas etapas de validação abaixo, nesta ordem.
+
+### Etapas obrigatórias de validação
+
+#### 1. Compilação sem erros
+```bash
+cd backend
+mvn compile -q
+```
+- Se falhar: corrigir os erros de compilação antes de prosseguir. Não entregar código que não compila.
+
+#### 2. Inicialização da aplicação
+```bash
+mvn spring-boot:run
+```
+- Aguardar a mensagem `Started FisioclinicApplication` no log.
+- Se falhar: investigar e corrigir antes de prosseguir (erros comuns: schema incompatível, propriedades ausentes, porta em uso).
+
+#### 3. Teste dos endpoints criados/alterados
+Para cada endpoint novo ou modificado, executar uma chamada real e registrar a resposta:
+
+```bash
+# Exemplo — listar pacientes
+curl -s -X GET http://localhost:8080/api/pacientes \
+  -H "Authorization: Bearer <token>" | jq .
+
+# Exemplo — criar sessão
+curl -s -X POST http://localhost:8080/api/sessoes \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{ "pacienteId": "...", "data": "2026-06-10T09:00:00" }'
+```
+
+- Verificar: código HTTP correto (200, 201, 400, 409), corpo da resposta válido, dados persistidos no banco quando aplicável.
+- Se retornar erro inesperado: investigar e corrigir antes de concluir.
+
+#### 4. Reporte obrigatório dos resultados
+Ao finalizar a implementação de qualquer backend, incluir na resposta:
+
+```
+✅ VALIDAÇÃO DO BACKEND
+Compilação: OK / FALHOU
+Inicialização: OK / FALHOU
+Endpoints testados:
+  - [MÉTODO] /api/endpoint → HTTP [status] ✅ / ❌ ([descrição do problema se ❌])
+  - ...
+Banco de dados: dados persistidos corretamente? Sim / Não
+```
+
+Se qualquer item estiver ❌, **a tarefa não está concluída** — corrigir e repetir a validação.
+
+### Quando aplicar
+- Ao criar qualquer Controller, Service, Repository ou Model novo
+- Ao alterar a assinatura de um endpoint existente
+- Ao adicionar ou remover campos de um DTO
+- Ao alterar queries JPA ou configurações de mapeamento
+- Ao modificar regras de segurança (`SecurityConfig`)
+
+### Quando NÃO é necessário
+- Alterações apenas de documentação ou `log.md`
+- Alterações exclusivamente no frontend (sem toque no backend)
+- Refatorações internas sem mudança de comportamento externo (desde que `mvn compile` passe)
+
+---
+
+## Credenciais de acesso (ambiente local)
+
+### PostgreSQL
+| Campo    | Valor        |
+|----------|--------------|
+| Host     | localhost    |
+| Porta    | **5411**     |
+| Banco    | fisioclinic  |
+| Usuário  | postgres     |
+| Senha    | PnCdEL       |
+
+Conexão psql:
+```bash
+$env:PGPASSWORD = "PnCdEL"
+& "C:\Program Files\PostgreSQL\11\bin\psql.exe" -U postgres -p 5411 -d fisioclinic
+```
+
+### Login da aplicação (admin padrão)
+| Campo | Valor                    |
+|-------|--------------------------|
+| Email | admin@fisioclinic.com    |
+| Senha | admin123                 |
+| Perfil | ADMIN                   |
+
+---
+
 ## Variáveis de ambiente (application.properties)
 
 ```properties
 # Banco de dados
-spring.datasource.url=jdbc:postgresql://localhost:5432/fisioclinic
+spring.datasource.url=jdbc:postgresql://localhost:5411/fisioclinic
 spring.datasource.username=fisio
 spring.datasource.password=fisio123
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 # JPA
-spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.hibernate.ddl-auto=none
 spring.jpa.show-sql=false
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
@@ -390,6 +536,7 @@ As entradas devem ser ordenadas do **mais recente para o mais antigo** (última 
 | Realizou alterações no backend ou frontend | Commit descritivo com tipo adequado após concluir |
 | Não realizou nenhuma alteração no dia | Registrar a data com "Não houve alterações" |
 | Encerramento da sessão | Atualizar o `log.md` e criar commit `docs: atualiza log.md DD/MM/AAAA` |
+| Criou ou alterou código backend | Executar as 4 etapas de validação e reportar com o formato `✅ VALIDAÇÃO DO BACKEND` |
 
 
 
