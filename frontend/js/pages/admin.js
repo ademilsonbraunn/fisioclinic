@@ -1,4 +1,4 @@
-import { initTopbar, getToken } from '../utils/auth.js';
+import { initTopbar, getToken, getUsuarioPerfil } from '../utils/auth.js';
 
 const API = 'http://localhost:8080/api';
 
@@ -24,6 +24,11 @@ async function apiFetch(path, options = {}) {
 // ── Init ──────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (getUsuarioPerfil() !== 'ADMIN') {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+
   initTopbar();
   carregarStats();
   bindFisioModal();
