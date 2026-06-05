@@ -4,6 +4,34 @@
 
 ## 📅 05/06/2026 — Sexta-feira
 
+### ⏰ 13:30 — Backend + Frontend
+- **Módulo 3 — Diagnóstico e Plano de Tratamento**: implementação completa
+
+**Backend:**
+- Criado `model/PlanoTratamento.java`: entidade JPA com `@ManyToOne(LAZY)` para Paciente (obrigatório), Anamnese (opcional) e Fisioterapeuta (opcional); campo `tecnicas` mapeado como `JSONB` (`List<String>`); campos obrigatórios: `diagnostico_cif`, `objetivos_curto_prazo`, `objetivos_longo_prazo`, `frequencia_semanal`, `num_sessoes_estimado`; campo `status` com valores: `ativo`, `concluido`, `cancelado`
+- Criado `dto/PlanoTratamentoDTO.java`: record de request com validações Bean Validation (`@NotBlank`, `@NotNull`, `@Min`, `@Max`) e `@JsonProperty` snake_case; inclui `data_previsao_alta`, `cid10` e `hipoteses_tratamento` opcionais
+- Criado `dto/PlanoTratamentoResponse.java`: record de response com nested records `PacienteResumo`, `AnamneseResumo` e `FisioterapeutaResumo`
+- Criado `repository/PlanoTratamentoRepository.java`: queries JPQL com `LEFT JOIN FETCH` para fisioterapeuta e anamnese; métodos `findByPacienteId` e `findByPacienteIdAndStatus`
+- Criado `service/PlanoTratamentoService.java`: CRUD completo com validação de status (`ativo/concluido/cancelado`); método `atualizarStatus` para transições de estado; PATCH parcial (só altera campos não-nulos)
+- Criado `controller/PlanoTratamentoController.java`: endpoints `GET /api/planos`, `GET /api/planos/{id}`, `POST /api/planos`, `PATCH /api/planos/{id}`, `PATCH /api/planos/{id}/status`
+
+**Frontend:**
+- Criado `js/api/planos.js`: wrapper fetch com `listarPlanos`, `criarPlano`, `atualizarPlano`, `atualizarStatusPlano`
+- Atualizado `prontuario.html`: aba "Plano de Tratamento" habilitada com formulário completo — chips multi-seleção para 16 técnicas fisioterapêuticas, selects para frequência (1–7×/semana), campos CIF, CID-10, objetivos curto/longo prazo, nº sessões estimado, previsão de alta, vínculo com anamnese e checkbox TCLE
+- Atualizado `prontuario.js`: lógica da aba plano — carregamento inicial via API, render de cards com accordion (abrir/fechar), ações de concluir/cancelar plano, form com validação de campos obrigatórios, populate de selects (fisioterapeutas, anamneses do paciente)
+- Atualizado `prontuario.css`: estilos para `.form-novo-plano`, `.tecnicas-chips`, `.chip-option` (multi-select visual), `.plano-card` com borda colorida por status, `.plano-acoes`, badges de status (verde/azul/vermelho), `.form-row.cols-3`
+
+**Validação:**
+- Compilação: OK
+- Inicialização: OK (`Started FisioclinicApplication`)
+- `GET /api/planos?paciente_id` → HTTP 200 ✅
+- `POST /api/planos` → HTTP 201 ✅ (dados persistidos com JSONB de técnicas)
+- `GET /api/planos/{id}` → HTTP 200 ✅
+- `PATCH /api/planos/{id}/status` → HTTP 200 ✅
+- Banco de dados: dados persistidos corretamente ✅
+
+---
+
 ### ⏰ — Frontend
 - **Dashboard — Abas Funcionais**: substituição do layout estático por um dashboard com 4 abas interativas
   - Aba **Visão Geral**: layout original preservado (stats + grid de módulos + acesso rápido)

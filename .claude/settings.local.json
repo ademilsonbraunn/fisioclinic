@@ -24,7 +24,10 @@
       "PowerShell(head -50)",
       "Bash(curl -s \"http://localhost:8080/api/pacientes?page=0&size=3\")",
       "Bash(python3 -m json.tool)",
-      "Bash(mvn compile *)"
+      "Bash(mvn compile *)",
+      "PowerShell($login = Invoke-RestMethod -Uri \"http://localhost:8080/api/auth/login\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"admin@fisioclinic.com\",\"senha\":\"admin123\"}' -UseBasicParsing; $token = $login.token; Write-Output \"Token obtido: $\\($token.Substring\\(0,20\\)\\)...\")",
+      "PowerShell($login = Invoke-RestMethod -Uri \"http://localhost:8080/api/auth/login\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"admin@fisioclinic.com\",\"senha\":\"admin123\"}' -UseBasicParsing; $token = $login.token; $headers = @{ Authorization = \"Bearer $token\" }; $pacientes = Invoke-RestMethod -Uri \"http://localhost:8080/api/pacientes\" -Headers $headers -UseBasicParsing; Write-Output \"Pacientes: $\\($pacientes.Count\\)\"; $pacienteId = $pacientes[0].id; Write-Output \"ID paciente teste: $pacienteId\")",
+      "PowerShell($login = Invoke-RestMethod -Uri \"http://localhost:8080/api/auth/login\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"admin@fisioclinic.com\",\"senha\":\"admin123\"}' -UseBasicParsing; $token = $login.token; $headers = @{ Authorization = \"Bearer $token\"; \"Content-Type\" = \"application/json\" }; $pacienteId = \"2db90cf5-b4eb-4837-b3b7-f5dc6241152e\"; $listaPlanos = Invoke-RestMethod -Uri \"http://localhost:8080/api/planos?paciente_id=$pacienteId\" -Headers $headers -UseBasicParsing; Write-Output \"GET /api/planos - HTTP 200 OK - Planos: $\\($listaPlanos.Count\\)\")"
     ]
   }
 }
