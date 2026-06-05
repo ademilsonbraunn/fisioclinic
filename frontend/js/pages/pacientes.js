@@ -149,20 +149,22 @@ function linhaHTML(p) {
       <td class="text-2 text-sm">${formatData(p.createdAt)}</td>
       <td>
         <div class="row-actions">
-          <a class="btn btn-ghost btn-icon btn-sm" href="prontuario.html?paciente_id=${p.id}"
+          <a class="btn btn-action-prontuario" href="prontuario.html?paciente_id=${p.id}"
             title="Ver prontuário" aria-label="Prontuário de ${esc(p.nomeCompleto)}">
-            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
               <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
             </svg>
+            Prontuário
           </a>
-          <button class="btn btn-ghost btn-icon btn-sm" data-action="editar" data-id="${p.id}"
-            title="Editar paciente" aria-label="Editar ${esc(p.nomeCompleto)}">
-            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <button class="btn btn-action-editar" data-action="editar" data-id="${p.id}"
+            title="Editar cadastro" aria-label="Editar ${esc(p.nomeCompleto)}">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
+            Editar Cadastro
           </button>
         </div>
       </td>

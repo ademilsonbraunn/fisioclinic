@@ -682,7 +682,7 @@ function cartaoEvolucao(e) {
         <div class="soap-display">
           ${soapBloco('S', 'Subjetivo', e.subjetivo)}
           ${soapBloco('O', 'Objetivo',  e.objetivo)}
-          ${soapBloco('A', 'Avaliação', e.avaliacao_clinica ?? e.avaliacao)}
+          ${soapBloco('A', 'Avaliação', e.avaliacao)}
           ${soapBloco('P', 'Plano',     e.plano_evolucao ?? e.planoEvolucao)}
         </div>
         ${tecnicas.length ? campoEvol('Técnicas realizadas', tecnicas.join(' · ')) : ''}
