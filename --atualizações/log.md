@@ -2,6 +2,22 @@
 
 ---
 
+## 📅 05/06/2026 — Sexta-feira
+
+### ⏰ — Frontend
+- **Dashboard — Abas Funcionais**: substituição do layout estático por um dashboard com 4 abas interativas
+  - Aba **Visão Geral**: layout original preservado (stats + grid de módulos + acesso rápido)
+  - Aba **Hoje**: lista de sessões do dia ordenadas por horário, com status colorido (agendado/confirmado/realizado/faltou/cancelado), paciente, fisioterapeuta e sala; exibe estado vazio se não houver sessões
+  - Aba **Pacientes**: últimos 10 pacientes cadastrados com avatar (iniciais), CPF formatado, telefone e link direto ao prontuário
+  - Aba **Agenda**: resumo semanal Seg–Sex com contagem de sessões por dia (card em destaque para hoje) + botão para a agenda completa
+  - Stats "Sessões hoje" e "Realizadas" agora buscam dados reais via API (era placeholder fixo)
+  - Saudação usa o nome real do usuário autenticado (via `getUsuarioNome()`) em vez de "João" fixo
+  - Cada aba carrega dados apenas uma vez (sem re-fetch ao voltar para a aba)
+  - Responsivo: colunas ocultas em telas menores (< 960 px)
+- Arquivos alterados: `frontend/pages/dashboard.html`, `frontend/css/pages/dashboard.css`, `frontend/js/pages/dashboard.js`
+
+---
+
 ## 📅 05/06/2026 — Quinta-feira
 
 ### ⏰ 02:50 — Backend + Frontend
