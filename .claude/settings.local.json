@@ -3,7 +3,9 @@
     "allow": [
       "PowerShell(Get-ChildItem -Path \"c:\\\\projetos\\\\clinico\" -Recurse | Select-Object @{N='Caminho';E={$_.FullName.Replace\\('C:\\\\projetos\\\\clinico\\\\', ''\\)}} | Sort-Object Caminho)",
       "PowerShell(mvn -version 2>&1)",
-      "PowerShell(Get-ChildItem -Path \"c:\\\\projetos\\\\clinico\" -Recurse -Force | Where-Object { $_.Name -match \"faturamento\" } | Select-Object -Property FullName)"
+      "PowerShell(Get-ChildItem -Path \"c:\\\\projetos\\\\clinico\" -Recurse -Force | Where-Object { $_.Name -match \"faturamento\" } | Select-Object -Property FullName)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }

@@ -2,6 +2,38 @@
 
 ---
 
+## 📅 05/06/2026 — Sexta-feira
+
+### ⏰ 20:30 — Frontend
+- **Módulo 4 — Agendamento**: implementação completa do frontend (calendário semanal + lista)
+- Criado `frontend/pages/agenda.html`:
+  - Calendário semanal interativo (07h–20h, grade de 30 min, 7 colunas)
+  - Evento com cor por status (agendado=azul, confirmado=verde, realizado=cinza, faltou=âmbar, cancelado=vermelho)
+  - Navegação entre semanas (`< Semana anterior` / `Próxima semana >`) e botão `Hoje`
+  - Toggle de visualização: **Semana** (calendário) e **Lista** (tabela)
+  - Filtros por fisioterapeuta e por status
+  - Modal "Nova Sessão" / "Editar Sessão" com 5 seções: paciente + horário, profissional + local, tipo de sessão (radio chips), status (radio chips coloridos), informações adicionais
+  - Campo motivo de cancelamento condicional (aparece ao selecionar status = Cancelado)
+  - Alerta de conflito de sala em tempo real (detecta sobreposição de horário + sala)
+  - Clicar em slot vazio do calendário pré-preenche data/hora no modal
+  - Clicar em evento abre modal de edição com todos os campos preenchidos
+  - Botão "Cancelar Sessão" no modo edição
+- Criado `frontend/css/pages/agenda.css`:
+  - Layout CSS Grid para o calendário (64px + 7 colunas dinâmicas)
+  - Cartões de evento posicionados absolutamente (top + height calculados pela duração)
+  - Suporte a eventos sobrepostos (distribuição lateral automática)
+  - Badges e chips de status com paleta de cores semântica
+- Criado `frontend/js/api/sessoes.js`: wrapper de API para `listarSessoes`, `listarSessoesSemana`, `criarSessao`, `atualizarSessao`, `atualizarStatusSessao`, `excluirSessao`
+- Criado `frontend/js/pages/agenda.js`:
+  - Geração dinâmica da grade do calendário via JS (26 slots × 7 colunas)
+  - Algoritmo de agrupamento de sessões sobrepostas no mesmo dia/sala
+  - Fallback completo para mock data quando backend não disponível
+  - Chips de status com cores semânticas por variante CSS
+  - Validação de formulário com feedback inline
+  - Detecção de conflito: mesma sala + sobreposição de horário
+
+---
+
 ## 📅 04/06/2026 — Quarta-feira
 
 ### ⏰ 21:30 — Backend
