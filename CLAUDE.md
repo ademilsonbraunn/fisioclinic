@@ -3,6 +3,7 @@
 ## Visão geral
 Sistema de gestão clínica para fisioterapia. Porte: clínica média (6–20 fisioterapeutas).
 Módulos: Cadastro, Anamnese, Plano de Tratamento, Agendamento, Evolução Clínica, Alta.
+**Versão atual:** v1.2
 
 ---
 
@@ -41,6 +42,47 @@ Módulos: Cadastro, Anamnese, Plano de Tratamento, Agendamento, Evolução Clín
 | 4 | Agendamento / Recepção                   | ✅ Concluído        |
 | 5 | Evolução clínica (SOAP)                  | 🔲 Pendente         |
 | 6 | Alta e relatórios                        | 🔲 Pendente         |
+
+---
+
+## 🔢 Versionamento do Sistema (OBRIGATÓRIO)
+
+### Esquema de versão
+O sistema usa versionamento baseado em módulos concluídos:
+
+```
+v{major}.{minor}
+```
+
+- **Major** (`1`): fixo enquanto o sistema estiver na trilha original de 6 módulos
+- **Minor** (`0–6`): incrementado em `+1` a cada módulo que muda de status para ✅ Concluído
+
+| Módulos concluídos | Versão |
+|--------------------|--------|
+| 0 | v1.0 |
+| 1 | v1.1 |
+| 2 | v1.2 |
+| 3 | v1.3 |
+| 4 | v1.4 |
+| 5 | v1.5 |
+| 6 | v1.6 |
+
+### Versão atual
+A versão atual está registrada na seção **Visão geral** deste arquivo (`**Versão atual:** vX.Y`).
+
+### Quando atualizar
+Sempre que um módulo tiver seu status alterado para ✅ Concluído:
+
+1. Atualizar o campo `**Versão atual:**` na seção Visão geral do CLAUDE.md
+2. Atualizar o status do módulo na tabela "Trilha de módulos"
+3. Registrar o bump no `log.md` com o seguinte formato:
+   ```
+   🔢 Versão: vX.Y → vX.(Y+1) — conclusão do Módulo N (Nome do Módulo)
+   ```
+4. Criar commit com o tipo `release`:
+   ```
+   release: v1.3 — conclui Módulo 3 (Diagnóstico e Plano de Tratamento)
+   ```
 
 ---
 
@@ -452,6 +494,7 @@ tipo: descrição objetiva do que foi feito
 | `docs` | Atualização de documentação ou `log.md` |
 | `config` | Alterações em configurações |
 | `chore` | Tarefas de manutenção (dependências, build, etc.) |
+| `release` | Bump de versão ao concluir um módulo |
 
 **Exemplos:**
 ```
@@ -516,6 +559,49 @@ As entradas devem ser ordenadas do **mais recente para o mais antigo** (última 
 
 ---
 
+## 📢 Card de Atualizações do Sistema (OBRIGATÓRIO)
+
+### Princípio
+Sempre que houver alterações concluídas de backend ou frontend visíveis ao usuário final, deve ser inserido um registro na tabela `atualizacoes_sistema` descrevendo a novidade em linguagem acessível — sem expor detalhes técnicos internos (nomes de classes, endpoints, estrutura de banco, etc.).
+
+### Tipos de registro
+
+| Tipo | Quando usar |
+|------|-------------|
+| `NOVO_RECURSO` | Nova funcionalidade ou módulo disponível para o usuário |
+| `MELHORIA` | Melhoria em funcionalidade existente |
+| `CORRECAO` | Correção de comportamento incorreto percebido pelo usuário |
+
+### SQL obrigatório ao concluir alterações visíveis ao usuário
+
+```sql
+INSERT INTO atualizacoes_sistema (titulo, descricao, versao, tipo, data_lancamento)
+VALUES (
+  'Título curto (máx 80 chars)',
+  'Descrição acessível ao usuário final, sem jargão técnico (máx 300 chars)',
+  'vX.Y',
+  'NOVO_RECURSO',
+  'YYYY-MM-DD'
+);
+```
+
+### Regras de conteúdo
+- **Título**: o que o usuário ganhou (ex: "Agendamento de Sessões disponível")
+- **Descrição**: o que ele pode fazer agora (ex: "Agende sessões diretamente pelo sistema, consulte a agenda semanal e acompanhe o status de cada atendimento")
+- **Nunca incluir**: nomes de classes Java, nomes de endpoints, estrutura do banco, detalhes de configuração
+
+### Quando aplicar
+- Ao concluir qualquer módulo novo (obrigatório, junto com o bump de versão)
+- Ao adicionar funcionalidade visível ao usuário em módulo já existente
+- Ao corrigir comportamento que o usuário percebia como errado
+
+### Quando NÃO aplicar
+- Refatorações internas sem mudança visível ao usuário
+- Correções de compilação ou configuração invisíveis
+- Atualizações de documentação (`log.md`, `CLAUDE.md`)
+
+---
+
 ## 📁 Estrutura da pasta de atualizações
 
 ```
@@ -537,6 +623,8 @@ As entradas devem ser ordenadas do **mais recente para o mais antigo** (última 
 | Não realizou nenhuma alteração no dia | Registrar a data com "Não houve alterações" |
 | Encerramento da sessão | Atualizar o `log.md` e criar commit `docs: atualiza log.md DD/MM/AAAA` |
 | Criou ou alterou código backend | Executar as 4 etapas de validação e reportar com o formato `✅ VALIDAÇÃO DO BACKEND` |
+| Módulo muda status para ✅ Concluído | Atualizar `**Versão atual:**` no CLAUDE.md, registrar bump no `log.md` e criar commit `release: vX.Y` |
+| Concluiu alteração visível ao usuário | Inserir registro em `atualizacoes_sistema` com título e descrição amigáveis (sem jargão técnico) |
 
 
 

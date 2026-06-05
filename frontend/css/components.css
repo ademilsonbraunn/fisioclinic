@@ -480,3 +480,214 @@
 .radio-chips.is-error .chip-label {
   border-color: var(--red);
 }
+
+/* ── Notificações de Atualização ─────────────────── */
+
+.notif-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.notif-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  margin-right: 4px;
+}
+
+.notif-btn:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.notif-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 340px;
+  max-height: 480px;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  z-index: 200;
+}
+
+.notif-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+}
+
+.notif-close {
+  border: none;
+  background: transparent;
+  color: var(--text3);
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 2px;
+  border-radius: 4px;
+  transition: color .12s;
+}
+
+.notif-close:hover { color: var(--text); }
+
+.notif-list { padding: 8px 0; }
+
+.notif-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background .1s, border-left-color .1s;
+}
+
+.notif-item:last-child { border-bottom: none; }
+
+.notif-item:hover { background: var(--surface2); }
+
+.notif-item--unread {
+  border-left-color: var(--accent);
+  background: #f4f7fe;
+}
+
+.notif-item--unread:hover { background: #eaeffc; }
+
+.notif-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.notif-versao {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text3);
+  font-family: var(--font-mono, monospace);
+  letter-spacing: .04em;
+}
+
+.notif-tipo { font-size: 0.6875rem; }
+
+.notif-titulo {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 4px;
+  line-height: 1.35;
+}
+
+.notif-descricao {
+  font-size: 0.75rem;
+  color: var(--text2);
+  margin: 0 0 6px;
+  line-height: 1.45;
+}
+
+.notif-data {
+  font-size: 0.6875rem;
+  color: var(--text3);
+}
+
+.notif-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.notif-item-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.notif-lida-label {
+  font-size: 0.6875rem;
+  color: var(--text3);
+  margin-left: auto;
+}
+
+.notif-marcar-btn {
+  margin-left: auto;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background .1s;
+  white-space: nowrap;
+}
+
+.notif-marcar-btn:hover { background: var(--accent-bg, #EEF2FD); }
+
+.notif-marcar-todas-btn {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background .1s;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+.notif-marcar-todas-btn:hover { background: var(--accent-bg, #EEF2FD); }
+
+.notif-panel-header { flex-wrap: wrap; gap: 4px; }
+
+.notif-empty {
+  padding: 20px 16px;
+  font-size: 0.8125rem;
+  color: var(--text3);
+  text-align: center;
+  margin: 0;
+}

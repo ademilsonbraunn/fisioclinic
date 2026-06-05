@@ -45,6 +45,8 @@ public class SecurityConfig {
                 // Admin — requer perfil ADMIN
                 .requestMatchers("/api/fisioterapeutas/**").hasRole("ADMIN")
                 .requestMatchers("/api/salas/**").hasRole("ADMIN")
+                // Atualizações do sistema — qualquer usuário autenticado
+                .requestMatchers("/api/atualizacoes").authenticated()
                 // Anamneses — qualquer usuário autenticado
                 .requestMatchers("/api/anamneses/**").authenticated()
                 // Troca de senha — qualquer usuário autenticado

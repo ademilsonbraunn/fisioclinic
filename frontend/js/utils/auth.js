@@ -1,3 +1,5 @@
+import { initNotificacoes } from '../components/notificacoes.js';
+
 // Utilitário central de autenticação — usado por todas as páginas protegidas
 
 export function getToken() {
@@ -96,4 +98,7 @@ export function initTopbar() {
       userEl.setAttribute('aria-expanded', 'false');
     }
   });
+
+  // Inicializa painel de atualizações do sistema
+  initNotificacoes();
 }
