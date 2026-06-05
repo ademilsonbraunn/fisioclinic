@@ -187,6 +187,12 @@ function esc(str) {
   return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function formatCpf(cpf) {
+  if (!cpf) return '';
+  const c = String(cpf).replace(/\D/g, '').padStart(11, '0');
+  return c.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+}
+
 function badgeStatus(status) {
   return `<span class="badge badge-${status.toLowerCase()}">${esc(STATUS_LABEL[status] ?? status)}</span>`;
 }
@@ -295,7 +301,7 @@ function popularSelects() {
   // Pacientes
   const selPaciente = document.getElementById('sel-paciente');
   selPaciente.innerHTML = '<option value="">Selecione o paciente</option>'
-    + pacientes.map(p => `<option value="${esc(p.id)}">${esc(p.nome_completo)} — ${esc(p.cpf ?? '')}</option>`).join('');
+    + pacientes.map(p => `<option value="${esc(p.id)}">${esc(p.nome_completo)} — ${esc(formatCpf(p.cpf))}</option>`).join('');
 
   // Fisioterapeutas
   const selFisio = document.getElementById('sel-fisioterapeuta');
