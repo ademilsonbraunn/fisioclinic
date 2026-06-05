@@ -301,7 +301,7 @@ function popularSelects() {
   // Pacientes
   const selPaciente = document.getElementById('sel-paciente');
   selPaciente.innerHTML = '<option value="">Selecione o paciente</option>'
-    + pacientes.map(p => `<option value="${esc(p.id)}">${esc(p.nome_completo)} — ${esc(formatCpf(p.cpf))}</option>`).join('');
+    + pacientes.map(p => `<option value="${esc(p.id)}">${esc(p.nomeCompleto ?? p.nome_completo)} — ${esc(formatCpf(p.cpf))}</option>`).join('');
 
   // Fisioterapeutas
   const selFisio = document.getElementById('sel-fisioterapeuta');
