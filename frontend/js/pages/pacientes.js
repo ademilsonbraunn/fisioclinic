@@ -1,6 +1,7 @@
 import { showToast } from '../components/toast.js';
 import { openModal, closeModal } from '../components/modal.js';
 import * as API from '../api/pacientes.js';
+import { initTopbar } from '../utils/auth.js';
 
 // ── Mock data (usado quando o backend não está disponível) ──────────────────
 const MOCK = [
@@ -70,6 +71,7 @@ const $ = id => document.getElementById(id);
 
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
+  initTopbar();
   await carregarPacientes();
   bindEvents();
   aplicarMascaras();

@@ -1,6 +1,7 @@
 import { listarSessoesSemana, listarSessoes, criarSessao, atualizarSessao, atualizarStatusSessao } from '../api/sessoes.js';
 import { showToast } from '../components/toast.js';
 import { openModal, closeModal } from '../components/modal.js';
+import { initTopbar } from '../utils/auth.js';
 
 // ── Constantes ──────────────────────────────────────────────────────────────
 
@@ -839,13 +840,7 @@ function initCalendarDom() {
 // ── Init ─────────────────────────────────────────────────────────────────────
 
 async function init() {
-  // Nome do usuário logado
-  try {
-    const nome = sessionStorage.getItem('usuario_nome') || localStorage.getItem('usuario_nome') || 'Usuário';
-    document.getElementById('topbar-nome').textContent = nome;
-    document.getElementById('topbar-avatar').textContent = iniciais(nome);
-  } catch { /* silencioso */ }
-
+  initTopbar();
   initCalendarDom();
   bindEvents();
   await carregarDados();

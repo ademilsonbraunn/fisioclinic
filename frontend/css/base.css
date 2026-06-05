@@ -82,6 +82,78 @@ img  { display: block; max-width: 100%; }
   gap: 8px;
   font-size: 0.875rem;
   color: var(--text2);
+  position: relative;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.topbar-user:hover {
+  background: var(--surface2);
+}
+
+/* ── Dropdown de usuário ──────────────────────────────────── */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 200px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.10);
+  z-index: 1000;
+  overflow: hidden;
+}
+.user-dropdown.open {
+  display: block;
+}
+.user-dropdown-header {
+  padding: 12px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.user-dropdown-nome {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.user-dropdown-perfil {
+  font-size: 0.75rem;
+  color: var(--text3);
+  text-transform: capitalize;
+  text-transform: lowercase;
+}
+.user-dropdown-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0;
+}
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  color: var(--text2);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+.user-dropdown-item:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+.user-dropdown-sair {
+  color: var(--red);
+}
+.user-dropdown-sair:hover {
+  background: #fdf2f2;
+  color: var(--red);
 }
 
 .sidebar {

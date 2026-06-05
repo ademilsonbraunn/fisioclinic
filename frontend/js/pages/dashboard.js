@@ -1,6 +1,8 @@
 import * as API from '../api/pacientes.js';
+import { initTopbar } from '../utils/auth.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  initTopbar();
   preencherData();
   carregarStats();
 });

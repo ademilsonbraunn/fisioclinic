@@ -1,10 +1,6 @@
-const API = '/api';
+import { initTopbar, getToken } from '../utils/auth.js';
 
-// ── Token helpers ─────────────────────────────────────────────
-
-function getToken() {
-  return sessionStorage.getItem('token') ?? localStorage.getItem('token');
-}
+const API = 'http://localhost:8080/api';
 
 function authHeaders() {
   const token = getToken();
@@ -28,6 +24,7 @@ async function apiFetch(path, options = {}) {
 // ── Init ──────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
+  initTopbar();
   carregarStats();
   bindFisioModal();
   bindSalaModal();

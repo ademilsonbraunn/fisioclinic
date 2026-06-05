@@ -46,8 +46,10 @@ function setupForm() {
       });
 
       if (res.ok) {
-        const { token } = await res.json();
-        sessionStorage.setItem('token', token);
+        const data = await res.json();
+        sessionStorage.setItem('token', data.token);
+        sessionStorage.setItem('usuario_nome', data.nome);
+        sessionStorage.setItem('usuario_perfil', data.perfil);
         window.location.href = 'pages/dashboard.html';
       } else {
         errorEl.style.display = 'flex';
