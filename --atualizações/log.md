@@ -4,6 +4,18 @@
 
 ## 📅 05/06/2026 — Quinta-feira
 
+### ⏰ 02:30 — Frontend
+- **Logout via topbar** — clicar no nome do usuário abre dropdown com botão "Sair"
+- Criado `frontend/js/utils/auth.js`: módulo central de autenticação com `getToken()`, `getUsuarioNome()`, `getUsuarioPerfil()`, `logout()` e `initTopbar()`
+- `login.js`: agora salva `usuario_nome` e `usuario_perfil` no `sessionStorage` após login bem-sucedido (antes só salvava o token)
+- Todas as páginas protegidas atualizadas para usar `initTopbar()`:
+  - `dashboard.js`, `pacientes.js`, `agenda.js`, `admin.js` — importam e chamam `initTopbar()`
+  - `dashboard.html`, `pacientes.html`, `agenda.html`, `admin.html` — topbar padronizado com `id="topbar-user"`, `id="topbar-avatar"`, `id="topbar-nome"`
+- `admin.js`: URL base corrigida de `/api` (relativa) para `http://localhost:8080/api` (absoluta)
+- `css/base.css`: adicionados estilos do dropdown (`.user-dropdown`, `.user-dropdown-sair`, etc.) e hover no `.topbar-user`
+
+---
+
 ### ⏰ 02:05 — Backend / Banco de Dados
 - **Correção crítica — Agenda não permitia inserção de sessões**
 - Causa raiz: `@Enumerated(EnumType.STRING)` no Java persiste enums em MAIÚSCULAS, mas os CHECK constraints do PostgreSQL foram definidos com minúsculas — todo INSERT era rejeitado com violação de constraint
