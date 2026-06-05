@@ -4,6 +4,11 @@
 
 ## 📅 05/06/2026 — Sexta-feira
 
+### ⏰ 18:30 — Frontend
+- **Dashboard — Card Prontuário**: removido badge "Em breve"; link atualizado de `prontuario.html` para `pacientes.html` (fluxo correto: pacientes → prontuário do paciente); descrição do card revisada; stat alterado para "Acessar prontuários"
+- **Lista de pacientes — botões de ação**: substituídos botões icon-only (`btn-ghost btn-icon btn-sm`) por botões com ícone + texto — "Prontuário" (estilo primário em azul com borda) e "Editar Cadastro" (estilo ghost neutro); gap da `.row-actions` aumentado de 2px para 6px; adicionadas classes `.btn-action-prontuario` e `.btn-action-editar` em `pacientes.css`
+- **Prontuário — correção menor**: removida referência morta `e.avaliacao_clinica` em `cartaoEvolucao()`; a propriedade nunca existiu na resposta do backend (o campo correto é `e.avaliacao`); fallback `?? e.avaliacao` sempre era acionado
+
 ### ⏰ 17:00 — Frontend
 - **Navegação — Sidebar removido**: removido o `<aside class="sidebar">` de todas as páginas (dashboard, pacientes, agenda, prontuário, admin); conteúdo agora ocupa a largura total da tela
 - **Botão "Início" no topbar**: adicionado em pacientes, agenda, prontuário e admin — ícone de seta + texto "Início" logo após o brand FisioClinic; ao clicar retorna para o dashboard (menu principal)
