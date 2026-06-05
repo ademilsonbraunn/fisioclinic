@@ -4,6 +4,13 @@
 
 ## 📅 05/06/2026 — Sexta-feira
 
+### ⏰ 17:00 — Frontend
+- **Navegação — Sidebar removido**: removido o `<aside class="sidebar">` de todas as páginas (dashboard, pacientes, agenda, prontuário, admin); conteúdo agora ocupa a largura total da tela
+- **Botão "Início" no topbar**: adicionado em pacientes, agenda, prontuário e admin — ícone de seta + texto "Início" logo após o brand FisioClinic; ao clicar retorna para o dashboard (menu principal)
+- **Brand clicável**: `topbar-brand` convertido de `<div>` para `<a>` nas sub-páginas, linkando para `dashboard.html`
+- **CSS base.css**: `margin-left` do `.main` alterado de `var(--sidebar-w)` para `0`; adicionadas classes `.topbar-back-btn` e `.topbar-divider`
+- **Correção**: botão admin no dashboard apontava para `dashboard.html` (erro); corrigido para `admin.html`
+
 ### ⏰ 16:30 — Frontend
 - **Navegação — Sidebar simplificado**: removidos grupos "Principal" (Início) e "Sistema" (Administrador) do sidebar de todas as páginas; sidebar agora exibe apenas os 4 módulos clínicos (Pacientes, Agenda, Prontuário, Alta)
 - **Menu administrador no topbar**: adicionado botão de engrenagem no topbar (oculto por padrão), visível apenas para usuários com perfil `ADMIN` — revelado via `initTopbar()` no `auth.js`; na página `admin.html` exibe estado ativo (azul)
