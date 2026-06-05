@@ -144,7 +144,7 @@
       <div class="prontuario-tabs" role="tablist">
         <button class="tab-btn active" role="tab" data-tab="anamnese" aria-selected="true">Anamnese</button>
         <button class="tab-btn" role="tab" data-tab="plano" aria-selected="false">Plano de Tratamento</button>
-        <button class="tab-btn" role="tab" data-tab="evolucao" disabled title="Em breve">Evolução</button>
+        <button class="tab-btn" role="tab" data-tab="evolucao" aria-selected="false">Evolução</button>
       </div>
 
       <!-- Tab: Anamnese -->
@@ -421,14 +421,168 @@
         </div>
       </div>
 
-      <!-- Tab: Evolução (em breve) -->
+      <!-- Tab: Evolução Clínica (SOAP) -->
       <div class="tab-panel" id="tab-evolucao">
-        <div class="coming-soon">
-          <svg width="40" height="40" fill="none" stroke="var(--text3)" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:12px">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-          </svg>
-          <h3>Evolução Clínica</h3>
-          <p>Módulo 5 — em desenvolvimento.</p>
+
+        <!-- Formulário inline de nova evolução -->
+        <div class="form-nova-evolucao" id="form-nova-evolucao">
+          <div class="form-section-title" style="margin-bottom:20px;font-size:1rem;font-weight:600">Registrar Evolução Clínica</div>
+
+          <section class="form-section">
+            <div class="form-section-title">Identificação</div>
+            <div class="form-row cols-3">
+              <div class="form-group">
+                <label class="form-label" for="evol-sessao">Sessão realizada <span style="color:var(--red)">*</span></label>
+                <select class="form-input form-select" id="evol-sessao">
+                  <option value="">Selecione a sessão</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="evol-num-sessao">Nº da sessão <span style="color:var(--red)">*</span></label>
+                <input type="number" class="form-input" id="evol-num-sessao" min="1" max="500" placeholder="ex: 5">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="evol-tempo">Tempo de atendimento (min)</label>
+                <input type="number" class="form-input" id="evol-tempo" min="1" max="480" placeholder="ex: 50">
+              </div>
+            </div>
+            <div class="form-row cols-2" style="margin-top:14px">
+              <div class="form-group">
+                <label class="form-label" for="sel-fisio-evol">Fisioterapeuta</label>
+                <select class="form-input form-select" id="sel-fisio-evol">
+                  <option value="">Selecione (opcional)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="evol-plano">Plano de tratamento vinculado</label>
+                <select class="form-input form-select" id="evol-plano">
+                  <option value="">Nenhum (opcional)</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">Escala de Dor (EVA)</div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label">EVA Antes do atendimento</label>
+                <div class="eva-wrap">
+                  <input type="range" class="eva-slider" id="evol-eva-antes" min="0" max="10" step="1" value="0">
+                  <div class="eva-value" id="evol-eva-antes-display">0</div>
+                </div>
+                <div class="eva-labels"><span>0 — Sem dor</span><span>10 — Dor máxima</span></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">EVA Após o atendimento</label>
+                <div class="eva-wrap">
+                  <input type="range" class="eva-slider" id="evol-eva-depois" min="0" max="10" step="1" value="0">
+                  <div class="eva-value" id="evol-eva-depois-display">0</div>
+                </div>
+                <div class="eva-labels"><span>0 — Sem dor</span><span>10 — Dor máxima</span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">SOAP — Evolução Clínica</div>
+            <div class="soap-grid">
+              <div class="soap-field">
+                <div class="soap-letter soap-s">S</div>
+                <div class="form-group" style="flex:1">
+                  <label class="form-label" for="evol-subjetivo">Subjetivo <span style="color:var(--red)">*</span></label>
+                  <textarea class="form-input" id="evol-subjetivo" rows="3" placeholder="Relato do paciente: queixas, sintomas, evolução percebida..."></textarea>
+                </div>
+              </div>
+              <div class="soap-field">
+                <div class="soap-letter soap-o">O</div>
+                <div class="form-group" style="flex:1">
+                  <label class="form-label" for="evol-objetivo">Objetivo <span style="color:var(--red)">*</span></label>
+                  <textarea class="form-input" id="evol-objetivo" rows="3" placeholder="Achados clínicos observáveis: testes, mensuração, ADM, força..."></textarea>
+                </div>
+              </div>
+              <div class="soap-field">
+                <div class="soap-letter soap-a">A</div>
+                <div class="form-group" style="flex:1">
+                  <label class="form-label" for="evol-avaliacao">Avaliação <span style="color:var(--red)">*</span></label>
+                  <textarea class="form-input" id="evol-avaliacao" rows="3" placeholder="Interpretação clínica, raciocínio e diagnóstico funcional atual..."></textarea>
+                </div>
+              </div>
+              <div class="soap-field">
+                <div class="soap-letter soap-p">P</div>
+                <div class="form-group" style="flex:1">
+                  <label class="form-label" for="evol-plano-evolucao">Plano <span style="color:var(--red)">*</span></label>
+                  <textarea class="form-input" id="evol-plano-evolucao" rows="3" placeholder="Conduta para próxima sessão, orientações, ajustes no tratamento..."></textarea>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">Técnicas Realizadas</div>
+            <div class="form-group">
+              <div class="tecnicas-chips" id="evol-tecnicas-chips">
+                <label class="chip-option"><input type="checkbox" value="Cinesioterapia"><span>Cinesioterapia</span></label>
+                <label class="chip-option"><input type="checkbox" value="Hidroterapia"><span>Hidroterapia</span></label>
+                <label class="chip-option"><input type="checkbox" value="Termoterapia"><span>Termoterapia</span></label>
+                <label class="chip-option"><input type="checkbox" value="Eletroterapia (TENS)"><span>Eletroterapia (TENS)</span></label>
+                <label class="chip-option"><input type="checkbox" value="Eletroterapia (FES)"><span>Eletroterapia (FES)</span></label>
+                <label class="chip-option"><input type="checkbox" value="Ultrassom"><span>Ultrassom</span></label>
+                <label class="chip-option"><input type="checkbox" value="Laser"><span>Laser</span></label>
+                <label class="chip-option"><input type="checkbox" value="Massagem Terapêutica"><span>Massagem Terapêutica</span></label>
+                <label class="chip-option"><input type="checkbox" value="Pilates"><span>Pilates</span></label>
+                <label class="chip-option"><input type="checkbox" value="RPG"><span>RPG</span></label>
+                <label class="chip-option"><input type="checkbox" value="Acupuntura"><span>Acupuntura</span></label>
+                <label class="chip-option"><input type="checkbox" value="Bandagem Funcional"><span>Bandagem Funcional</span></label>
+                <label class="chip-option"><input type="checkbox" value="Mobilização Articular"><span>Mobilização Articular</span></label>
+                <label class="chip-option"><input type="checkbox" value="Liberação Miofascial"><span>Liberação Miofascial</span></label>
+                <label class="chip-option"><input type="checkbox" value="Drenagem Linfática"><span>Drenagem Linfática</span></label>
+                <label class="chip-option"><input type="checkbox" value="Exercícios Respiratórios"><span>Exercícios Respiratórios</span></label>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="evol-aparelhos">Aparelhos e parâmetros utilizados</label>
+              <textarea class="form-input" id="evol-aparelhos" rows="2" placeholder="ex: TENS — 80Hz, 200µs, 20min · Ultrassom — 1MHz, 0,5W/cm², 5min"></textarea>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label" for="evol-codigo-tuss">Código TUSS/CBHPM</label>
+                <input type="text" class="form-input" id="evol-codigo-tuss" placeholder="ex: 50000470" maxlength="20">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="evol-obs">Observações</label>
+                <input type="text" class="form-input" id="evol-obs" placeholder="Informações complementares...">
+              </div>
+            </div>
+          </section>
+
+          <div id="evol-form-erro" style="display:none;color:var(--red);font-size:.875rem;margin-bottom:12px;padding:10px 14px;background:var(--red-bg);border-radius:var(--radius)"></div>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+            <button type="button" class="btn btn-secondary" id="btn-cancelar-evolucao">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="btn-salvar-evolucao">
+              <span id="btn-salvar-evol-label">Salvar evolução</span>
+              <span class="spinner" id="btn-salvar-evol-spinner" style="display:none"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de evoluções -->
+        <div class="section-toolbar">
+          <h2>Evoluções registradas</h2>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-nova-evolucao">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Nova Evolução
+          </button>
+        </div>
+
+        <div id="lista-evolucoes">
+          <!-- preenchido por JS -->
         </div>
       </div>
 

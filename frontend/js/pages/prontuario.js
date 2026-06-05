@@ -2,16 +2,21 @@ import { initTopbar } from '../utils/auth.js';
 import { showToast } from '../components/toast.js';
 import { listarAnamneses, criarAnamnese } from '../api/anamneses.js';
 import { listarPlanos, criarPlano, atualizarStatusPlano } from '../api/planos.js';
+import { listarEvolucoesPaciente, criarEvolucao } from '../api/evolucoes.js';
+import { listarSessoes } from '../api/sessoes.js';
 
 const API_BASE = 'http://localhost:8080/api';
 
 // ── Estado ───────────────────────────────────────────────────────────────────
-let pacienteId      = null;
-let anamneses       = [];
-let planos          = [];
-let fisios          = [];
-let formVisivel     = false;
-let formPlanoVisivel = false;
+let pacienteId        = null;
+let anamneses         = [];
+let planos            = [];
+let evolucoes         = [];
+let sessoesPaciente   = [];
+let fisios            = [];
+let formVisivel       = false;
+let formPlanoVisivel  = false;
+let formEvolVisivel   = false;
 
 // ── DOM helpers ──────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -55,12 +60,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   $('no-patient').style.display = 'none';
-  await Promise.all([carregarPaciente(), carregarAnamneses(), carregarPlanos(), carregarFisios()]);
+  await Promise.all([carregarPaciente(), carregarAnamneses(), carregarPlanos(), carregarFisios(), carregarEvolucoes(), carregarSessoesPaciente()]);
   $('patient-header').style.display  = 'flex';
   $('prontuario-content').style.display = 'block';
 
   bindForm();
   bindFormPlano();
+  bindFormEvolucao();
 });
 
 // ── Dados ─────────────────────────────────────────────────────────────────────
@@ -104,6 +110,23 @@ async function carregarPlanos() {
     planos = [];
   }
   renderPlanos();
+}
+
+async function carregarEvolucoes() {
+  try {
+    evolucoes = await listarEvolucoesPaciente(pacienteId);
+  } catch {
+    evolucoes = [];
+  }
+  renderEvolucoes();
+}
+
+async function carregarSessoesPaciente() {
+  try {
+    sessoesPaciente = await listarSessoes({ paciente_id: pacienteId });
+  } catch {
+    sessoesPaciente = [];
+  }
 }
 
 // ── Render: cabeçalho do paciente ─────────────────────────────────────────────
@@ -270,13 +293,18 @@ function limparForm() {
 
 // ── EVA slider ────────────────────────────────────────────────────────────────
 function bindEva() {
-  const slider  = $('inp-eva');
-  const display = $('eva-display');
+  bindEvaSlider('inp-eva', 'eva-display');
+  bindEvaSlider('evol-eva-antes', 'evol-eva-antes-display');
+  bindEvaSlider('evol-eva-depois', 'evol-eva-depois-display');
+}
+
+function bindEvaSlider(sliderId, displayId) {
+  const slider  = $(sliderId);
+  const display = $(displayId);
+  if (!slider || !display) return;
   slider.addEventListener('input', () => {
     const v = slider.value;
     display.textContent = v;
-    const pct = v * 10;
-    // Cor do thumb reflete a intensidade
     const cor = v <= 3 ? 'var(--green)' : v <= 6 ? 'var(--amber)' : 'var(--red)';
     display.style.background = cor;
     display.style.color = '#fff';
@@ -586,5 +614,273 @@ async function encerrarPlano(id, novoStatus) {
     showToast(novoStatus === 'concluido' ? 'Plano concluído.' : 'Plano cancelado.', 'success');
   } catch {
     showToast('Erro ao atualizar o status do plano.', 'error');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MÓDULO 5 — Evolução Clínica (SOAP)
+// ══════════════════════════════════════════════════════════════════════════════
+
+function formatDataHora(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+}
+
+// ── Render: lista de evoluções ────────────────────────────────────────────────
+function renderEvolucoes() {
+  const el = $('lista-evolucoes');
+  if (!el) return;
+
+  if (!evolucoes.length) {
+    el.innerHTML = `
+      <div class="empty-evolucao">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        <p>Nenhuma evolução registrada. Clique em <strong>Nova Evolução</strong> para começar.</p>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = evolucoes.map(e => cartaoEvolucao(e)).join('');
+  el.querySelectorAll('.evol-card-header').forEach(h => {
+    h.addEventListener('click', () => h.closest('.evol-card').classList.toggle('open'));
+  });
+}
+
+function cartaoEvolucao(e) {
+  const fisioNome = e.fisioterapeuta?.nome ?? '—';
+  const evaAntes  = e.eva_antes  ?? e.evaAntes;
+  const evaDepois = e.eva_depois ?? e.evaDepois;
+  const tecnicas  = e.tecnicas_realizadas ?? e.tecnicasRealizadas ?? [];
+  const num       = e.num_sessao ?? e.numSessao ?? '—';
+  const dataHora  = e.data_hora  ?? e.dataHora;
+  const tempo     = e.tempo_atendimento_min ?? e.tempoAtendimentoMin;
+
+  const evaTag = (val, label) => {
+    if (val == null) return '';
+    const cor = val <= 3 ? 'badge-green' : val <= 6 ? 'badge-amber' : 'badge-red';
+    return `<span class="badge ${cor}" title="${label}">EVA ${label}: ${val}/10</span>`;
+  };
+
+  return `
+    <div class="evol-card">
+      <div class="evol-card-header">
+        <span class="evol-card-num">Sessão ${esc(String(num))}</span>
+        <span class="evol-card-data">${esc(formatDataHora(dataHora))}</span>
+        <span class="evol-card-fisio">Dr(a). ${esc(fisioNome)}</span>
+        <div class="evol-card-eva">
+          ${evaTag(evaAntes, 'antes')}
+          ${evaTag(evaDepois, 'após')}
+        </div>
+        <svg class="evol-card-chevron" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="evol-card-body">
+        <div class="soap-display">
+          ${soapBloco('S', 'Subjetivo', e.subjetivo)}
+          ${soapBloco('O', 'Objetivo',  e.objetivo)}
+          ${soapBloco('A', 'Avaliação', e.avaliacao_clinica ?? e.avaliacao)}
+          ${soapBloco('P', 'Plano',     e.plano_evolucao ?? e.planoEvolucao)}
+        </div>
+        ${tecnicas.length ? campoEvol('Técnicas realizadas', tecnicas.join(' · ')) : ''}
+        ${e.aparelhos ? campoEvol('Aparelhos e parâmetros', e.aparelhos) : ''}
+        ${tempo ? campoEvol('Tempo de atendimento', `${tempo} min`) : ''}
+        ${e.codigo_tuss || e.codigoTuss ? campoEvol('Código TUSS', e.codigo_tuss ?? e.codigoTuss) : ''}
+        ${e.observacoes ? campoEvol('Observações', e.observacoes) : ''}
+      </div>
+    </div>`;
+}
+
+function soapBloco(letra, titulo, texto) {
+  if (!texto) return '';
+  const cor = { S: 'soap-s', O: 'soap-o', A: 'soap-a', P: 'soap-p' }[letra] ?? '';
+  return `
+    <div class="soap-display-row">
+      <span class="soap-letter ${cor}">${esc(letra)}</span>
+      <div>
+        <div class="anamnese-field-label">${esc(titulo)}</div>
+        <div class="anamnese-field-value" style="margin-top:4px">${esc(String(texto))}</div>
+      </div>
+    </div>`;
+}
+
+function campoEvol(label, valor) {
+  if (!valor && valor !== 0) return '';
+  return `
+    <div class="anamnese-field">
+      <div class="anamnese-field-label">${esc(label)}</div>
+      <div class="anamnese-field-value">${esc(String(valor))}</div>
+    </div>`;
+}
+
+// ── Form: show/hide ───────────────────────────────────────────────────────────
+function bindFormEvolucao() {
+  const btnNovo   = $('btn-nova-evolucao');
+  const btnCancel = $('btn-cancelar-evolucao');
+  const btnSalvar = $('btn-salvar-evolucao');
+  if (!btnNovo) return;
+
+  btnNovo.addEventListener('click', abrirFormEvolucao);
+  btnCancel.addEventListener('click', fecharFormEvolucao);
+  btnSalvar.addEventListener('click', salvarEvolucao);
+}
+
+function abrirFormEvolucao() {
+  limparFormEvolucao();
+  popularSelectSessoes();
+  popularSelectFisioEvol();
+  popularSelectPlanoEvol();
+  formEvolVisivel = true;
+  $('form-nova-evolucao').classList.add('visible');
+  $('btn-nova-evolucao').style.display = 'none';
+}
+
+function fecharFormEvolucao() {
+  formEvolVisivel = false;
+  $('form-nova-evolucao').classList.remove('visible');
+  $('btn-nova-evolucao').style.display = '';
+}
+
+function limparFormEvolucao() {
+  ['evol-num-sessao','evol-tempo','evol-subjetivo','evol-objetivo',
+   'evol-avaliacao','evol-plano-evolucao','evol-aparelhos','evol-codigo-tuss','evol-obs'].forEach(id => {
+    const el = $(id);
+    if (el) el.value = '';
+  });
+  $('evol-sessao').value           = '';
+  $('sel-fisio-evol').value        = '';
+  $('evol-plano').value            = '';
+  $('evol-eva-antes').value        = 0;
+  $('evol-eva-depois').value       = 0;
+  $('evol-eva-antes-display').textContent  = '0';
+  $('evol-eva-depois-display').textContent = '0';
+  $('evol-eva-antes-display').style.background  = '';
+  $('evol-eva-depois-display').style.background = '';
+  document.querySelectorAll('#evol-tecnicas-chips input[type="checkbox"]')
+    .forEach(cb => { cb.checked = false; });
+  $('evol-form-erro').style.display = 'none';
+}
+
+// ── Selects auxiliares ────────────────────────────────────────────────────────
+function popularSelectSessoes() {
+  const sel = $('evol-sessao');
+  if (!sel) return;
+  const sessoesSemEvol = sessoesPaciente.filter(s =>
+    s.status === 'REALIZADO' &&
+    !evolucoes.some(e => (e.sessao?.id ?? e.sessao_id) === s.id)
+  );
+  if (!sessoesSemEvol.length) {
+    sel.innerHTML = '<option value="">Nenhuma sessão realizada disponível</option>';
+    return;
+  }
+  sel.innerHTML = '<option value="">Selecione a sessão</option>'
+    + sessoesSemEvol.map(s => {
+        const dt = formatDataHora(s.data_hora_inicio ?? s.dataHoraInicio);
+        const tipo = tipoSessaoLabel(s.tipo_sessao ?? s.tipoSessao);
+        return `<option value="${esc(s.id)}">${esc(dt)} — ${esc(tipo)}</option>`;
+      }).join('');
+}
+
+function tipoSessaoLabel(tipo) {
+  const labels = { AVALIACAO: 'Avaliação', SESSAO: 'Sessão', REAVALIACAO: 'Reavaliação', ALTA: 'Alta' };
+  return labels[tipo] ?? tipo ?? '—';
+}
+
+function popularSelectFisioEvol() {
+  const sel = $('sel-fisio-evol');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Selecione (opcional)</option>'
+    + fisios.map(f => `<option value="${esc(f.id)}">${esc(f.nome)} — ${esc(f.crf)}</option>`).join('');
+}
+
+function popularSelectPlanoEvol() {
+  const sel = $('evol-plano');
+  if (!sel) return;
+  const planosAtivos = planos.filter(p => p.status === 'ativo');
+  if (!planosAtivos.length) {
+    sel.innerHTML = '<option value="">Nenhum plano ativo</option>';
+    return;
+  }
+  sel.innerHTML = '<option value="">Nenhum (opcional)</option>'
+    + planosAtivos.map(p => {
+        const data = formatData(p.data_inicio ?? p.dataInicio);
+        const diag = esc(String(p.diagnostico_cif ?? p.diagnosticoCif ?? '').slice(0, 50));
+        return `<option value="${esc(p.id)}">${data} — ${diag}</option>`;
+      }).join('');
+}
+
+// ── Salvar evolução ───────────────────────────────────────────────────────────
+async function salvarEvolucao() {
+  const erroEl = $('evol-form-erro');
+  erroEl.style.display = 'none';
+
+  const sessaoId    = $('evol-sessao').value;
+  const numSessao   = $('evol-num-sessao').value.trim();
+  const subjetivo   = $('evol-subjetivo').value.trim();
+  const objetivo    = $('evol-objetivo').value.trim();
+  const avaliacao   = $('evol-avaliacao').value.trim();
+  const planoEvol   = $('evol-plano-evolucao').value.trim();
+
+  if (!sessaoId || !numSessao || !subjetivo || !objetivo || !avaliacao || !planoEvol) {
+    erroEl.textContent = 'Preencha os campos obrigatórios: Sessão, Nº da sessão e os quatro campos SOAP.';
+    erroEl.style.display = 'block';
+    return;
+  }
+
+  const numSessaoInt = parseInt(numSessao, 10);
+  if (isNaN(numSessaoInt) || numSessaoInt < 1) {
+    erroEl.textContent = 'Nº da sessão deve ser um valor inteiro positivo.';
+    erroEl.style.display = 'block';
+    return;
+  }
+
+  const tecnicas = Array.from(
+    document.querySelectorAll('#evol-tecnicas-chips input[type="checkbox"]:checked')
+  ).map(cb => cb.value);
+
+  const evaAntes  = parseInt($('evol-eva-antes').value,  10);
+  const evaDepois = parseInt($('evol-eva-depois').value, 10);
+
+  const payload = {
+    sessao_id:             sessaoId,
+    num_sessao:            numSessaoInt,
+    fisioterapeuta_id:     $('sel-fisio-evol').value  || null,
+    plano_tratamento_id:   $('evol-plano').value      || null,
+    tempo_atendimento_min: parseInt($('evol-tempo').value, 10) || null,
+    subjetivo,
+    objetivo,
+    avaliacao,
+    plano_evolucao:        planoEvol,
+    tecnicas_realizadas:   tecnicas.length ? tecnicas : null,
+    aparelhos:             $('evol-aparelhos').value.trim()    || null,
+    eva_antes:             evaAntes,
+    eva_depois:            evaDepois,
+    codigo_tuss:           $('evol-codigo-tuss').value.trim()  || null,
+    observacoes:           $('evol-obs').value.trim()          || null,
+  };
+
+  const btn     = $('btn-salvar-evolucao');
+  const label   = $('btn-salvar-evol-label');
+  const spinner = $('btn-salvar-evol-spinner');
+  btn.disabled        = true;
+  label.style.display = 'none';
+  spinner.style.display = 'block';
+
+  try {
+    const nova = await criarEvolucao(payload);
+    evolucoes.unshift(nova);
+    renderEvolucoes();
+    fecharFormEvolucao();
+    showToast('Evolução registrada com sucesso.', 'success');
+  } catch (err) {
+    erroEl.textContent = err?.erro ?? err?.message ?? 'Erro ao salvar. Tente novamente.';
+    erroEl.style.display = 'block';
+  } finally {
+    btn.disabled          = false;
+    label.style.display   = 'block';
+    spinner.style.display = 'none';
   }
 }

@@ -297,3 +297,101 @@
 @media (max-width: 720px) {
   .form-row.cols-3 { grid-template-columns: 1fr; }
 }
+
+/* ── Formulário inline de nova evolução ─────────────────────────────────── */
+.form-nova-evolucao {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: none;
+}
+.form-nova-evolucao.visible { display: block; }
+
+/* ── Grid SOAP (formulário) ─────────────────────────────────────────────── */
+.soap-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 720px) {
+  .soap-grid { grid-template-columns: 1fr; }
+}
+
+.soap-field {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.soap-letter {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 22px;
+}
+.soap-s { background: color-mix(in srgb, var(--accent)  14%, transparent); color: var(--accent); }
+.soap-o { background: color-mix(in srgb, var(--green)   14%, transparent); color: var(--green);  }
+.soap-a { background: color-mix(in srgb, var(--amber)   18%, transparent); color: var(--amber);  }
+.soap-p { background: color-mix(in srgb, var(--red)     12%, transparent); color: var(--red);    }
+
+/* ── Card de evolução ────────────────────────────────────────────────────── */
+.evol-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.evol-card-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  transition: background .12s;
+  flex-wrap: wrap;
+}
+.evol-card-header:hover { background: var(--surface2); }
+
+.evol-card-num  {
+  font-size: 0.875rem; font-weight: 700;
+  color: var(--accent); flex-shrink: 0;
+  min-width: 80px;
+}
+.evol-card-data { font-size: 0.875rem; font-weight: 600; color: var(--text); flex-shrink: 0; }
+.evol-card-fisio { font-size: 0.8125rem; color: var(--text2); flex: 1; }
+.evol-card-eva   { display: flex; gap: 6px; flex-shrink: 0; }
+
+.evol-card-chevron {
+  margin-left: auto; transition: transform .2s;
+  color: var(--text3); flex-shrink: 0;
+}
+.evol-card.open .evol-card-chevron { transform: rotate(180deg); }
+
+.evol-card-body {
+  display: none;
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--border);
+}
+.evol-card.open .evol-card-body { display: block; }
+
+/* ── SOAP display (leitura) ─────────────────────────────────────────────── */
+.soap-display { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+.soap-display-row {
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.soap-display-row .soap-letter { margin-top: 0; }
+
+/* ── Empty state de evolução ────────────────────────────────────────────── */
+.empty-evolucao {
+  text-align: center; padding: 48px 24px; color: var(--text3);
+}
+.empty-evolucao svg { margin-bottom: 12px; opacity: .4; }
+.empty-evolucao p   { font-size: 0.875rem; margin: 0; }
+
+/* ── Badge âmbar ─────────────────────────────────────────────────────────── */
+.badge-amber { background: color-mix(in srgb, var(--amber) 14%, transparent); color: var(--amber); }
