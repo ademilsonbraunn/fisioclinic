@@ -199,6 +199,13 @@ public class SessaoService {
     }
 
     private SessaoResponse toResponse(Sessao s) {
+        SessaoResponse.SalaResumo salaResumo = s.getSala() != null
+            ? new SessaoResponse.SalaResumo(
+                s.getSala().getId(),
+                s.getSala().getNome(),
+                s.getSala().getTipo().name())
+            : null;
+
         return new SessaoResponse(
             s.getId(),
             new SessaoResponse.PacienteResumo(
@@ -211,11 +218,7 @@ public class SessaoService {
                 s.getFisioterapeuta().getNome(),
                 s.getFisioterapeuta().getCrf()
             ),
-            new SessaoResponse.SalaResumo(
-                s.getSala().getId(),
-                s.getSala().getNome(),
-                s.getSala().getTipo().name()
-            ),
+            salaResumo,
             s.getDataHoraInicio(),
             s.getDataHoraFim(),
             s.getTipoSessao(),

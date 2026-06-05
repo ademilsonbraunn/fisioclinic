@@ -16,14 +16,17 @@ CREATE EXTENSION IF NOT EXISTS "btree_gist";   -- necessario para EXCLUDE de hor
 
 -- -- Fisioterapeutas -------------------------------------------
 CREATE TABLE IF NOT EXISTS fisioterapeutas (
-    id         UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    nome       TEXT        NOT NULL,
-    crf        VARCHAR(15) NOT NULL,
-    email      TEXT,
-    telefone   VARCHAR(11),
-    ativo      BOOLEAN     NOT NULL DEFAULT true,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ,
+    id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome        TEXT        NOT NULL,
+    crf         VARCHAR(15) NOT NULL,
+    email       TEXT,
+    telefone    VARCHAR(11),
+    ativo       BOOLEAN     NOT NULL DEFAULT true,
+    senha_hash  TEXT,
+    perfil      VARCHAR(20) NOT NULL DEFAULT 'FISIOTERAPEUTA'
+                    CHECK (perfil IN ('FISIOTERAPEUTA', 'ADMIN')),
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMPTZ,
     CONSTRAINT uq_fisio_crf   UNIQUE (crf),
     CONSTRAINT uq_fisio_email UNIQUE (email)
 );
@@ -32,8 +35,8 @@ CREATE TABLE IF NOT EXISTS fisioterapeutas (
 CREATE TABLE IF NOT EXISTS salas (
     id         UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     nome       TEXT        NOT NULL,
-    tipo       VARCHAR(20) NOT NULL DEFAULT 'box'
-                   CHECK (tipo IN ('box','sala_individual','sala_grupo')),
+    tipo       VARCHAR(20) NOT NULL DEFAULT 'BOX'
+                   CHECK (tipo IN ('BOX','SALA_INDIVIDUAL','SALA_GRUPO')),
     capacidade INT         NOT NULL DEFAULT 1,
     ativo      BOOLEAN     NOT NULL DEFAULT true,
     CONSTRAINT uq_sala_nome UNIQUE (nome)
@@ -135,15 +138,15 @@ CREATE TABLE IF NOT EXISTS sessoes (
     plano_id            UUID        REFERENCES planos_tratamento(id),
     convenio_id         UUID        REFERENCES convenios_paciente(id),
 
-    tipo_sessao         VARCHAR(20) NOT NULL DEFAULT 'sessao'
-                            CHECK (tipo_sessao IN ('avaliacao','retorno','sessao')),
+    tipo_sessao         VARCHAR(20) NOT NULL DEFAULT 'SESSAO'
+                            CHECK (tipo_sessao IN ('AVALIACAO','SESSAO','REAVALIACAO','ALTA')),
     data_hora_inicio    TIMESTAMPTZ NOT NULL,
     data_hora_fim       TIMESTAMPTZ,
     duracao_minutos     INT,
     numero_sessao       INT,        -- numero sequencial da sessao no plano
 
-    status              VARCHAR(15) NOT NULL DEFAULT 'agendado'
-                            CHECK (status IN ('agendado','confirmado','realizado','faltou','cancelado')),
+    status              VARCHAR(15) NOT NULL DEFAULT 'AGENDADO'
+                            CHECK (status IN ('AGENDADO','CONFIRMADO','REALIZADO','FALTOU','CANCELADO')),
     motivo_cancelamento TEXT,
     observacoes         TEXT,
 
@@ -159,7 +162,7 @@ CREATE TABLE IF NOT EXISTS sessoes (
             COALESCE(data_hora_fim, data_hora_inicio + interval '1 hour'),
             '[)'
         ) WITH &&
-    ) WHERE (sala_id IS NOT NULL AND status NOT IN ('cancelado','faltou'))
+    ) WHERE (sala_id IS NOT NULL AND status NOT IN ('CANCELADO','FALTOU'))
 );
 
 -- ============================================================

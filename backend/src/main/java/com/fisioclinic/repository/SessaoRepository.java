@@ -15,7 +15,7 @@ public interface SessaoRepository extends JpaRepository<Sessao, UUID> {
         SELECT s FROM Sessao s
         JOIN FETCH s.paciente
         JOIN FETCH s.fisioterapeuta
-        JOIN FETCH s.sala
+        LEFT JOIN FETCH s.sala
         WHERE s.dataHoraInicio >= :inicio
           AND s.dataHoraInicio <  :fim
         ORDER BY s.dataHoraInicio
@@ -27,7 +27,7 @@ public interface SessaoRepository extends JpaRepository<Sessao, UUID> {
         SELECT s FROM Sessao s
         JOIN FETCH s.paciente
         JOIN FETCH s.fisioterapeuta
-        JOIN FETCH s.sala
+        LEFT JOIN FETCH s.sala
         WHERE s.paciente.id = :pacienteId
         ORDER BY s.dataHoraInicio DESC
     """)
