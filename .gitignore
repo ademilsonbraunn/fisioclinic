@@ -1,0 +1,53 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring Boot
+application-local.properties
+application-local.yml
+
+# Credenciais e variáveis de ambiente
+.env
+*.env
+.env.*
+application-secrets.properties
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.code-workspace
+
+# Node / frontend
+node_modules/
+dist/
+.npm/
+
+# Banco de dados local
+*.sql.bak
+pgdata/
+
+# Docker volumes locais
+postgres-data/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Uploads e arquivos temporários
+uploads/
+tmp/
+temp/

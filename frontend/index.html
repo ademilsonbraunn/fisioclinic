@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FisioClinic — Entrar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/pages/login.css">
+</head>
+<body>
+
+  <div class="login-card">
+
+    <!-- ── Brand ──────────────────────────────── -->
+    <div class="login-brand">
+      <div class="login-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+          stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </div>
+      <div>
+        <div class="login-brand-name">FisioClinic</div>
+        <div class="login-brand-sub">Sistema de gestão clínica</div>
+      </div>
+    </div>
+
+    <!-- ── Heading ────────────────────────────── -->
+    <h1 class="login-title">Bem-vindo de volta</h1>
+    <p class="login-subtitle">Acesse sua conta para continuar.</p>
+
+    <!-- ── Error ──────────────────────────────── -->
+    <div class="login-error" id="loginError" style="display:none" role="alert">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      E-mail ou senha incorretos.
+    </div>
+
+    <!-- ── Form ───────────────────────────────── -->
+    <form id="formLogin" class="login-form" novalidate>
+
+      <div class="form-group">
+        <label class="form-label" for="email">E-mail</label>
+        <input type="email" class="form-input" id="email"
+          placeholder="seu@email.com" autocomplete="email" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="senha">Senha</label>
+        <div class="input-wrap">
+          <input type="password" class="form-input" id="senha"
+            placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="input-eye" id="toggleSenha" aria-label="Mostrar senha">
+            <svg id="eyeIcon" width="16" height="16" fill="none" stroke="currentColor"
+              stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="login-options">
+        <label class="checkbox-label">
+          <input type="checkbox" id="lembrar">
+          <span>Lembrar de mim</span>
+        </label>
+        <a href="#" class="link-forgot">Esqueci minha senha</a>
+      </div>
+
+      <button type="submit" class="btn-login" id="btnLogin">
+        <span id="btnLoginLabel">Entrar</span>
+        <span class="login-spinner" id="btnLoginSpinner" style="display:none" aria-hidden="true"></span>
+      </button>
+
+    </form>
+
+    <!-- ── Divider ────────────────────────────── -->
+    <div class="login-divider">ou</div>
+
+    <a href="pages/dashboard.html" class="btn-demo">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+      Acessar demonstração (sem login)
+    </a>
+
+    <footer class="login-footer">FisioClinic &copy; 2026</footer>
+  </div>
+
+  <script type="module" src="js/pages/login.js"></script>
+</body>
+</html>

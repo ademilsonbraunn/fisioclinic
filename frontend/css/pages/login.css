@@ -1,0 +1,209 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ── Brand ───────────────────────────────────── */
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+.login-logo {
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.login-brand-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+
+.login-brand-sub {
+  font-size: 0.786rem;
+  color: var(--text3);
+  margin-top: 1px;
+}
+
+/* ── Heading ─────────────────────────────────── */
+
+.login-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.login-subtitle {
+  color: var(--text2);
+  font-size: 0.875rem;
+  margin-bottom: 28px;
+}
+
+/* ── Form ────────────────────────────────────── */
+
+.login-form .form-group { margin-bottom: 16px; }
+
+.input-wrap { position: relative; }
+.input-wrap .form-input { padding-right: 42px; }
+
+.input-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  transition: color .12s;
+}
+.input-eye:hover { color: var(--text2); }
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.857rem;
+  color: var(--text2);
+  cursor: pointer;
+  user-select: none;
+}
+.checkbox-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.link-forgot {
+  font-size: 0.857rem;
+  color: var(--accent);
+  transition: opacity .12s;
+}
+.link-forgot:hover { opacity: .75; }
+
+/* ── Error banner ────────────────────────────── */
+
+.login-error {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid rgba(192,57,43,.18);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  font-size: 0.857rem;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Buttons ─────────────────────────────────── */
+
+.btn-login {
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-login:hover:not(:disabled) { background: #2450cc; }
+.btn-login:disabled { opacity: .65; cursor: not-allowed; }
+
+.login-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: loginSpin .7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes loginSpin { to { transform: rotate(360deg); } }
+
+/* ── Divider ─────────────────────────────────── */
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--text3);
+  font-size: 0.8rem;
+}
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--border);
+}
+
+.btn-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--surface);
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  text-decoration: none;
+}
+.btn-demo:hover { background: var(--surface2); color: var(--text); }
+
+/* ── Footer ──────────────────────────────────── */
+
+.login-footer {
+  margin-top: 24px;
+  font-size: 0.786rem;
+  color: var(--text3);
+  text-align: center;
+}

@@ -1,0 +1,107 @@
+package com.fisioclinic.service;
+
+import com.fisioclinic.dto.FisioterapeutaDTO;
+import com.fisioclinic.dto.FisioterapeutaResponse;
+import com.fisioclinic.exception.ConflictException;
+import com.fisioclinic.exception.ResourceNotFoundException;
+import com.fisioclinic.model.Fisioterapeuta;
+import com.fisioclinic.repository.FisioterapeutaRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class FisioterapeutaService {
+
+    private final FisioterapeutaRepository repository;
+    private final PasswordEncoder passwordEncoder;
+
+    // ── Listagem ─────────────────────────────────────────────────────────────
+
+    @Transactional(readOnly = true)
+    public List<FisioterapeutaResponse> listar() {
+        return repository.findAllByOrderByNomeAsc().stream()
+            .map(this::toResponse)
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public FisioterapeutaResponse buscarPorId(UUID id) {
+        return toResponse(encontrarOuLancar(id));
+    }
+
+    // ── Criação ──────────────────────────────────────────────────────────────
+
+    public FisioterapeutaResponse criar(FisioterapeutaDTO dto) {
+        if (repository.existsByEmail(dto.email())) {
+            throw new ConflictException("E-mail já cadastrado");
+        }
+        if (repository.existsByCrf(dto.crf())) {
+            throw new ConflictException("CRF já cadastrado");
+        }
+
+        Fisioterapeuta f = new Fisioterapeuta();
+        f.setNome(dto.nome());
+        f.setCrf(dto.crf().trim().toUpperCase());
+        f.setEmail(dto.email().trim().toLowerCase());
+        f.setTelefone(dto.telefone() != null ? dto.telefone().replaceAll("\\D", "") : null);
+        f.setPerfil(dto.perfil() != null ? dto.perfil() : Fisioterapeuta.Perfil.FISIOTERAPEUTA);
+
+        String senhaInicial = dto.senha() != null && !dto.senha().isBlank()
+            ? dto.senha()
+            : "Fisio@123";
+        f.setSenhaHash(passwordEncoder.encode(senhaInicial));
+
+        return toResponse(repository.save(f));
+    }
+
+    // ── Atualização parcial (PATCH) ──────────────────────────────────────────
+
+    public FisioterapeutaResponse atualizar(UUID id, FisioterapeutaDTO dto) {
+        Fisioterapeuta f = encontrarOuLancar(id);
+
+        if (dto.nome()     != null) f.setNome(dto.nome());
+        if (dto.crf()      != null) f.setCrf(dto.crf().trim().toUpperCase());
+        if (dto.email()    != null) f.setEmail(dto.email().trim().toLowerCase());
+        if (dto.telefone() != null) f.setTelefone(dto.telefone().replaceAll("\\D", ""));
+        if (dto.perfil()   != null) f.setPerfil(dto.perfil());
+        if (dto.ativo()    != null) f.setAtivo(dto.ativo());
+
+        return toResponse(repository.save(f));
+    }
+
+    // ── Status (ativar / desativar) ───────────────────────────────────────────
+
+    public void alterarStatus(UUID id, boolean ativo) {
+        Fisioterapeuta f = encontrarOuLancar(id);
+        f.setAtivo(ativo);
+        repository.save(f);
+    }
+
+    // ── Helpers privados ─────────────────────────────────────────────────────
+
+    private FisioterapeutaResponse toResponse(Fisioterapeuta f) {
+        return new FisioterapeutaResponse(
+            f.getId(),
+            f.getNome(),
+            f.getCrf(),
+            f.getEmail(),
+            f.getTelefone(),
+            f.getAtivo(),
+            f.getPerfil(),
+            f.getCreatedAt(),
+            f.getUpdatedAt()
+        );
+    }
+
+    private Fisioterapeuta encontrarOuLancar(UUID id) {
+        return repository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Fisioterapeuta não encontrado: " + id));
+    }
+}
