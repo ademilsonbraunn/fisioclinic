@@ -1,14 +1,17 @@
 import { initTopbar } from '../utils/auth.js';
 import { showToast } from '../components/toast.js';
 import { listarAnamneses, criarAnamnese } from '../api/anamneses.js';
+import { listarPlanos, criarPlano, atualizarStatusPlano } from '../api/planos.js';
 
 const API_BASE = 'http://localhost:8080/api';
 
 // ── Estado ───────────────────────────────────────────────────────────────────
-let pacienteId   = null;
-let anamneses    = [];
-let fisios       = [];
-let formVisivel  = false;
+let pacienteId      = null;
+let anamneses       = [];
+let planos          = [];
+let fisios          = [];
+let formVisivel     = false;
+let formPlanoVisivel = false;
 
 // ── DOM helpers ──────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -52,11 +55,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   $('no-patient').style.display = 'none';
-  await Promise.all([carregarPaciente(), carregarAnamneses(), carregarFisios()]);
+  await Promise.all([carregarPaciente(), carregarAnamneses(), carregarPlanos(), carregarFisios()]);
   $('patient-header').style.display  = 'flex';
   $('prontuario-content').style.display = 'block';
 
   bindForm();
+  bindFormPlano();
 });
 
 // ── Dados ─────────────────────────────────────────────────────────────────────
@@ -90,6 +94,16 @@ async function carregarFisios() {
     if (res.ok) fisios = await res.json();
   } catch { /* silencioso */ }
   popularSelectFisio();
+  popularSelectFisioPlano();
+}
+
+async function carregarPlanos() {
+  try {
+    planos = await listarPlanos(pacienteId);
+  } catch {
+    planos = [];
+  }
+  renderPlanos();
 }
 
 // ── Render: cabeçalho do paciente ─────────────────────────────────────────────
@@ -200,6 +214,24 @@ function popularSelectFisio() {
   const sel = $('sel-fisio-anamnese');
   sel.innerHTML = '<option value="">Selecione (opcional)</option>'
     + fisios.map(f => `<option value="${esc(f.id)}">${esc(f.nome)} — ${esc(f.crf)}</option>`).join('');
+}
+
+function popularSelectFisioPlano() {
+  const sel = $('sel-fisio-plano');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Selecione (opcional)</option>'
+    + fisios.map(f => `<option value="${esc(f.id)}">${esc(f.nome)} — ${esc(f.crf)}</option>`).join('');
+}
+
+function popularSelectAnamnese() {
+  const sel = $('plano-anamnese');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Nenhuma (opcional)</option>'
+    + anamneses.map(a => {
+        const data = formatData(a.data_avaliacao ?? a.dataAvaliacao);
+        const queixa = esc(String(a.queixa_principal ?? a.queixaPrincipal ?? '').slice(0, 50));
+        return `<option value="${esc(a.id)}">${data} — ${queixa}</option>`;
+      }).join('');
 }
 
 // ── Form: show/hide ───────────────────────────────────────────────────────────
@@ -333,5 +365,226 @@ async function salvarAnamnese() {
     btn.disabled          = false;
     label.style.display   = 'block';
     spinner.style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MÓDULO 3 — Plano de Tratamento
+// ══════════════════════════════════════════════════════════════════════════════
+
+const STATUS_PLANO_LABEL = { ativo: 'Ativo', concluido: 'Concluído', cancelado: 'Cancelado' };
+const STATUS_PLANO_CLASS = { ativo: 'badge-green', concluido: 'badge-blue', cancelado: 'badge-red' };
+
+// ── Render: lista de planos ───────────────────────────────────────────────────
+function renderPlanos() {
+  const el = $('lista-planos');
+  if (!el) return;
+
+  if (!planos.length) {
+    el.innerHTML = `
+      <div class="empty-plano">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <p>Nenhum plano de tratamento registrado. Clique em <strong>Novo Plano</strong> para começar.</p>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = planos.map(p => cartaoPlano(p)).join('');
+
+  el.querySelectorAll('.plano-card-header').forEach(h => {
+    h.addEventListener('click', () => h.closest('.plano-card').classList.toggle('open'));
+  });
+
+  el.querySelectorAll('[data-action="encerrar-plano"]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      encerrarPlano(btn.dataset.id, 'concluido');
+    });
+  });
+
+  el.querySelectorAll('[data-action="cancelar-plano"]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      encerrarPlano(btn.dataset.id, 'cancelado');
+    });
+  });
+}
+
+function cartaoPlano(p) {
+  const fisioNome = p.fisioterapeuta?.nome ?? p.fisioterapeuta?.nome_completo ?? '—';
+  const tecnicas  = p.tecnicas ?? [];
+  const statusLabel = STATUS_PLANO_LABEL[p.status] ?? p.status;
+  const statusCls   = STATUS_PLANO_CLASS[p.status] ?? 'badge-gray';
+  const dataInicio  = formatData(p.data_inicio ?? p.dataInicio);
+  const dataAlta    = p.data_previsao_alta ?? p.dataPrevisaoAlta;
+
+  const acoes = p.status === 'ativo' ? `
+    <button class="btn btn-sm btn-secondary" data-action="encerrar-plano" data-id="${esc(p.id)}" title="Marcar como concluído">Concluir</button>
+    <button class="btn btn-sm btn-ghost" style="color:var(--red)" data-action="cancelar-plano" data-id="${esc(p.id)}" title="Cancelar plano">Cancelar</button>
+  ` : '';
+
+  return `
+    <div class="plano-card plano-status-${esc(p.status)}">
+      <div class="plano-card-header">
+        <span class="plano-card-date">${esc(dataInicio)}</span>
+        <span class="plano-card-fisio">Dr(a). ${esc(fisioNome)}</span>
+        <span class="badge ${statusCls}">${esc(statusLabel)}</span>
+        <span class="plano-card-diag">${esc(String(p.diagnostico_cif ?? p.diagnosticoCif ?? '').slice(0, 80))}</span>
+        <svg class="plano-card-chevron" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="plano-card-body">
+        ${campoPlan('Diagnóstico (CIF)', p.diagnostico_cif ?? p.diagnosticoCif)}
+        ${p.cid10 ? campoPlan('CID-10', p.cid10) : ''}
+        ${campoPlan('Objetivos de curto prazo', p.objetivos_curto_prazo ?? p.objetivosCurtoPrazo)}
+        ${campoPlan('Objetivos de longo prazo', p.objetivos_longo_prazo ?? p.objetivosLongoPrazo)}
+        ${p.hipoteses_tratamento || p.hipotesesTratamento ? campoPlan('Hipóteses de tratamento', p.hipoteses_tratamento ?? p.hipotesesTratamento) : ''}
+        ${tecnicas.length ? campoPlan('Técnicas', tecnicas.join(' · ')) : ''}
+        ${campoPlan('Frequência', `${p.frequencia_semanal ?? p.frequenciaSemanal}× por semana`)}
+        ${campoPlan('Sessões estimadas', String(p.num_sessoes_estimado ?? p.numSessoesEstimado))}
+        ${dataAlta ? campoPlan('Previsão de alta', formatData(dataAlta)) : ''}
+        ${p.anamnese ? campoPlan('Anamnese vinculada', formatData(p.anamnese.data_avaliacao ?? p.anamnese.dataAvaliacao)) : ''}
+        ${p.status === 'ativo' ? `<div class="plano-acoes">${acoes}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+function campoPlan(label, valor) {
+  if (!valor && valor !== 0) return '';
+  return `
+    <div class="anamnese-field">
+      <div class="anamnese-field-label">${esc(label)}</div>
+      <div class="anamnese-field-value">${esc(String(valor))}</div>
+    </div>`;
+}
+
+// ── Form: show/hide ───────────────────────────────────────────────────────────
+function bindFormPlano() {
+  const btnNovo    = $('btn-novo-plano');
+  const btnCancel  = $('btn-cancelar-plano');
+  const btnSalvar  = $('btn-salvar-plano');
+  if (!btnNovo) return;
+
+  btnNovo.addEventListener('click', abrirFormPlano);
+  btnCancel.addEventListener('click', fecharFormPlano);
+  btnSalvar.addEventListener('click', salvarPlano);
+}
+
+function abrirFormPlano() {
+  limparFormPlano();
+  popularSelectAnamnese();
+  formPlanoVisivel = true;
+  $('form-novo-plano').classList.add('visible');
+  $('btn-novo-plano').style.display = 'none';
+  $('plano-diagnostico-cif').focus();
+}
+
+function fecharFormPlano() {
+  formPlanoVisivel = false;
+  $('form-novo-plano').classList.remove('visible');
+  $('btn-novo-plano').style.display = '';
+}
+
+function limparFormPlano() {
+  ['plano-diagnostico-cif','plano-cid10','plano-hipoteses',
+   'plano-obj-curto','plano-obj-longo','plano-num-sessoes','plano-previsao-alta'].forEach(id => {
+    const el = $(id);
+    if (el) el.value = '';
+  });
+  $('plano-frequencia').value = '';
+  $('sel-fisio-plano').value  = '';
+  $('plano-tcle').checked     = false;
+  $('plano-anamnese').value   = '';
+  document.querySelectorAll('#tecnicas-chips input[type="checkbox"]')
+    .forEach(cb => { cb.checked = false; });
+  $('plano-form-erro').style.display = 'none';
+}
+
+// ── Salvar plano ──────────────────────────────────────────────────────────────
+async function salvarPlano() {
+  const erroEl = $('plano-form-erro');
+  erroEl.style.display = 'none';
+
+  const diagnosticoCif     = $('plano-diagnostico-cif').value.trim();
+  const objetivosCurto     = $('plano-obj-curto').value.trim();
+  const objetivosLongo     = $('plano-obj-longo').value.trim();
+  const frequencia         = $('plano-frequencia').value;
+  const numSessoes         = $('plano-num-sessoes').value.trim();
+
+  if (!diagnosticoCif || !objetivosCurto || !objetivosLongo || !frequencia || !numSessoes) {
+    erroEl.textContent = 'Preencha os campos obrigatórios: Diagnóstico (CIF), Objetivos, Frequência e Nº de sessões.';
+    erroEl.style.display = 'block';
+    return;
+  }
+
+  const numSessoesInt = parseInt(numSessoes, 10);
+  if (isNaN(numSessoesInt) || numSessoesInt < 1) {
+    erroEl.textContent = 'Número de sessões deve ser um valor inteiro maior que zero.';
+    erroEl.style.display = 'block';
+    return;
+  }
+
+  const tecnicas = Array.from(
+    document.querySelectorAll('#tecnicas-chips input[type="checkbox"]:checked')
+  ).map(cb => cb.value);
+
+  const previsaoAlta = $('plano-previsao-alta').value || null;
+
+  const payload = {
+    paciente_id:              pacienteId,
+    diagnostico_cif:          diagnosticoCif,
+    cid10:                    $('plano-cid10').value.trim()     || null,
+    hipoteses_tratamento:     $('plano-hipoteses').value.trim() || null,
+    objetivos_curto_prazo:    objetivosCurto,
+    objetivos_longo_prazo:    objetivosLongo,
+    tecnicas:                 tecnicas.length ? tecnicas : null,
+    frequencia_semanal:       parseInt(frequencia, 10),
+    num_sessoes_estimado:     numSessoesInt,
+    data_previsao_alta:       previsaoAlta,
+    fisioterapeuta_id:        $('sel-fisio-plano').value        || null,
+    anamnese_id:              $('plano-anamnese').value         || null,
+  };
+
+  const btn     = $('btn-salvar-plano');
+  const label   = $('btn-salvar-plano-label');
+  const spinner = $('btn-salvar-plano-spinner');
+  btn.disabled        = true;
+  label.style.display = 'none';
+  spinner.style.display = 'block';
+
+  try {
+    const novo = await criarPlano(payload);
+    planos.unshift(novo);
+    renderPlanos();
+    fecharFormPlano();
+    showToast('Plano de tratamento registrado com sucesso.', 'success');
+  } catch (err) {
+    erroEl.textContent = err?.erro ?? err?.message ?? 'Erro ao salvar. Tente novamente.';
+    erroEl.style.display = 'block';
+  } finally {
+    btn.disabled          = false;
+    label.style.display   = 'block';
+    spinner.style.display = 'none';
+  }
+}
+
+// ── Encerrar / cancelar plano ─────────────────────────────────────────────────
+async function encerrarPlano(id, novoStatus) {
+  const msg = novoStatus === 'concluido'
+    ? 'Marcar este plano como concluído?'
+    : 'Cancelar este plano de tratamento?';
+  if (!confirm(msg)) return;
+
+  try {
+    const atualizado = await atualizarStatusPlano(id, novoStatus);
+    const idx = planos.findIndex(p => p.id === id);
+    if (idx !== -1) planos[idx] = atualizado;
+    renderPlanos();
+    showToast(novoStatus === 'concluido' ? 'Plano concluído.' : 'Plano cancelado.', 'success');
+  } catch {
+    showToast('Erro ao atualizar o status do plano.', 'error');
   }
 }

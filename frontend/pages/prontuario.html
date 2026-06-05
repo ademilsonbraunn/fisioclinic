@@ -127,7 +127,7 @@
       <!-- Tabs -->
       <div class="prontuario-tabs" role="tablist">
         <button class="tab-btn active" role="tab" data-tab="anamnese" aria-selected="true">Anamnese</button>
-        <button class="tab-btn" role="tab" data-tab="plano" disabled title="Em breve">Plano de Tratamento</button>
+        <button class="tab-btn" role="tab" data-tab="plano" aria-selected="false">Plano de Tratamento</button>
         <button class="tab-btn" role="tab" data-tab="evolucao" disabled title="Em breve">Evolução</button>
       </div>
 
@@ -263,14 +263,145 @@
         </div>
       </div>
 
-      <!-- Tab: Plano (em breve) -->
+      <!-- Tab: Plano de Tratamento -->
       <div class="tab-panel" id="tab-plano">
-        <div class="coming-soon">
-          <svg width="40" height="40" fill="none" stroke="var(--text3)" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:12px">
-            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-          </svg>
-          <h3>Plano de Tratamento</h3>
-          <p>Módulo 3 — em desenvolvimento.</p>
+
+        <!-- Formulário inline de novo plano -->
+        <div class="form-novo-plano" id="form-novo-plano">
+          <div class="form-section-title" style="margin-bottom:20px;font-size:1rem;font-weight:600">Novo Plano de Tratamento</div>
+
+          <section class="form-section">
+            <div class="form-section-title">Diagnóstico</div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label class="form-label" for="plano-diagnostico-cif">Diagnóstico fisioterapêutico (CIF) <span style="color:var(--red)">*</span></label>
+              <textarea class="form-input" id="plano-diagnostico-cif" rows="2" placeholder="Descreva o diagnóstico baseado na Classificação Internacional de Funcionalidade..."></textarea>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label" for="plano-cid10">CID-10</label>
+                <input type="text" class="form-input" id="plano-cid10" placeholder="ex: M54.5" maxlength="10">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="plano-anamnese">Anamnese vinculada</label>
+                <select class="form-input form-select" id="plano-anamnese">
+                  <option value="">Nenhuma (opcional)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="plano-hipoteses">Hipóteses de tratamento</label>
+              <textarea class="form-input" id="plano-hipoteses" rows="2" placeholder="Hipóteses e abordagens consideradas..."></textarea>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">Objetivos</div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label" for="plano-obj-curto">Objetivos de curto prazo <span style="color:var(--red)">*</span></label>
+                <textarea class="form-input" id="plano-obj-curto" rows="3" placeholder="Metas a serem atingidas nas primeiras sessões..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="plano-obj-longo">Objetivos de longo prazo <span style="color:var(--red)">*</span></label>
+                <textarea class="form-input" id="plano-obj-longo" rows="3" placeholder="Metas finais do tratamento..."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">Técnicas e Recursos</div>
+            <div class="form-group">
+              <label class="form-label">Técnicas selecionadas</label>
+              <div class="tecnicas-chips" id="tecnicas-chips">
+                <label class="chip-option"><input type="checkbox" value="Cinesioterapia"><span>Cinesioterapia</span></label>
+                <label class="chip-option"><input type="checkbox" value="Hidroterapia"><span>Hidroterapia</span></label>
+                <label class="chip-option"><input type="checkbox" value="Termoterapia"><span>Termoterapia</span></label>
+                <label class="chip-option"><input type="checkbox" value="Eletroterapia (TENS)"><span>Eletroterapia (TENS)</span></label>
+                <label class="chip-option"><input type="checkbox" value="Eletroterapia (FES)"><span>Eletroterapia (FES)</span></label>
+                <label class="chip-option"><input type="checkbox" value="Ultrassom"><span>Ultrassom</span></label>
+                <label class="chip-option"><input type="checkbox" value="Laser"><span>Laser</span></label>
+                <label class="chip-option"><input type="checkbox" value="Massagem Terapêutica"><span>Massagem Terapêutica</span></label>
+                <label class="chip-option"><input type="checkbox" value="Pilates"><span>Pilates</span></label>
+                <label class="chip-option"><input type="checkbox" value="RPG"><span>RPG</span></label>
+                <label class="chip-option"><input type="checkbox" value="Acupuntura"><span>Acupuntura</span></label>
+                <label class="chip-option"><input type="checkbox" value="Bandagem Funcional"><span>Bandagem Funcional</span></label>
+                <label class="chip-option"><input type="checkbox" value="Mobilização Articular"><span>Mobilização Articular</span></label>
+                <label class="chip-option"><input type="checkbox" value="Liberação Miofascial"><span>Liberação Miofascial</span></label>
+                <label class="chip-option"><input type="checkbox" value="Drenagem Linfática"><span>Drenagem Linfática</span></label>
+                <label class="chip-option"><input type="checkbox" value="Exercícios Respiratórios"><span>Exercícios Respiratórios</span></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">Parâmetros do Tratamento</div>
+            <div class="form-row cols-3">
+              <div class="form-group">
+                <label class="form-label" for="plano-frequencia">Frequência semanal <span style="color:var(--red)">*</span></label>
+                <select class="form-input form-select" id="plano-frequencia">
+                  <option value="">Selecione</option>
+                  <option value="1">1× por semana</option>
+                  <option value="2">2× por semana</option>
+                  <option value="3">3× por semana</option>
+                  <option value="4">4× por semana</option>
+                  <option value="5">5× por semana</option>
+                  <option value="6">6× por semana</option>
+                  <option value="7">Diário (7×)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="plano-num-sessoes">Nº sessões estimado <span style="color:var(--red)">*</span></label>
+                <input type="number" class="form-input" id="plano-num-sessoes" min="1" max="200" placeholder="ex: 20">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="plano-previsao-alta">Previsão de alta</label>
+                <input type="date" class="form-input" id="plano-previsao-alta">
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">Profissional e TCLE</div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label" for="sel-fisio-plano">Fisioterapeuta responsável</label>
+                <select class="form-input form-select" id="sel-fisio-plano">
+                  <option value="">Selecione (opcional)</option>
+                </select>
+              </div>
+              <div class="form-group" style="display:flex;align-items:flex-end">
+                <label class="tcle-label" for="plano-tcle">
+                  <input type="checkbox" id="plano-tcle" style="margin-right:8px">
+                  Paciente assinou o Termo de Consentimento Livre e Esclarecido (TCLE)
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <div id="plano-form-erro" style="display:none;color:var(--red);font-size:.875rem;margin-bottom:12px;padding:10px 14px;background:var(--red-bg);border-radius:var(--radius)"></div>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+            <button type="button" class="btn btn-secondary" id="btn-cancelar-plano">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="btn-salvar-plano">
+              <span id="btn-salvar-plano-label">Salvar plano</span>
+              <span class="spinner" id="btn-salvar-plano-spinner" style="display:none"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de planos -->
+        <div class="section-toolbar">
+          <h2>Planos registrados</h2>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-novo-plano">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Novo Plano
+          </button>
+        </div>
+
+        <div id="lista-planos">
+          <!-- preenchido por JS -->
         </div>
       </div>
 
