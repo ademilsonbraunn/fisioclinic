@@ -1,0 +1,273 @@
+/* ── Page header ─────────────────────────────── */
+
+.agenda-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.agenda-header h1 { flex: 0 0 auto; }
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.week-label {
+  padding: 0 14px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 220px;
+  text-align: center;
+  color: var(--text);
+}
+
+.header-spacer { flex: 1; }
+
+/* ── Filters bar ─────────────────────────────── */
+
+.agenda-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.agenda-filters .form-select { width: auto; min-width: 170px; }
+
+.filters-spacer { flex: 1; }
+
+/* ── Calendar wrapper ────────────────────────── */
+
+.cal-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+/* ── Day header row ──────────────────────────── */
+
+.cal-header {
+  display: grid;
+  grid-template-columns: 64px repeat(7, 1fr);
+  border-bottom: 2px solid var(--border);
+  background: var(--surface2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.cal-gutter {
+  border-right: 1px solid var(--border);
+}
+
+.cal-day-hdr {
+  padding: 10px 6px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .12s;
+}
+
+.cal-day-hdr:last-child { border-right: none; }
+.cal-day-hdr:hover { background: var(--accent-bg); }
+
+.cal-weekday {
+  display: block;
+  font-size: 0.714rem;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: 4px;
+}
+
+.cal-date-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 0.938rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: background .12s, color .12s;
+}
+
+.cal-day-hdr.is-today .cal-weekday { color: var(--accent); font-weight: 700; }
+.cal-day-hdr.is-today .cal-date-num {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ── Calendar scrollable body ────────────────── */
+
+.cal-body {
+  display: grid;
+  grid-template-columns: 64px repeat(7, 1fr);
+  overflow-y: auto;
+  max-height: 620px;
+}
+
+/* ── Time labels column ──────────────────────── */
+
+.cal-times {
+  border-right: 1px solid var(--border);
+}
+
+.cal-time-label {
+  height: 48px;
+  padding: 0 8px;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 3px;
+  font-size: 0.714rem;
+  font-family: var(--font-mono);
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Day columns ─────────────────────────────── */
+
+.cal-day-col {
+  position: relative;
+  border-right: 1px solid var(--border);
+}
+
+.cal-day-col:last-child { border-right: none; }
+
+.cal-slot {
+  height: 48px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .1s;
+}
+
+.cal-slot:nth-child(even) { background: rgba(0,0,0,.018); }
+.cal-slot:hover { background: var(--accent-bg) !important; }
+
+/* ── Event cards ─────────────────────────────── */
+
+.cal-event {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  border-radius: var(--radius-sm);
+  padding: 4px 7px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 5;
+  border-left: 3px solid transparent;
+  font-size: 0.786rem;
+  line-height: 1.35;
+  transition: filter .1s, box-shadow .1s, z-index 0s;
+  min-height: 28px;
+}
+
+.cal-event:hover {
+  filter: brightness(.93);
+  box-shadow: var(--shadow-sm);
+  z-index: 8;
+}
+
+.cal-event.status-agendado   { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+.cal-event.status-confirmado { background: var(--green-bg);  border-color: var(--green);  color: var(--green);  }
+.cal-event.status-realizado  { background: var(--surface2);  border-color: var(--text3);  color: var(--text2);  }
+.cal-event.status-faltou     { background: var(--amber-bg);  border-color: var(--amber);  color: var(--amber);  }
+.cal-event.status-cancelado  { background: var(--red-bg);    border-color: var(--red);    color: var(--red);
+  text-decoration: line-through; opacity: .75; }
+
+.event-time    { display: block; font-size: 0.714rem; opacity: .85; line-height: 1.2; }
+.event-patient { display: block; font-weight: 600; }
+.event-meta    { display: block; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── List view ───────────────────────────────── */
+
+.list-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+.list-wrap .table td:first-child { color: var(--text2); font-family: var(--font-mono); font-size: 0.786rem; white-space: nowrap; }
+
+/* ── Sessão status: badge color map ──────────── */
+
+.badge-agendado   { background: var(--accent-bg); color: var(--accent); }
+.badge-confirmado { background: var(--green-bg);  color: var(--green);  }
+.badge-realizado  { background: var(--surface2);  color: var(--text2);  }
+.badge-faltou     { background: var(--amber-bg);  color: var(--amber);  }
+.badge-cancelado  { background: var(--red-bg);    color: var(--red);    }
+
+/* ── Modal: status chips colored ─────────────── */
+
+.chip.is-checked.chip-agendado   .chip-label { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+.chip.is-checked.chip-confirmado .chip-label { background: var(--green-bg);  border-color: var(--green);  color: var(--green);  }
+.chip.is-checked.chip-realizado  .chip-label { background: var(--surface2);  border-color: var(--text3);  color: var(--text);   }
+.chip.is-checked.chip-faltou     .chip-label { background: var(--amber-bg);  border-color: var(--amber);  color: var(--amber);  }
+.chip.is-checked.chip-cancelado  .chip-label { background: var(--red-bg);    border-color: var(--red);    color: var(--red);    }
+
+/* ── Conflict alert ──────────────────────────── */
+
+.conflict-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  background: var(--amber-bg);
+  border: 1px solid var(--amber);
+  border-radius: var(--radius);
+  color: var(--amber);
+  font-size: 0.857rem;
+  margin-bottom: 16px;
+}
+
+.conflict-alert.hidden { display: none; }
+
+/* ── Modal detail view ───────────────────────── */
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+.detail-row:last-child { border-bottom: none; }
+
+.detail-label {
+  min-width: 140px;
+  font-size: 0.786rem;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.detail-value { color: var(--text); }
+
+/* ── Session count chip ──────────────────────── */
+
+.sessoes-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 8px;
+  background: var(--accent-bg);
+  border-radius: 20px;
+  font-size: 0.786rem;
+  font-weight: 600;
+  color: var(--accent);
+}

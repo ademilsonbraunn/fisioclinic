@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda — FisioClinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/agenda.css">
+</head>
+<body>
+
+  <!-- ── Topbar ─────────────────────────────────── -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="7" fill="#2D5BE3"/>
+        <path d="M13 6v14M6 13h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      FisioClinic
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-user">
+      <div class="avatar" id="topbar-avatar" style="background:var(--surface2);color:var(--text2);">U</div>
+      <span id="topbar-nome">Usuário</span>
+    </div>
+  </header>
+
+  <!-- ── Sidebar ────────────────────────────────── -->
+  <aside class="sidebar">
+    <nav aria-label="Menu principal">
+      <div class="nav-group">
+        <div class="nav-label">Principal</div>
+        <a href="dashboard.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"
+            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          Início
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Clínica</div>
+
+        <a href="pacientes.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"
+            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Pacientes
+        </a>
+
+        <a href="agenda.html" class="nav-item active" aria-current="page">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"
+            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          Agenda
+        </a>
+
+        <a href="prontuario.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"
+            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          Prontuário
+        </a>
+
+        <a href="alta.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"
+            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="9 11 12 14 22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          Alta
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Sistema</div>
+        <a href="admin.html" class="nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"
+            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Administração
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Cabeçalho da página -->
+    <div class="agenda-header">
+      <h1>Agenda</h1>
+
+      <div class="week-nav">
+        <button id="btn-semana-ant" class="btn btn-secondary btn-icon btn-sm" title="Semana anterior" aria-label="Semana anterior">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+
+        <button id="btn-hoje" class="btn btn-secondary btn-sm">Hoje</button>
+
+        <button id="btn-semana-prox" class="btn btn-secondary btn-icon btn-sm" title="Próxima semana" aria-label="Próxima semana">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <span id="semana-label" class="week-label text-sm"></span>
+
+      <div class="header-spacer"></div>
+
+      <div class="toggle-group">
+        <button id="view-calendario" class="toggle-btn active" title="Visualização em calendário">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8"  y1="2" x2="8"  y2="6"/>
+            <line x1="3"  y1="10" x2="21" y2="10"/>
+          </svg>
+          Semana
+        </button>
+        <button id="view-lista" class="toggle-btn" title="Visualização em lista">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+            <line x1="8" y1="6"  x2="21" y2="6"/>
+            <line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6"  x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+          Lista
+        </button>
+      </div>
+
+      <button id="btn-nova-sessao" class="btn btn-primary">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nova Sessão
+      </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="agenda-filters">
+      <select id="filtro-fisio" class="form-select" aria-label="Filtrar por fisioterapeuta">
+        <option value="">Todos os fisioterapeutas</option>
+      </select>
+
+      <select id="filtro-status" class="form-select" aria-label="Filtrar por status">
+        <option value="">Todos os status</option>
+        <option value="AGENDADO">Agendado</option>
+        <option value="CONFIRMADO">Confirmado</option>
+        <option value="REALIZADO">Realizado</option>
+        <option value="FALTOU">Faltou</option>
+        <option value="CANCELADO">Cancelado</option>
+      </select>
+
+      <!-- Legenda de status -->
+      <div class="filters-spacer"></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span class="badge badge-agendado">Agendado</span>
+        <span class="badge badge-confirmado">Confirmado</span>
+        <span class="badge badge-realizado">Realizado</span>
+        <span class="badge badge-faltou">Faltou</span>
+        <span class="badge badge-cancelado">Cancelado</span>
+      </div>
+    </div>
+
+    <!-- Indicador de carregamento -->
+    <div id="cal-loading" style="text-align:center;padding:32px" hidden>
+      <span class="spinner spinner-dark"></span>
+    </div>
+
+    <!-- ── Calendário semanal ────────────────────── -->
+    <div id="section-calendario">
+      <div class="cal-wrap">
+
+        <!-- Cabeçalho dos dias -->
+        <div class="cal-header" role="row">
+          <div class="cal-gutter" aria-hidden="true"></div>
+
+          <div class="cal-day-hdr" id="cal-hdr-0" role="columnheader" tabindex="0">
+            <span class="cal-weekday">SEG</span>
+            <span class="cal-date-num">–</span>
+          </div>
+          <div class="cal-day-hdr" id="cal-hdr-1" role="columnheader" tabindex="0">
+            <span class="cal-weekday">TER</span>
+            <span class="cal-date-num">–</span>
+          </div>
+          <div class="cal-day-hdr" id="cal-hdr-2" role="columnheader" tabindex="0">
+            <span class="cal-weekday">QUA</span>
+            <span class="cal-date-num">–</span>
+          </div>
+          <div class="cal-day-hdr" id="cal-hdr-3" role="columnheader" tabindex="0">
+            <span class="cal-weekday">QUI</span>
+            <span class="cal-date-num">–</span>
+          </div>
+          <div class="cal-day-hdr" id="cal-hdr-4" role="columnheader" tabindex="0">
+            <span class="cal-weekday">SEX</span>
+            <span class="cal-date-num">–</span>
+          </div>
+          <div class="cal-day-hdr" id="cal-hdr-5" role="columnheader" tabindex="0">
+            <span class="cal-weekday">SÁB</span>
+            <span class="cal-date-num">–</span>
+          </div>
+          <div class="cal-day-hdr" id="cal-hdr-6" role="columnheader" tabindex="0">
+            <span class="cal-weekday">DOM</span>
+            <span class="cal-date-num">–</span>
+          </div>
+        </div>
+
+        <!-- Corpo do calendário -->
+        <div class="cal-body" role="grid">
+          <!-- Coluna de horários (populada por JS) -->
+          <div class="cal-times" id="cal-times" aria-hidden="true"></div>
+
+          <!-- Colunas dos dias (slots e eventos populados por JS) -->
+          <div class="cal-day-col" id="cal-col-0" role="gridcell" title="Clique para agendar"></div>
+          <div class="cal-day-col" id="cal-col-1" role="gridcell" title="Clique para agendar"></div>
+          <div class="cal-day-col" id="cal-col-2" role="gridcell" title="Clique para agendar"></div>
+          <div class="cal-day-col" id="cal-col-3" role="gridcell" title="Clique para agendar"></div>
+          <div class="cal-day-col" id="cal-col-4" role="gridcell" title="Clique para agendar"></div>
+          <div class="cal-day-col" id="cal-col-5" role="gridcell" title="Clique para agendar"></div>
+          <div class="cal-day-col" id="cal-col-6" role="gridcell" title="Clique para agendar"></div>
+        </div>
+
+      </div>
+    </div><!-- /section-calendario -->
+
+    <!-- ── Lista de sessões ──────────────────────── -->
+    <div id="section-lista" hidden>
+      <div class="list-wrap">
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Data / Hora</th>
+                <th>Paciente</th>
+                <th>Fisioterapeuta</th>
+                <th>Sala</th>
+                <th>Tipo</th>
+                <th>Status</th>
+                <th style="width:60px"></th>
+              </tr>
+            </thead>
+            <tbody id="lista-tbody">
+              <tr>
+                <td colspan="7">
+                  <div class="empty-state">
+                    <div class="icon">
+                      <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8"  y1="2" x2="8"  y2="6"/>
+                        <line x1="3"  y1="10" x2="21" y2="10"/>
+                      </svg>
+                    </div>
+                    <h3>Carregando sessões…</h3>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /section-lista -->
+
+  </main><!-- /main -->
+
+  <!-- ── Modal: Nova / Editar Sessão ──────────────── -->
+  <div class="modal-backdrop" id="modal-sessao-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal" style="max-width:700px">
+
+      <div class="modal-header">
+        <h2 id="modal-titulo">Nova Sessão</h2>
+        <button class="btn btn-ghost btn-icon" id="btn-fechar-modal" aria-label="Fechar modal">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Alerta de conflito de sala -->
+        <div id="conflict-alert" class="conflict-alert hidden" role="alert">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span class="conflict-msg">Conflito de horário detectado.</span>
+        </div>
+
+        <!-- Erro de validação -->
+        <div id="msg-erro-modal" class="conflict-alert hidden" role="alert" style="background:var(--red-bg);border-color:var(--red);color:var(--red)">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24" style="flex-shrink:0">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          Campo obrigatório não preenchido.
+        </div>
+
+        <form id="form-sessao" novalidate autocomplete="off">
+
+          <!-- Seção 1: Paciente e horário -->
+          <div class="form-section">
+            <div class="form-section-title">Paciente e horário</div>
+
+            <div class="form-row" style="margin-bottom:16px">
+              <div class="form-group" style="grid-column:1/-1">
+                <label class="form-label" for="sel-paciente">Paciente <span class="req">*</span></label>
+                <select id="sel-paciente" class="form-select" required>
+                  <option value="">Selecione o paciente</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row cols-3">
+              <div class="form-group">
+                <label class="form-label" for="inp-data">Data <span class="req">*</span></label>
+                <input id="inp-data" type="date" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-hora-inicio">Hora início <span class="req">*</span></label>
+                <input id="inp-hora-inicio" type="time" class="form-input" min="07:00" max="20:00" step="900" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-hora-fim">Hora fim <span class="req">*</span></label>
+                <input id="inp-hora-fim" type="time" class="form-input" min="07:00" max="20:00" step="900" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 2: Profissional e local -->
+          <div class="form-section">
+            <div class="form-section-title">Profissional e local</div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label" for="sel-fisioterapeuta">Fisioterapeuta <span class="req">*</span></label>
+                <select id="sel-fisioterapeuta" class="form-select" required>
+                  <option value="">Selecione o fisioterapeuta</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="sel-sala">Sala / box <span class="req">*</span></label>
+                <select id="sel-sala" class="form-select" required>
+                  <option value="">Selecione a sala / box</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 3: Tipo de sessão -->
+          <div class="form-section">
+            <div class="form-section-title">Tipo de sessão <span class="req" style="text-transform:none;letter-spacing:0">*</span></div>
+            <div class="radio-chips" role="radiogroup" aria-label="Tipo de sessão">
+              <label class="chip">
+                <input type="radio" name="tipo_sessao" value="AVALIACAO">
+                <span class="chip-label">Avaliação</span>
+              </label>
+              <label class="chip">
+                <input type="radio" name="tipo_sessao" value="SESSAO">
+                <span class="chip-label">Sessão</span>
+              </label>
+              <label class="chip">
+                <input type="radio" name="tipo_sessao" value="REAVALIACAO">
+                <span class="chip-label">Reavaliação</span>
+              </label>
+              <label class="chip">
+                <input type="radio" name="tipo_sessao" value="ALTA">
+                <span class="chip-label">Alta</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Seção 4: Status -->
+          <div class="form-section">
+            <div class="form-section-title">Status <span class="req" style="text-transform:none;letter-spacing:0">*</span></div>
+            <div class="radio-chips" role="radiogroup" aria-label="Status da sessão">
+              <label class="chip chip-agendado">
+                <input type="radio" name="status" value="AGENDADO">
+                <span class="chip-label">Agendado</span>
+              </label>
+              <label class="chip chip-confirmado">
+                <input type="radio" name="status" value="CONFIRMADO">
+                <span class="chip-label">Confirmado</span>
+              </label>
+              <label class="chip chip-realizado">
+                <input type="radio" name="status" value="REALIZADO">
+                <span class="chip-label">Realizado</span>
+              </label>
+              <label class="chip chip-faltou">
+                <input type="radio" name="status" value="FALTOU">
+                <span class="chip-label">Faltou</span>
+              </label>
+              <label class="chip chip-cancelado">
+                <input type="radio" name="status" value="CANCELADO">
+                <span class="chip-label">Cancelado</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Seção 5: Informações adicionais -->
+          <div class="form-section">
+            <div class="form-section-title">Informações adicionais</div>
+
+            <div class="form-row" style="margin-bottom:0">
+              <div class="form-group" style="grid-column:1/-1">
+                <label class="form-label" for="inp-observacoes">Observações</label>
+                <textarea id="inp-observacoes" class="form-textarea" placeholder="Observações sobre a sessão…" rows="3"></textarea>
+              </div>
+            </div>
+
+            <div class="form-row" id="motivo-row" style="margin-top:14px" hidden>
+              <div class="form-group" style="grid-column:1/-1">
+                <label class="form-label" for="inp-motivo">
+                  Motivo do cancelamento
+                  <span class="req">*</span>
+                </label>
+                <input id="inp-motivo" type="text" class="form-input" placeholder="Descreva o motivo do cancelamento">
+              </div>
+            </div>
+
+          </div>
+
+        </form>
+      </div><!-- /modal-body -->
+
+      <div class="modal-footer">
+        <button id="btn-excluir-sessao" class="btn btn-danger" hidden>
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+          Cancelar Sessão
+        </button>
+        <div style="flex:1"></div>
+        <button id="btn-cancelar-modal" class="btn btn-secondary">Cancelar</button>
+        <button id="btn-salvar-sessao" class="btn btn-primary">Salvar</button>
+      </div>
+
+    </div><!-- /modal -->
+  </div><!-- /modal-backdrop -->
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script type="module" src="../js/pages/agenda.js"></script>
+</body>
+</html>
