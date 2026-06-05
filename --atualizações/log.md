@@ -4,6 +4,13 @@
 
 ## 📅 05/06/2026 — Sexta-feira
 
+### ⏰ 23:00 — Backend
+- **Integração entre tabelas** — sessões ↔ pacientes expostas na API:
+- `SessaoRepository.java`: adicionado `findByPacienteId` com JOIN FETCH (evita N+1)
+- `SessaoService.java`: adicionado `listarPorPaciente(UUID)`; `listar()` aceita `pacienteId` opcional como 3º parâmetro
+- `SessaoController.java`: `GET /api/sessoes` aceita `?paciente_id=UUID` para filtrar a agenda por paciente
+- `PacienteController.java`: adicionado `GET /api/pacientes/{id}/sessoes` — retorna histórico completo de sessões do paciente (404 se ID inválido)
+
 ### ⏰ 22:15 — Backend
 - **Módulo 4 — Agendamento**: implementação completa da camada Java (model → controller)
 - Criado `database/migrate_sessoes_enums.sql`: migração que normaliza CHECK constraints da tabela `sessoes` de lowercase para UPPERCASE, adiciona `REAVALIACAO` e `ALTA` ao enum `tipo_sessao`, e atualiza defaults
