@@ -4,6 +4,33 @@
 
 ## 📅 05/06/2026 — Quinta-feira
 
+### ⏰ 02:50 — Backend + Frontend
+- **Módulo 2 — Anamnese e Avaliação Inicial**: implementação completa
+
+**Backend:**
+- Criado `model/Anamnese.java`: entidade JPA com `@ManyToOne(LAZY)` para Paciente (obrigatório) e Fisioterapeuta (opcional); campo `avaliacao_fisica` mapeado como `JSONB` via `@JdbcTypeCode(SqlTypes.JSON)` e `Map<String, Object>`; campos de texto para queixa, histórico, antecedentes, medicamentos, alergias etc.
+- Criado `dto/AnamneseDTO.java`: record de request com `@NotBlank` nos obrigatórios e `@JsonProperty` snake_case
+- Criado `dto/AnamneseResponse.java`: record de response com nested records `PacienteResumo` e `FisioterapeutaResumo`
+- Criado `repository/AnamneseRepository.java`: queries JPQL com `LEFT JOIN FETCH` para fisioterapeuta (nullable)
+- Criado `service/AnamneseService.java`: `listarPorPaciente`, `buscarPorId`, `criar`, `atualizar` (PATCH parcial)
+- Criado `controller/AnamneseController.java`: `GET /api/anamneses?paciente_id=UUID`, `GET /api/anamneses/{id}`, `POST /api/anamneses`, `PATCH /api/anamneses/{id}`
+- Atualizado `SecurityConfig.java`: `/api/anamneses/**` requer autenticação
+- Atualizado `GlobalExceptionHandler.java`: handler genérico agora loga a exceção antes de retornar 500
+
+**Frontend:**
+- Criado `frontend/pages/prontuario.html`: página de prontuário com cabeçalho do paciente, tabs (Anamnese ativa, Plano e Evolução em breve), formulário inline de nova avaliação com EVA slider (0-10), campos de antecedentes e avaliação física
+- Criado `frontend/js/pages/prontuario.js`: carrega paciente por `?paciente_id=UUID`, lista anamneses em cards colapsáveis, formulário de criação com validação
+- Criado `frontend/js/api/anamneses.js`: wrapper de API (`listarAnamneses`, `buscarAnamnese`, `criarAnamnese`, `atualizarAnamnese`)
+- Criado `frontend/css/pages/prontuario.css`: estilos do cabeçalho do paciente, tabs, cards de anamnese, EVA slider com gradiente verde→âmbar→vermelho
+- Atualizado `frontend/js/pages/pacientes.js`: botão ícone de prontuário na lista de pacientes → `prontuario.html?paciente_id=UUID`
+
+**CLAUDE.md:**
+- Módulo 1 atualizado para ✅ Concluído
+- Módulo 2 atualizado para 🔨 Em Andamento
+- Módulo 4 atualizado para ✅ Concluído
+
+---
+
 ### ⏰ 02:30 — Frontend
 - **Logout via topbar** — clicar no nome do usuário abre dropdown com botão "Sair"
 - Criado `frontend/js/utils/auth.js`: módulo central de autenticação com `getToken()`, `getUsuarioNome()`, `getUsuarioPerfil()`, `logout()` e `initTopbar()`
