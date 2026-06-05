@@ -20,10 +20,8 @@ export function logout() {
   localStorage.removeItem('usuario_nome');
   localStorage.removeItem('usuario_perfil');
 
-  // Volta para a raiz — funciona independente de quantos níveis de pasta
-  const depth = window.location.pathname.split('/').filter(Boolean).length;
-  const base  = depth > 1 ? '../'.repeat(depth - 1) : './';
-  window.location.href = base + 'index.html';
+  // Todas as páginas protegidas estão em pages/ — login está um nível acima
+  window.location.href = '../index.html';
 }
 
 function iniciais(nome) {
