@@ -5,7 +5,26 @@
       "PowerShell(mvn -version 2>&1)",
       "PowerShell(Get-ChildItem -Path \"c:\\\\projetos\\\\clinico\" -Recurse -Force | Where-Object { $_.Name -match \"faturamento\" } | Select-Object -Property FullName)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(sleep 20 && grep -E \"Started|ERROR|Exception\" /tmp/spring_out.txt | head -20)",
+      "Read(//tmp/**)",
+      "PowerShell($psql = \"C:\\\\Program Files\\\\PostgreSQL\\\\11\\\\bin\\\\psql.exe\"; $env:PGPASSWORD = \"PnCdEL\"; & $psql -U postgres -p 5411 -d fisioclinic -c \"SELECT email, login FROM usuarios LIMIT 5;\" 2>&1)",
+      "PowerShell($psql = \"C:\\\\Program Files\\\\PostgreSQL\\\\11\\\\bin\\\\psql.exe\"; $env:PGPASSWORD = \"PnCdEL\"; & $psql -U postgres -p 5411 -d fisioclinic -c \"\\\\dt\" 2>&1)",
+      "PowerShell($psql = \"C:\\\\Program Files\\\\PostgreSQL\\\\11\\\\bin\\\\psql.exe\"; $env:PGPASSWORD = \"PnCdEL\"; & $psql -U postgres -p 5411 -d fisioclinic -c \"SELECT id, nome, email, perfil, ativo, senha_hash IS NOT NULL AS tem_senha FROM fisioterapeutas;\" 2>&1)",
+      "PowerShell($psql = \"C:\\\\Program Files\\\\PostgreSQL\\\\11\\\\bin\\\\psql.exe\"; $env:PGPASSWORD = \"PnCdEL\"; & $psql -U postgres -p 5411 -d fisioclinic -c \"\\\\d fisioterapeutas\" 2>&1)",
+      "PowerShell(python -c \"import bcrypt; print\\(bcrypt.hashpw\\(b'admin123', bcrypt.gensalt\\(10\\)\\).decode\\(\\)\\)\" 2>&1)",
+      "Bash(python3 -c \"import bcrypt; print\\(bcrypt.hashpw\\(b'admin123', bcrypt.gensalt\\(10\\)\\).decode\\(\\)\\)\")",
+      "Bash(node -e \"const bcrypt=require\\('bcryptjs'\\); bcrypt.hash\\('admin123',10\\).then\\(h=>console.log\\(h\\)\\)\")",
+      "Bash(SPRING_JAR=$\\(find ~/.m2/repository/org/springframework/security/spring-security-crypto -name \"*.jar\" | head -1\\) *)",
+      "Read(//c/Users/ademi/.m2/repository/org/springframework/security/spring-security-crypto/**)",
+      "PowerShell($env:PGPASSWORD = \"PnCdEL\"; $psql = \"C:\\\\Program Files\\\\PostgreSQL\\\\11\\\\bin\\\\psql.exe\"; & $psql -U postgres -p 5411 -d fisioclinic -c \"SELECT id, nome, tipo FROM salas;\" 2>&1)",
+      "Bash(xargs echo \"Sessões retornadas:\")",
+      "Bash(git restore *)",
+      "PowerShell($env:PGPASSWORD = \"PnCdEL\"; $psql = \"C:\\\\Program Files\\\\PostgreSQL\\\\11\\\\bin\\\\psql.exe\"; & $psql -U postgres -p 5411 -d fisioclinic -c \"SELECT nome, email, perfil, ativo, senha_hash IS NOT NULL AS tem_senha, LENGTH\\(senha_hash\\) AS len_hash FROM fisioterapeutas;\" 2>&1)",
+      "PowerShell(head -50)",
+      "Bash(curl -s \"http://localhost:8080/api/pacientes?page=0&size=3\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(mvn compile *)"
     ]
   }
 }
