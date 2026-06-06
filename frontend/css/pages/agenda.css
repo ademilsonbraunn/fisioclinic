@@ -35,7 +35,11 @@
 .week-nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 3px;
 }
 
 .week-label {
@@ -123,11 +127,13 @@
   transition: background .12s, color .12s;
 }
 
+.cal-day-hdr.is-today { background: var(--accent-bg); }
 .cal-day-hdr.is-today .cal-weekday { color: var(--accent); font-weight: 700; }
 .cal-day-hdr.is-today .cal-date-num {
   background: var(--accent);
   color: #fff;
   font-weight: 700;
+  box-shadow: 0 2px 8px rgba(45,91,227,.35);
 }
 
 /* ── Calendar scrollable body ────────────────── */
@@ -187,16 +193,18 @@
   cursor: pointer;
   overflow: hidden;
   z-index: 5;
-  border-left: 3px solid transparent;
+  border-left: 4px solid transparent;
   font-size: 0.786rem;
   line-height: 1.35;
-  transition: filter .1s, box-shadow .1s, z-index 0s;
+  transition: filter .15s, box-shadow .15s, transform .15s;
   min-height: 28px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
 }
 
 .cal-event:hover {
-  filter: brightness(.93);
-  box-shadow: var(--shadow-sm);
+  filter: brightness(.94);
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  transform: scale(1.01);
   z-index: 8;
 }
 

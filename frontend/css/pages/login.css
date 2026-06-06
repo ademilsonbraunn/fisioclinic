@@ -2,38 +2,165 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * login.css — Estilos exclusivos da página de login (index.html)
  * ─────────────────────────────────────────────────────────────────────────────
- * Autocontido: não depende de components.css. Apenas base.css é carregado antes.
- *
- * Seções:
- *  1. Layout — centraliza o card na tela com flexbox no body
- *  2. .login-card — container branco com sombra, largura máxima de 400px
- *  3. .login-brand — logo + nome do sistema
- *  4. .login-error — alerta vermelho exibido quando as credenciais são inválidas
- *  5. .login-form — campos de e-mail e senha com toggle de visibilidade
- *  6. .login-options — "lembrar de mim" + link "esqueci minha senha"
- *  7. .btn-login — botão de envio com estado de loading (spinner)
- *  8. .btn-demo — link de acesso sem login (modo demonstração)
+ * Layout dois painéis em desktop (≥ 900px):
+ *   - Esquerda: painel de marca com gradiente azul
+ *   - Direita:  formulário de autenticação (branco)
+ * Mobile: colapsa para coluna única (só o painel direito)
  * ─────────────────────────────────────────────────────────────────────────────
  */
+
+/* ── Layout raiz ─────────────────────────────────── */
+
 body {
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+  background: #F4F6FB;
+  padding: 0;
+}
+
+/* ── Painel esquerdo — marca ──────────────────────── */
+
+.login-panel-left {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 52px;
+  background: linear-gradient(145deg, #1a3a8f 0%, #2D5BE3 55%, #6366f1 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Círculos decorativos de fundo */
+.login-panel-left::before,
+.login-panel-left::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  pointer-events: none;
+}
+.login-panel-left::before {
+  width: 360px;
+  height: 360px;
+  bottom: -80px;
+  right: -100px;
+}
+.login-panel-left::after {
+  width: 200px;
+  height: 200px;
+  top: 60px;
+  right: 40px;
+}
+
+.left-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.left-logo {
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,.18);
+  border: 1.5px solid rgba(255,255,255,.3);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 24px;
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+}
+
+.left-brand-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+
+.left-brand-sub {
+  font-size: 0.82rem;
+  opacity: .7;
+  margin-top: 2px;
+}
+
+.left-hero {
+  position: relative;
+  z-index: 1;
+}
+
+.left-tagline {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  margin-bottom: 12px;
+}
+
+.left-tagline span {
+  opacity: .75;
+  font-weight: 400;
+}
+
+.left-desc {
+  font-size: 0.9rem;
+  opacity: .72;
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+
+.left-features {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.left-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+  opacity: .88;
+}
+
+.left-feature-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.left-footer {
+  font-size: 0.75rem;
+  opacity: .45;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Painel direito — formulário ─────────────────── */
+
+.login-panel-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 40px 24px;
+  background: var(--surface);
 }
 
 .login-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  padding: 40px;
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
 }
 
-/* ── Brand ───────────────────────────────────── */
+/* ── Brand (visível apenas no mobile) ────────────── */
 
 .login-brand {
   display: flex;
@@ -65,12 +192,13 @@ body {
   margin-top: 1px;
 }
 
-/* ── Heading ─────────────────────────────────── */
+/* ── Heading ─────────────────────────────────────── */
 
 .login-title {
   font-size: 1.35rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 5px;
+  letter-spacing: -.02em;
 }
 
 .login-subtitle {
@@ -79,7 +207,7 @@ body {
   margin-bottom: 28px;
 }
 
-/* ── Form ────────────────────────────────────── */
+/* ── Form ────────────────────────────────────────── */
 
 .login-form .form-group { margin-bottom: 16px; }
 
@@ -131,7 +259,7 @@ body {
 }
 .link-forgot:hover { opacity: .75; }
 
-/* ── Error banner ────────────────────────────── */
+/* ── Error banner ────────────────────────────────── */
 
 .login-error {
   background: var(--red-bg);
@@ -146,26 +274,31 @@ body {
   gap: 8px;
 }
 
-/* ── Buttons ─────────────────────────────────── */
+/* ── Buttons ─────────────────────────────────────── */
 
 .btn-login {
   width: 100%;
-  padding: 10px 16px;
-  background: var(--accent);
+  padding: 11px 16px;
+  background: linear-gradient(135deg, #3366F0 0%, #2D5BE3 100%);
   color: #fff;
   border: none;
   border-radius: var(--radius);
   font-family: var(--font);
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background .12s;
+  transition: background .12s, transform .12s, box-shadow .12s;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
-.btn-login:hover:not(:disabled) { background: #2450cc; }
+.btn-login:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2D5BE3 0%, #2450cc 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(45,91,227,.35);
+}
+.btn-login:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
 .btn-login:disabled { opacity: .65; cursor: not-allowed; }
 
 .login-spinner {
@@ -179,7 +312,7 @@ body {
 }
 @keyframes loginSpin { to { transform: rotate(360deg); } }
 
-/* ── Divider ─────────────────────────────────── */
+/* ── Divider ─────────────────────────────────────── */
 
 .login-divider {
   display: flex;
@@ -216,11 +349,51 @@ body {
 }
 .btn-demo:hover { background: var(--surface2); color: var(--text); }
 
-/* ── Footer ──────────────────────────────────── */
+/* ── Footer ──────────────────────────────────────── */
 
 .login-footer {
-  margin-top: 24px;
+  margin-top: 28px;
   font-size: 0.786rem;
   color: var(--text3);
   text-align: center;
+}
+
+/* ── Desktop: dois painéis ───────────────────────── */
+
+@media (min-width: 900px) {
+  body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--surface);
+  }
+
+  .login-panel-left {
+    display: flex;
+  }
+
+  /* Oculta a brand interna no desktop (mostrada no painel esquerdo) */
+  .login-brand { display: none; }
+
+  .login-panel-right {
+    min-height: 100vh;
+  }
+}
+
+@media (max-width: 899px) {
+  .login-panel-left { display: none; }
+  .login-panel-right {
+    min-height: 100vh;
+    background: var(--bg);
+  }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 32px rgba(0,0,0,.10);
+    padding: 36px 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card { padding: 28px 20px; }
 }

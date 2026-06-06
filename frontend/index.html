@@ -39,78 +39,131 @@
 </head>
 <body>
 
-  <div class="login-card">
-
-    <!-- ── Brand ──────────────────────────────── -->
-    <div class="login-brand">
-      <div class="login-logo">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+  <!-- ── Painel esquerdo — marca (desktop only) ──── -->
+  <div class="login-panel-left" aria-hidden="true">
+    <div class="left-brand">
+      <div class="left-logo">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
           stroke="#fff" stroke-width="2.5" stroke-linecap="round">
           <line x1="12" y1="5" x2="12" y2="19"/>
           <line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
       </div>
       <div>
-        <div class="login-brand-name">FisioClinic</div>
-        <div class="login-brand-sub">Sistema de gestão clínica</div>
+        <div class="left-brand-name">FisioClinic</div>
+        <div class="left-brand-sub">Sistema de gestão clínica</div>
       </div>
     </div>
 
-    <!-- ── Heading ────────────────────────────── -->
-    <h1 class="login-title">Bem-vindo de volta</h1>
-    <p class="login-subtitle">Acesse sua conta para continuar.</p>
-
-    <!-- ── Error ──────────────────────────────── -->
-    <div class="login-error" id="loginError" style="display:none" role="alert">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      E-mail ou senha incorretos.
-    </div>
-
-    <!-- ── Form ───────────────────────────────── -->
-    <form id="formLogin" class="login-form" novalidate>
-
-      <div class="form-group">
-        <label class="form-label" for="email">E-mail</label>
-        <input type="email" class="form-input" id="email"
-          placeholder="seu@email.com" autocomplete="email" required>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="senha">Senha</label>
-        <div class="input-wrap">
-          <input type="password" class="form-input" id="senha"
-            placeholder="••••••••" autocomplete="current-password" required>
-          <button type="button" class="input-eye" id="toggleSenha" aria-label="Mostrar senha">
-            <svg id="eyeIcon" width="16" height="16" fill="none" stroke="currentColor"
-              stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
+    <div class="left-hero">
+      <div class="left-tagline">Gestão clínica<br><span>completa e integrada</span></div>
+      <p class="left-desc">Prontuário eletrônico, agendamento e evolução clínica em um único sistema para sua equipe de fisioterapia.</p>
+      <div class="left-features">
+        <div class="left-feature">
+          <div class="left-feature-icon">
+            <svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
             </svg>
-          </button>
+          </div>
+          Prontuário eletrônico com anamnese e plano de tratamento
+        </div>
+        <div class="left-feature">
+          <div class="left-feature-icon">
+            <svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          Agendamento integrado por sala e fisioterapeuta
+        </div>
+        <div class="left-feature">
+          <div class="left-feature-icon">
+            <svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          Evolução SOAP por sessão com escala de dor EVA
+        </div>
+      </div>
+    </div>
+
+    <div class="left-footer">FisioClinic &copy; 2026 — Todos os direitos reservados</div>
+  </div>
+
+  <!-- ── Painel direito — formulário ───────────────── -->
+  <div class="login-panel-right">
+    <div class="login-card">
+
+      <!-- Brand (mobile only) -->
+      <div class="login-brand">
+        <div class="login-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </div>
+        <div>
+          <div class="login-brand-name">FisioClinic</div>
+          <div class="login-brand-sub">Sistema de gestão clínica</div>
         </div>
       </div>
 
-      <div class="login-options">
-        <label class="checkbox-label">
-          <input type="checkbox" id="lembrar">
-          <span>Lembrar de mim</span>
-        </label>
-        <a href="#" class="link-forgot">Esqueci minha senha</a>
+      <!-- ── Heading ────────────────────────────── -->
+      <h1 class="login-title">Bem-vindo de volta</h1>
+      <p class="login-subtitle">Acesse sua conta para continuar.</p>
+
+      <!-- ── Error ──────────────────────────────── -->
+      <div class="login-error" id="loginError" style="display:none" role="alert">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        E-mail ou senha incorretos.
       </div>
 
-      <button type="submit" class="btn-login" id="btnLogin">
-        <span id="btnLoginLabel">Entrar</span>
-        <span class="login-spinner" id="btnLoginSpinner" style="display:none" aria-hidden="true"></span>
-      </button>
+      <!-- ── Form ───────────────────────────────── -->
+      <form id="formLogin" class="login-form" novalidate>
 
-    </form>
+        <div class="form-group">
+          <label class="form-label" for="email">E-mail</label>
+          <input type="email" class="form-input" id="email"
+            placeholder="seu@email.com" autocomplete="email" required>
+        </div>
 
-    <footer class="login-footer">FisioClinic &copy; 2026</footer>
+        <div class="form-group">
+          <label class="form-label" for="senha">Senha</label>
+          <div class="input-wrap">
+            <input type="password" class="form-input" id="senha"
+              placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" class="input-eye" id="toggleSenha" aria-label="Mostrar senha">
+              <svg id="eyeIcon" width="16" height="16" fill="none" stroke="currentColor"
+                stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="lembrar">
+            <span>Lembrar de mim</span>
+          </label>
+          <a href="#" class="link-forgot">Esqueci minha senha</a>
+        </div>
+
+        <button type="submit" class="btn-login" id="btnLogin">
+          <span id="btnLoginLabel">Entrar</span>
+          <span class="login-spinner" id="btnLoginSpinner" style="display:none" aria-hidden="true"></span>
+        </button>
+
+      </form>
+
+      <footer class="login-footer">FisioClinic &copy; 2026</footer>
+    </div>
   </div>
 
   <script type="module" src="js/pages/login.js"></script>

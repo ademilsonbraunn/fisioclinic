@@ -38,11 +38,17 @@
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 
 .btn-primary {
-  background: var(--accent);
+  background: linear-gradient(135deg, #3366F0 0%, #2D5BE3 100%);
   color: #fff;
   border-color: var(--accent);
 }
-.btn-primary:not(:disabled):hover { background: #2450cc; border-color: #2450cc; }
+.btn-primary:not(:disabled):hover {
+  background: linear-gradient(135deg, #2D5BE3 0%, #2450cc 100%);
+  border-color: #2450cc;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(45,91,227,.3);
+}
+.btn-primary:not(:disabled):active { transform: translateY(0); box-shadow: none; }
 
 .btn-secondary {
   background: var(--surface);
@@ -91,7 +97,7 @@
 .form-select,
 .form-textarea {
   width: 100%;
-  padding: 8px 12px;
+  padding: 9px 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -141,6 +147,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xs);
+  transition: box-shadow .18s;
 }
 
 /* ── Badge ──────────────────────────────────────── */
@@ -172,7 +179,7 @@
 
 .table th,
 .table td {
-  padding: 11px 16px;
+  padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid var(--border);
 }
@@ -190,7 +197,8 @@
 .table td { font-size: 0.875rem; }
 
 .table tbody tr { transition: background .1s; }
-.table tbody tr:hover { background: var(--surface2); }
+.table tbody tr:nth-child(even) { background: #FAFBFE; }
+.table tbody tr:hover { background: var(--accent-bg); }
 .table tbody tr:last-child td { border-bottom: none; }
 
 /* ── Avatar ─────────────────────────────────────── */
@@ -228,7 +236,9 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(28,27,25,.45);
+  background: rgba(15,20,40,.50);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 200;
   display: flex;
   align-items: center;
@@ -368,23 +378,51 @@
 .toast {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 11px 16px;
+  gap: 10px;
+  padding: 12px 16px;
   border-radius: var(--radius);
-  background: var(--text);
+  background: #1e2340;
   color: #fff;
   font-size: 0.875rem;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 8px 24px rgba(0,0,0,.22);
   min-width: 260px;
   max-width: 380px;
   pointer-events: auto;
   cursor: pointer;
-  animation: toast-in .18s ease;
+  animation: toast-in .2s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid rgba(255,255,255,.25);
 }
 
-.toast.success { background: var(--green); }
-.toast.error   { background: var(--red); }
-.toast.warning { background: var(--amber); }
+.toast::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 3px;
+  width: 100%;
+  background: rgba(255,255,255,.25);
+  animation: toast-progress 3.5s linear forwards;
+}
+
+@keyframes toast-progress {
+  from { transform: scaleX(1); transform-origin: left; }
+  to   { transform: scaleX(0); transform-origin: left; }
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: .9;
+}
+
+.toast.success { background: #14532d; border-left-color: #22c55e; }
+.toast.error   { background: #7f1d1d; border-left-color: #f87171; }
+.toast.warning { background: #78350f; border-left-color: #f59e0b; }
 
 @keyframes toast-in {
   from { opacity: 0; transform: translateX(12px); }
