@@ -68,10 +68,12 @@ function setupForm() {
       });
 
       if (res.ok) {
-        const data = await res.json();
-        sessionStorage.setItem('token', data.token);
-        sessionStorage.setItem('usuario_nome', data.nome);
-        sessionStorage.setItem('usuario_perfil', data.perfil);
+        const data    = await res.json();
+        const lembrar = document.getElementById('lembrar')?.checked;
+        const storage = lembrar ? localStorage : sessionStorage;
+        storage.setItem('token', data.token);
+        storage.setItem('usuario_nome', data.nome);
+        storage.setItem('usuario_perfil', data.perfil);
         window.location.href = 'pages/dashboard.html';
       } else {
         errorEl.style.display = 'flex';

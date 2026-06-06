@@ -2,6 +2,27 @@
 
 ---
 
+## 📅 08/06/2026 — Segunda-feira
+
+### ⏰ 10:00 — Backend
+- Criado `ResetSenhaAdminDTO.java` — DTO para redefinição de senha por administrador
+- `FisioterapeutaService`: adicionado método `resetarSenha(UUID, ResetSenhaAdminDTO)` com codificação BCrypt
+- `FisioterapeutaController`: adicionado endpoint `PATCH /api/fisioterapeutas/{id}/senha` (ADMIN-only via SecurityConfig)
+
+### ⏰ 10:00 — Frontend
+- Criado `pages/usuarios.html` — página dedicada de gestão de usuários (ADMIN-only)
+  - Tabela com colunas: nome, e-mail, CRF, perfil (badge), status (ativo/inativo), ações
+  - Filtros em tempo real: busca por nome/e-mail, perfil e status
+  - Estatísticas: total de usuários, administradores e ativos
+- Criado `js/pages/usuarios.js` — lógica completa: listar, criar, editar, redefinir senha, ativar/desativar
+- Criado `css/pages/usuarios.css` — estilos da página de usuários
+- `js/utils/auth.js`: `initTopbar()` atualizado para exibir o botão "Usuários" para perfil ADMIN
+- `js/pages/login.js`: implementado "Lembrar de mim" — salva em `localStorage` (marcado) ou `sessionStorage` (padrão)
+- Todas as páginas protegidas (`dashboard`, `admin`, `pacientes`, `agenda`, `prontuario`): adicionado `topbar-users-btn` no topbar (ADMIN-only)
+- `atualizacoes_sistema`: registro inserido — "Módulo de Gestão de Usuários disponível" (v1.3, NOVO_RECURSO)
+
+---
+
 ## 📅 07/06/2026 — Domingo
 
 ### ⏰ 15:40 — Geral — Conclusão do Módulo 5 (Evolução Clínica SOAP)

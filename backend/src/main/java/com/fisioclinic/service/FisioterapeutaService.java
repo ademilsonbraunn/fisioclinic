@@ -2,6 +2,7 @@ package com.fisioclinic.service;
 
 import com.fisioclinic.dto.FisioterapeutaDTO;
 import com.fisioclinic.dto.FisioterapeutaResponse;
+import com.fisioclinic.dto.ResetSenhaAdminDTO;
 import com.fisioclinic.exception.ConflictException;
 import com.fisioclinic.exception.ResourceNotFoundException;
 import com.fisioclinic.model.Fisioterapeuta;
@@ -93,6 +94,14 @@ public class FisioterapeutaService {
         if (dto.ativo()    != null) f.setAtivo(dto.ativo());
 
         return toResponse(repository.save(f));
+    }
+
+    // ── Reset de senha por admin ─────────────────────────────────────────────
+
+    public void resetarSenha(UUID id, ResetSenhaAdminDTO dto) {
+        Fisioterapeuta f = encontrarOuLancar(id);
+        f.setSenhaHash(passwordEncoder.encode(dto.novaSenha()));
+        repository.save(f);
     }
 
     // ── Status (ativar / desativar) ───────────────────────────────────────────

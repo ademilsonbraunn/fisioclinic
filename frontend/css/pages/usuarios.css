@@ -1,0 +1,173 @@
+/*
+ * usuarios.css — Estilos da página de gestão de usuários
+ * Carregado após base.css e components.css.
+ * Acesso restrito: apenas ADMIN (redirecionamento em usuarios.js).
+ */
+
+/* ── Page header ─────────────────────────────── */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.page-header-meta { color: var(--text2); font-size: 0.875rem; margin-top: 3px; }
+
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-radius: 20px;
+  font-size: 0.786rem;
+  font-weight: 600;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* ── Stats row ───────────────────────────────── */
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.stat-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-xs);
+}
+
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon.blue   { background: var(--accent-bg); color: var(--accent); }
+.stat-icon.green  { background: var(--green-bg);  color: var(--green);  }
+.stat-icon.amber  { background: var(--amber-bg);  color: var(--amber);  }
+
+.stat-num   { display: block; font-size: 1.35rem; font-weight: 700; line-height: 1.2; }
+.stat-label { display: block; font-size: 0.786rem; color: var(--text2); margin-top: 1px; }
+
+/* ── Section ─────────────────────────────────── */
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.01em;
+}
+
+.section-desc {
+  font-size: 0.8rem;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+/* ── Table action bar ────────────────────────── */
+
+.table-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.table-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface2);
+  flex: 1;
+  min-width: 160px;
+  max-width: 260px;
+}
+
+.table-search input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 0.875rem;
+  color: var(--text);
+  width: 100%;
+}
+
+.table-search svg { color: var(--text3); flex-shrink: 0; }
+
+.filter-select {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface2);
+  font-size: 0.875rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* ── Avatar cell ─────────────────────────────── */
+
+.avatar-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cell-name  { font-weight: 500; }
+.cell-meta  { font-size: 0.786rem; color: var(--text3); }
+
+/* ── Empty row ───────────────────────────────── */
+
+.empty-row {
+  text-align: center;
+  color: var(--text3);
+  padding: 40px 16px !important;
+  font-size: 0.875rem;
+}
+
+/* ── Senha info chip ─────────────────────────── */
+
+.senha-info {
+  background: var(--amber-bg);
+  color: var(--amber);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  margin-bottom: 16px;
+}
+
+/* ── Modal user name label ───────────────────── */
+
+.reset-target-nome {
+  font-weight: 600;
+  color: var(--accent);
+}

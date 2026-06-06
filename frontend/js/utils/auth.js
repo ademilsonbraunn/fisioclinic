@@ -65,10 +65,12 @@ export function initTopbar() {
   if (avatarEl) avatarEl.textContent = iniciais(nome);
   if (nomeEl)   nomeEl.textContent   = nome;
 
-  // Exibe botão de administração apenas para perfil ADMIN
-  const adminBtn = document.getElementById('topbar-admin-btn');
-  if (adminBtn && getUsuarioPerfil() === 'ADMIN') {
-    adminBtn.style.display = '';
+  // Exibe botões de administração/usuários apenas para perfil ADMIN
+  if (getUsuarioPerfil() === 'ADMIN') {
+    const adminBtn = document.getElementById('topbar-admin-btn');
+    if (adminBtn) adminBtn.style.display = '';
+    const usersBtn = document.getElementById('topbar-users-btn');
+    if (usersBtn) usersBtn.style.display = '';
   }
 
   if (!userEl) return;

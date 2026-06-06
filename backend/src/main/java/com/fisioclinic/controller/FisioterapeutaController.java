@@ -2,6 +2,7 @@ package com.fisioclinic.controller;
 
 import com.fisioclinic.dto.FisioterapeutaDTO;
 import com.fisioclinic.dto.FisioterapeutaResponse;
+import com.fisioclinic.dto.ResetSenhaAdminDTO;
 import com.fisioclinic.service.FisioterapeutaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -89,6 +90,19 @@ public class FisioterapeutaController {
     ) {
         boolean ativo = Boolean.TRUE.equals(body.get("ativo"));
         service.alterarStatus(id, ativo);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * PATCH /api/fisioterapeutas/{id}/senha
+     * Redefine a senha de qualquer usuário — exclusivo para ADMIN.
+     */
+    @PatchMapping("/{id}/senha")
+    public ResponseEntity<Void> resetarSenha(
+        @PathVariable UUID id,
+        @Valid @RequestBody ResetSenhaAdminDTO dto
+    ) {
+        service.resetarSenha(id, dto);
         return ResponseEntity.noContent().build();
     }
 }

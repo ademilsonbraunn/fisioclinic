@@ -1,0 +1,322 @@
+<!--
+  pages/usuarios.html — Gestão de usuários do sistema (ROLE_ADMIN exclusivo)
+  ──────────────────────────────────────────────────────────────────────────
+  Se o usuário não for ADMIN, usuarios.js redireciona para dashboard.html.
+
+  CSS: base.css + components.css + pages/usuarios.css
+  JS:  js/pages/usuarios.js (type=module)
+
+  Estrutura do DOM:
+    header.topbar             → topbar com botão voltar, admin, users (ativo) e notificações
+    .page-header              → título + badge Admin + botão Novo Usuário
+    .stat-row                 → #statTotal / #statAdmins / #statAtivos
+    .section-header + .card   → filtros + tabela #tabelaUsuarios
+
+  Modais:
+    #usuarioModalBackdrop     → criar ou editar usuário (form#formUsuario)
+    #senhaModalBackdrop       → redefinir senha de um usuário (form#formResetSenha)
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários — FisioClinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/usuarios.css">
+</head>
+<body>
+
+  <!-- ── Topbar ──────────────────────────── -->
+  <header class="topbar">
+    <a href="dashboard.html" class="topbar-brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="7" fill="#2D5BE3"/>
+        <path d="M13 6v14M6 13h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      FisioClinic
+    </a>
+    <div class="topbar-divider"></div>
+    <a href="dashboard.html" class="topbar-back-btn" title="Voltar ao menu principal">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Início
+    </a>
+    <div class="topbar-spacer"></div>
+    <a href="admin.html" class="topbar-admin-btn" id="topbar-admin-btn" style="display:none" title="Administrador">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </a>
+    <a href="usuarios.html" class="topbar-admin-btn topbar-admin-btn--active" id="topbar-users-btn" style="display:none" title="Usuários">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </a>
+    <div class="notif-wrapper">
+      <button class="notif-btn" id="notifBtn" title="Novidades do sistema" aria-label="Ver atualizações">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span class="notif-badge" id="notifBadge" style="display:none"></span>
+      </button>
+      <div class="notif-panel" id="notifPanel" style="display:none">
+        <div class="notif-panel-header">
+          <span>Novidades do Sistema</span>
+          <button class="notif-close" id="notifClose" aria-label="Fechar">×</button>
+        </div>
+        <div class="notif-list" id="notifList"></div>
+      </div>
+    </div>
+    <div class="topbar-user" id="topbar-user">
+      <div class="avatar" id="topbar-avatar" style="background:var(--surface2);color:var(--text2);">U</div>
+      <span id="topbar-nome">Usuário</span>
+    </div>
+  </header>
+
+  <!-- ── Main ────────────────────────────── -->
+  <main class="main">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div>
+        <h1>
+          Usuários do Sistema
+          <span class="admin-badge">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Admin
+          </span>
+        </h1>
+        <p class="page-header-meta">Crie, edite e controle o acesso dos usuários do sistema.</p>
+      </div>
+      <button class="btn btn-primary" id="btnNovoUsuario">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Novo usuário
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-row">
+      <div class="stat-chip">
+        <div class="stat-icon blue">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-num" id="statTotal">—</span>
+          <span class="stat-label">Usuários cadastrados</span>
+        </div>
+      </div>
+
+      <div class="stat-chip">
+        <div class="stat-icon amber">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-num" id="statAdmins">—</span>
+          <span class="stat-label">Administradores</span>
+        </div>
+      </div>
+
+      <div class="stat-chip">
+        <div class="stat-icon green">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-num" id="statAtivos">—</span>
+          <span class="stat-label">Usuários ativos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table section -->
+    <div class="section-header">
+      <div>
+        <div class="section-title">Usuários registrados</div>
+        <div class="section-desc">Fisioterapeutas e administradores com acesso ao sistema.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-action-bar">
+        <div class="table-search">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" id="buscaUsuario" placeholder="Buscar por nome ou e-mail…" autocomplete="off">
+        </div>
+        <select class="filter-select" id="filtroPerfil" title="Filtrar por perfil">
+          <option value="">Todos os perfis</option>
+          <option value="ADMIN">Administrador</option>
+          <option value="FISIOTERAPEUTA">Fisioterapeuta</option>
+        </select>
+        <select class="filter-select" id="filtroStatus" title="Filtrar por status">
+          <option value="">Todos os status</option>
+          <option value="ativo">Ativos</option>
+          <option value="inativo">Inativos</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table" id="tabelaUsuarios">
+          <thead>
+            <tr>
+              <th>Usuário</th>
+              <th>E-mail</th>
+              <th>CRF</th>
+              <th>Perfil</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="6" class="empty-row">Carregando usuários…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!--  Modal — Criar / Editar Usuário             -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="usuarioModalBackdrop"
+    role="dialog" aria-modal="true" aria-labelledby="usuarioModalTitulo">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="usuarioModalTitulo">Novo usuário</h2>
+        <button class="btn btn-ghost btn-icon" id="btnFecharUsuarioModal" aria-label="Fechar">
+          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="formUsuario" novalidate>
+          <input type="hidden" id="usuarioId">
+
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="form-label" for="usuarioNome">Nome completo <span class="req">*</span></label>
+            <input type="text" class="form-input" id="usuarioNome"
+              placeholder="Dr(a). Nome Sobrenome" required autocomplete="name">
+          </div>
+
+          <div class="form-row cols-2" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label class="form-label" for="usuarioCrf">CRF <span class="req">*</span></label>
+              <input type="text" class="form-input" id="usuarioCrf"
+                placeholder="UF-000000" required autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="usuarioTelefone">Telefone</label>
+              <input type="tel" class="form-input" id="usuarioTelefone"
+                placeholder="(00) 00000-0000" maxlength="15" autocomplete="tel">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="form-label" for="usuarioEmail">E-mail <span class="req">*</span></label>
+            <input type="email" class="form-input" id="usuarioEmail"
+              placeholder="nome@fisioclinic.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="form-label" for="usuarioPerfil">Perfil de acesso <span class="req">*</span></label>
+            <select class="form-select" id="usuarioPerfil" required>
+              <option value="FISIOTERAPEUTA">Fisioterapeuta</option>
+              <option value="ADMIN">Administrador</option>
+            </select>
+          </div>
+
+          <div id="senhaWrap">
+            <div class="form-group">
+              <label class="form-label" for="usuarioSenha">Senha inicial</label>
+              <input type="password" class="form-input" id="usuarioSenha"
+                placeholder="Deixar vazio para usar Fisio@123" autocomplete="new-password" minlength="8">
+              <span class="form-hint">Mínimo 8 caracteres. Se vazio, a senha padrão será <strong>Fisio@123</strong>.</span>
+            </div>
+          </div>
+
+          <span class="form-error" id="erroModalUsuario" style="display:none;"></span>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelarUsuario">Cancelar</button>
+        <button type="submit" form="formUsuario" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!--  Modal — Redefinir Senha                    -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="senhaModalBackdrop"
+    role="dialog" aria-modal="true" aria-labelledby="senhaModalTitulo">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="senhaModalTitulo">Redefinir senha</h2>
+        <button class="btn btn-ghost btn-icon" id="btnFecharSenhaModal" aria-label="Fechar">
+          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="senha-info">
+          Você está redefinindo a senha de <span class="reset-target-nome" id="senhaUsuarioNome"></span>.
+          O usuário deverá trocar a senha no próximo acesso.
+        </div>
+        <form id="formResetSenha" novalidate>
+          <input type="hidden" id="senhaUsuarioId">
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="form-label" for="resetNovaSenha">Nova senha <span class="req">*</span></label>
+            <input type="password" class="form-input" id="resetNovaSenha"
+              placeholder="Mínimo 8 caracteres" required minlength="8" autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="resetConfirmarSenha">Confirmar nova senha <span class="req">*</span></label>
+            <input type="password" class="form-input" id="resetConfirmarSenha"
+              placeholder="Repita a nova senha" required autocomplete="new-password">
+          </div>
+          <span class="form-error" id="erroModalSenha" style="display:none;"></span>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelarSenha">Cancelar</button>
+        <button type="submit" form="formResetSenha" class="btn btn-primary">Redefinir senha</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../js/pages/usuarios.js"></script>
+</body>
+</html>
