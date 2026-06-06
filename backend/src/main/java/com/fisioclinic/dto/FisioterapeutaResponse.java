@@ -6,7 +6,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * DTO de saída — nunca expõe senhaHash.
+ * ─────────────────────────────────────────────────────────────────────────────
+ * FisioterapeutaResponse — Saída da API para leitura de fisioterapeuta
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — response)
+ *
+ * Nunca expõe senhaHash — o campo é omitido intencionalmente neste record.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 public record FisioterapeutaResponse(
 

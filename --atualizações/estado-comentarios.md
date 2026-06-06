@@ -105,76 +105,78 @@ Estilo adotado: **bloco de cabeçalho no topo + comentários de seção internos
 
 ---
 
-## ⏳ Backend — Models / Entities (1/10 concluídos)
+## ✅ Backend — Models / Entities (10/10 concluídos)
 
 | Arquivo | Status |
 |---|---|
 | `model/Paciente.java` | ✅ Comentado |
-| `model/Fisioterapeuta.java` | ⏳ Pendente |
-| `model/Sala.java` | ⏳ Pendente |
-| `model/Sessao.java` | ⏳ Pendente |
-| `model/Anamnese.java` | ⏳ Pendente |
-| `model/PlanoTratamento.java` | ⏳ Pendente |
-| `model/Evolucao.java` | ⏳ Pendente |
-| `model/ContatoEmergencia.java` | ⏳ Pendente |
-| `model/ConvenioPaciente.java` | ⏳ Pendente |
-| `model/AtualizacaoSistema.java` | ⏳ Pendente |
+| `model/Fisioterapeuta.java` | ✅ Comentado |
+| `model/Sala.java` | ✅ Comentado |
+| `model/Sessao.java` | ✅ Comentado |
+| `model/Anamnese.java` | ✅ Comentado |
+| `model/PlanoTratamento.java` | ✅ Comentado |
+| `model/Evolucao.java` | ✅ Comentado |
+| `model/ContatoEmergencia.java` | ✅ Comentado |
+| `model/ConvenioPaciente.java` | ✅ Comentado |
+| `model/AtualizacaoSistema.java` | ✅ Comentado |
 
 ---
 
-## ⏳ Backend — Repositories (0/10 concluídos)
+## ✅ Backend — Repositories (10/10 concluídos)
 
 | Arquivo | Status |
 |---|---|
-| `repository/PacienteRepository.java` | ⏳ Pendente |
-| `repository/FisioterapeutaRepository.java` | ⏳ Pendente |
-| `repository/SalaRepository.java` | ⏳ Pendente |
-| `repository/SessaoRepository.java` | ⏳ Pendente |
-| `repository/AnamneseRepository.java` | ⏳ Pendente |
-| `repository/PlanoTratamentoRepository.java` | ⏳ Pendente |
-| `repository/EvolucaoRepository.java` | ⏳ Pendente |
-| `repository/ContatoEmergenciaRepository.java` | ⏳ Pendente |
-| `repository/ConvenioPacienteRepository.java` | ⏳ Pendente |
-| `repository/AtualizacaoSistemaRepository.java` | ⏳ Pendente |
+| `repository/PacienteRepository.java` | ✅ Comentado |
+| `repository/FisioterapeutaRepository.java` | ✅ Comentado |
+| `repository/SalaRepository.java` | ✅ Comentado |
+| `repository/SessaoRepository.java` | ✅ Comentado |
+| `repository/AnamneseRepository.java` | ✅ Comentado |
+| `repository/PlanoTratamentoRepository.java` | ✅ Comentado |
+| `repository/EvolucaoRepository.java` | ✅ Comentado |
+| `repository/ContatoEmergenciaRepository.java` | ✅ Comentado |
+| `repository/ConvenioPacienteRepository.java` | ✅ Comentado |
+| `repository/AtualizacaoSistemaRepository.java` | ✅ Comentado |
 
 ---
 
-## ⏳ Backend — DTOs (0/18 concluídos)
+## ✅ Backend — DTOs (19/19 concluídos)
 
 | Arquivo | Status |
 |---|---|
-| `dto/PacienteDTO.java` | ⏳ Pendente |
-| `dto/PacienteResponse.java` | ⏳ Pendente |
-| `dto/LoginDTO.java` | ⏳ Pendente |
-| `dto/LoginResponse.java` | ⏳ Pendente |
-| `dto/AlterarSenhaDTO.java` | ⏳ Pendente |
-| `dto/FisioterapeutaDTO.java` | ⏳ Pendente |
-| `dto/FisioterapeutaResponse.java` | ⏳ Pendente |
-| `dto/SalaDTO.java` | ⏳ Pendente |
-| `dto/SalaResponse.java` | ⏳ Pendente |
-| `dto/SessaoDTO.java` | ⏳ Pendente |
-| `dto/SessaoResponse.java` | ⏳ Pendente |
-| `dto/AtualizarStatusDTO.java` | ⏳ Pendente |
-| `dto/AnamneseDTO.java` | ⏳ Pendente |
-| `dto/AnamneseResponse.java` | ⏳ Pendente |
-| `dto/PlanoTratamentoDTO.java` | ⏳ Pendente |
-| `dto/PlanoTratamentoResponse.java` | ⏳ Pendente |
-| `dto/EvolucaoDTO.java` | ⏳ Pendente |
-| `dto/EvolucaoResponse.java` | ⏳ Pendente |
+| `dto/PacienteDTO.java` | ✅ Comentado |
+| `dto/PacienteResponse.java` | ✅ Comentado |
+| `dto/LoginDTO.java` | ✅ Comentado |
+| `dto/TokenResponse.java` | ✅ Comentado |
+| `dto/SenhaDTO.java` | ✅ Comentado |
+| `dto/FisioterapeutaDTO.java` | ✅ Comentado |
+| `dto/FisioterapeutaResponse.java` | ✅ Comentado |
+| `dto/SalaDTO.java` | ✅ Comentado |
+| `dto/SalaResponse.java` | ✅ Comentado |
+| `dto/SessaoDTO.java` | ✅ Comentado |
+| `dto/SessaoResponse.java` | ✅ Comentado |
+| `dto/StatusDTO.java` | ✅ Comentado |
+| `dto/AnamneseDTO.java` | ✅ Comentado |
+| `dto/AnamneseResponse.java` | ✅ Comentado |
+| `dto/PlanoTratamentoDTO.java` | ✅ Comentado |
+| `dto/PlanoTratamentoResponse.java` | ✅ Comentado |
+| `dto/EvolucaoDTO.java` | ✅ Comentado |
+| `dto/EvolucaoResponse.java` | ✅ Comentado |
+| `dto/AtualizacaoSistemaResponse.java` | ✅ Comentado |
 
 ---
 
-## ⏳ Backend — Config e Exceptions (0/7 concluídos)
+## ✅ Backend — Config e Exceptions (8/8 concluídos)
 
 | Arquivo | Status |
 |---|---|
-| `config/JwtUtil.java` | ⏳ Pendente |
-| `config/JwtFilter.java` | ⏳ Pendente |
-| `config/SecurityConfig.java` | ⏳ Pendente |
-| `config/DataInitializer.java` | ⏳ Pendente |
-| `exception/GlobalExceptionHandler.java` | ⏳ Pendente |
-| `exception/ResourceNotFoundException.java` | ⏳ Pendente |
-| `exception/ConflictException.java` | ⏳ Pendente |
+| `config/JwtUtil.java` | ✅ Comentado |
+| `config/JwtFilter.java` | ✅ Comentado |
+| `config/SecurityConfig.java` | ✅ Comentado |
+| `config/DataInitializer.java` | ✅ Comentado |
+| `exception/GlobalExceptionHandler.java` | ✅ Comentado |
+| `exception/ResourceNotFoundException.java` | ✅ Comentado |
+| `exception/ConflictException.java` | ✅ Comentado |
+| `exception/UnauthorizedException.java` | ✅ Comentado |
 
 ---
 
@@ -189,8 +191,8 @@ Estilo adotado: **bloco de cabeçalho no topo + comentários de seção internos
 | Frontend HTML | 6 | 6 |
 | Backend Entry + Controllers | 10 | 10 |
 | Backend Services | 9 | 9 |
-| Backend Models | 1 | 10 |
-| Backend Repositories | 0 | 10 |
-| Backend DTOs | 0 | 18 |
-| Backend Config/Exceptions | 0 | 7 |
-| **Total** | **50** | **94** |
+| Backend Models | 10 | 10 |
+| Backend Repositories | 10 | 10 |
+| Backend DTOs | 19 | 19 |
+| Backend Config/Exceptions | 8 | 8 |
+| **Total** | **96** | **96** |

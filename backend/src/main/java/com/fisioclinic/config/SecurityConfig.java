@@ -19,6 +19,29 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * SecurityConfig — Configuração central de segurança da aplicação
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Config / Segurança
+ *
+ * Modelo de autenticação: JWT stateless (sem sessão HTTP).
+ * CORS: allowedOriginPatterns("*") com allowCredentials=false — compatível
+ *   com requisições do frontend local (localhost:5500, localhost:3000).
+ *   Em produção, restringir para o domínio real da aplicação.
+ *
+ * Matriz de autorização:
+ *  - /api/auth/login          → público (sem token)
+ *  - /api/pacientes/**        → qualquer usuário autenticado
+ *  - /api/fisioterapeutas/**  → somente ADMIN
+ *  - /api/salas/**            → somente ADMIN
+ *  - /api/atualizacoes        → qualquer usuário autenticado
+ *  - /api/anamneses/**        → qualquer usuário autenticado
+ *  - demais endpoints         → qualquer usuário autenticado
+ *
+ * Erros padronizados: 401 Não autenticado / 403 Acesso negado em JSON.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity

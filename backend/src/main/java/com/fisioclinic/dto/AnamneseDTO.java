@@ -7,6 +7,20 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AnamneseDTO — Entrada para criação de anamnese (Módulo 2)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — request)
+ *
+ * avaliacaoFisica: Map<String, Object> serializado como JSONB no banco.
+ *   Estrutura esperada (não validada pelo Bean Validation — validação no Service):
+ *   { "postura": "...", "adm": "...", "forca_muscular": "...",
+ *     "eva": 0-10, "testes_especiais": [], "goniometria": "..." }
+ *
+ * Dados clínicos são sensíveis pela LGPD art. 11 — nunca logar este DTO.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record AnamneseDTO(
 
     @NotNull(message = "Paciente é obrigatório")

@@ -9,8 +9,16 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * DTO de saída — estrutura plana que espelha o que o frontend consome.
- * Combina Paciente + ContatoEmergencia + ConvenioPaciente em um único objeto JSON.
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PacienteResponse — Saída da API para leitura de paciente
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — response)
+ * Módulo: 1 — Cadastro do paciente
+ *
+ * Estrutura plana que agrega Paciente + ContatoEmergencia + ConvenioPaciente
+ * em um único objeto JSON — espelha exatamente o que o frontend consome
+ * no formulário de edição e na listagem de pacientes.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 public record PacienteResponse(
 

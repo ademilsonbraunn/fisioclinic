@@ -10,6 +10,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * EvolucaoDTO — Entrada para registro de evolução SOAP (Módulo 5)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — request)
+ *
+ * Os quatro campos SOAP são obrigatórios (subjetivo, objetivo, avaliacao,
+ * planoEvolucao) — exigência do CFM para prontuário eletrônico.
+ * evaAntes / evaDepois: escala 0–10 (EVA), validada com @Min/@Max.
+ * dataHora: se null, o Service assume LocalDateTime.now() no momento do POST.
+ * Nunca logar este DTO — contém dados clínicos sensíveis (LGPD art. 11).
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record EvolucaoDTO(
 
     @NotNull(message = "sessao_id é obrigatório")

@@ -9,6 +9,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * EvolucaoRepository — Repositório JPA para a entidade Evolucao
+ * ─────────────────────────────────────────────────────────────────────────────
+ * findByPacienteId(): histórico completo de evoluções do paciente, mais
+ *   recente primeiro — usado na timeline do prontuário.
+ * findBySessaoId(): busca a evolução de uma sessão específica. Retorna
+ *   Optional pois nem toda sessão tem evolução registrada ainda.
+ * existsBySessaoId(): verificação rápida antes de criar nova evolução —
+ *   impõe a regra "apenas uma evolução por sessão".
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public interface EvolucaoRepository extends JpaRepository<Evolucao, UUID> {
 
     @Query("SELECT e FROM Evolucao e JOIN FETCH e.sessao JOIN FETCH e.paciente " +

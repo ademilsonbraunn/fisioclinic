@@ -6,6 +6,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * EvolucaoResponse — Saída da API para leitura de evolução (Módulo 5)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — response)
+ *
+ * Aninha SessaoResumo, PacienteResumo e FisioterapeutaResumo para que o
+ * frontend renderize a linha do tempo do prontuário sem chamadas extras.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record EvolucaoResponse(
 
     UUID id,

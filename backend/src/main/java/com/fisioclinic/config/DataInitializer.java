@@ -8,6 +8,23 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * DataInitializer — Seed de dados executado na inicialização da aplicação
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Config
+ *
+ * Cria o usuário ADMIN padrão somente se não existir nenhum ADMIN no banco
+ * (verificação via existsByPerfil). Idempotente: seguro de executar em
+ * toda inicialização sem duplicar dados.
+ *
+ * Credenciais padrão:
+ *  E-mail: admin@fisioclinic.com
+ *  Senha : Admin@123  ← trocar após o primeiro acesso
+ *
+ * Em produção, considere remover ou desabilitar este bean após o primeiro deploy.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

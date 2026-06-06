@@ -6,6 +6,25 @@ import lombok.*;
 
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * ConvenioPaciente — Entidade JPA que representa o vínculo financeiro (Módulo 1)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Model (mapeamento objeto-relacional)
+ * Tabela: convenios_paciente
+ *
+ * Registra se o paciente é particular ou conveniado e os dados do plano.
+ * tipoPagamento é obrigatório; nomeConvenio, numCarteirinha, validadePlano e
+ * responsavelFinanceiro são relevantes apenas quando tipo = CONVENIO.
+ *
+ * validadePlano armazenado no formato "YYYY-MM" (ex: "2026-12") para
+ * facilitar comparações de validade sem precisar de dia exato.
+ *
+ * Enum TipoPagamento:
+ *  - PARTICULAR: sem vínculo com plano de saúde
+ *  - CONVENIO:   atendimento coberto (total ou parcialmente) por plano
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Entity
 @Table(name = "convenios_paciente")
 @Getter

@@ -9,6 +9,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PacienteRepository — Repositório JPA para a entidade Paciente
+ * ─────────────────────────────────────────────────────────────────────────────
+ * buscar(): query JPQL com filtro opcional por nome ou CPF. O parâmetro
+ *   :busca pode ser null (lista todos) ou uma string parcial (busca substring).
+ *   Usar LOWER() garante busca case-insensitive sem índice funcional no banco.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public interface PacienteRepository extends JpaRepository<Paciente, UUID> {
 
     boolean existsByCpf(String cpf);

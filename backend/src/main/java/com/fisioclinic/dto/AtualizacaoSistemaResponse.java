@@ -6,6 +6,16 @@ import com.fisioclinic.model.AtualizacaoSistema;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AtualizacaoSistemaResponse — Saída da API para o card de novidades
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — response)
+ *
+ * Inclui método de fábrica estático from(AtualizacaoSistema) para conversão
+ * direta no Service sem precisar de um mapper separado.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record AtualizacaoSistemaResponse(
         UUID id,
         String titulo,

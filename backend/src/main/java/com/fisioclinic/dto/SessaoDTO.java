@@ -7,6 +7,18 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * SessaoDTO — Entrada para criação e atualização de sessão (Módulo 4)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — request)
+ *
+ * Todos os campos usam @JsonProperty com snake_case para compatibilidade com
+ * o frontend JavaScript (convenção camelCase do Java → snake_case do JS).
+ * tipoSessao e status recebem os valores do enum como string JSON
+ *   (ex: "SESSAO", "AGENDADO") — Jackson faz a deserialização automática.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record SessaoDTO(
 
     @JsonProperty("paciente_id")

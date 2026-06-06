@@ -7,6 +7,16 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AnamneseResponse — Saída da API para leitura de anamnese (Módulo 2)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — response)
+ *
+ * Aninha PacienteResumo e FisioterapeutaResumo para que o frontend exiba
+ * nome e CPF do paciente e nome do fisioterapeuta sem requisições extras.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record AnamneseResponse(
 
     UUID id,

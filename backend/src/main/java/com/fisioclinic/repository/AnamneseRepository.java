@@ -9,6 +9,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AnamneseRepository — Repositório JPA para a entidade Anamnese
+ * ─────────────────────────────────────────────────────────────────────────────
+ * findByPacienteId(): histórico completo de avaliações do paciente, mais
+ *   recente primeiro.
+ * findUltimaByPacienteId(): busca a avaliação mais recente — usada pelo
+ *   PlanoTratamentoService para pré-preencher o diagnóstico com base na
+ *   última anamnese.
+ * Ambas usam JOIN FETCH para evitar N+1 ao carregar paciente e fisioterapeuta.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public interface AnamneseRepository extends JpaRepository<Anamnese, UUID> {
 
     @Query("""

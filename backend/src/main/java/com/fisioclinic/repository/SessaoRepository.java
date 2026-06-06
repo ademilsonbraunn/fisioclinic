@@ -9,6 +9,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * SessaoRepository — Repositório JPA para a entidade Sessao
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Todas as queries usam JOIN FETCH para evitar o problema N+1: paciente,
+ * fisioterapeuta e sala são carregados em uma única query SQL.
+ *
+ * findByPeriodo(): usada pela agenda semanal — retorna todas as sessões
+ *   dentro de um intervalo [inicio, fim).
+ * findByPacienteId(): histórico de sessões de um paciente, ordem desc.
+ * findConflitos(): verifica sobreposição de horário na mesma sala — lógica
+ *   de intervalo: A e B se sobrepõem quando A.inicio < B.fim && B.inicio < A.fim.
+ *   Exclui status FALTOU e CANCELADO pois não ocupam fisicamente a sala.
+ * findConflitosComExclusao(): variante usada ao editar sessão existente
+ *   (exclui a própria sessão da verificação de conflito).
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public interface SessaoRepository extends JpaRepository<Sessao, UUID> {
 
     @Query("""

@@ -4,6 +4,15 @@
 
 ## 📅 06/06/2026 — Sábado
 
+### ⏰ Geral — Comentários no backend (Models, Repositories, DTOs, Config, Exceptions)
+- **Comentários adicionados em 46 arquivos do backend** (continuação da sessão de documentação iniciada em 05/06):
+  - **Models (9 arquivos)**: `Fisioterapeuta`, `Sala`, `Sessao`, `Anamnese`, `PlanoTratamento`, `Evolucao`, `ContatoEmergencia`, `ConvenioPaciente`, `AtualizacaoSistema` — blocos de cabeçalho com tabela, relacionamentos, regras de negócio e observações de LGPD onde aplicável
+  - **Repositories (10 arquivos)**: documentação das queries customizadas, estratégias JOIN FETCH anti-N+1, lógica de intervalo de conflito de sessões e delete+insert de subentidades
+  - **DTOs (19 arquivos)**: todos os records de request/response documentados com contexto de uso (POST vs PATCH, campos sensíveis, estrutura esperada de JSONB)
+  - **Config (4 arquivos)**: `JwtUtil` (claims, algoritmo), `JwtFilter` (fluxo de autenticação), `SecurityConfig` (matriz de autorização), `DataInitializer` (seed idempotente)
+  - **Exceptions (4 arquivos)**: `GlobalExceptionHandler` (mapeamento de erros), `ResourceNotFoundException`, `ConflictException`, `UnauthorizedException`
+- **Atualizado** `--atualizações/estado-comentarios.md`: 100% dos arquivos comentados (96/96)
+
 ### ⏰ Geral — Correções de segurança e performance (revisão de código)
 - **Segurança — XSS corrigido** (`frontend/js/utils/auth.js`): substituído `innerHTML` com template literal por `createElement` + `textContent` no dropdown do usuário; elimina vetor de XSS via campo `nome`
 - **Segurança — Autenticação obrigatória em pacientes** (`backend/.../SecurityConfig.java`): removido `permitAll()` na rota `/api/pacientes/**`; agora exige token JWT; `frontend/js/api/pacientes.js` atualizado para importar `getToken()` de `auth.js` em vez de ler `localStorage` diretamente

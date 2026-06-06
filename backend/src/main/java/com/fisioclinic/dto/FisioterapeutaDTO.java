@@ -6,9 +6,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * DTO de entrada para criação (POST) e atualização parcial (PATCH) de fisioterapeuta.
- * Para POST, use @Valid — campos marcados com @Not* serão validados.
- * Para PATCH, não use @Valid — campos nulos significam "manter valor atual".
+ * ─────────────────────────────────────────────────────────────────────────────
+ * FisioterapeutaDTO — Entrada para criação e atualização de fisioterapeuta
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — request)
+ *
+ * POST:  usar @Valid — campos marcados com @Not* são validados.
+ * PATCH: não usar @Valid — campos nulos significam "manter valor atual".
+ *
+ * Campo senha: plaintext recebido aqui, nunca persisto — o FisioterapeutaService
+ * aplica BCrypt antes de gravar senhaHash. Se null no PATCH, a senha não é alterada.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 public record FisioterapeutaDTO(
 

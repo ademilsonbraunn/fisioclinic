@@ -7,6 +7,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PlanoTratamentoResponse — Saída da API para leitura do plano (Módulo 3)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — response)
+ *
+ * AnamneseResumo: inclui apenas id, dataAvaliacao e queixaPrincipal —
+ *   suficiente para o prontuário exibir o vínculo com a avaliação de origem
+ *   sem precisar carregar todos os campos da anamnese.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record PlanoTratamentoResponse(
 
     UUID id,

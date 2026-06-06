@@ -12,6 +12,26 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * GlobalExceptionHandler — Tratamento centralizado de exceções da API
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Exception / @RestControllerAdvice
+ *
+ * Garante que todas as respostas de erro seguem o padrão:
+ *   { "erro": "mensagem", "status": <código HTTP> }
+ *
+ * Mapeamento de exceções:
+ *  - ResourceNotFoundException → 404 Not Found
+ *  - ConflictException         → 409 Conflict
+ *  - MethodArgumentNotValidException → 400 Bad Request + mapa de campos inválidos
+ *  - UnauthorizedException     → 401 Unauthorized
+ *  - Exception (genérico)      → 500 Internal Server Error (loga o stack trace)
+ *
+ * O handler genérico loga "Erro interno não tratado" sem incluir dados do
+ * request na mensagem — evita vazamento de informações sensíveis nos logs.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

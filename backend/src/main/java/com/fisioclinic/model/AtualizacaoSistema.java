@@ -10,6 +10,22 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AtualizacaoSistema — Entidade JPA para o card de novidades do sistema
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Model (mapeamento objeto-relacional)
+ * Tabela: atualizacoes_sistema
+ *
+ * Exibida no dashboard como "O que há de novo" para informar os usuários
+ * sobre funcionalidades lançadas. O conteúdo deve ser escrito em linguagem
+ * acessível — sem jargão técnico (ver CLAUDE.md, seção Card de Atualizações).
+ *
+ * tipo: NOVO_RECURSO | MELHORIA | CORRECAO (string — validado no Service).
+ * ativo = false oculta o card sem excluir o registro histórico.
+ * versao: número da versão do sistema na data do lançamento (ex: "v1.2").
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Entity
 @Table(name = "atualizacoes_sistema")
 @EntityListeners(AuditingEntityListener.class)

@@ -6,6 +6,17 @@ import com.fisioclinic.model.Sessao;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * SessaoResponse — Saída da API para leitura de sessão (Módulo 4)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — response)
+ *
+ * Aninha records resumidos (PacienteResumo, FisioterapeutaResumo, SalaResumo)
+ * para evitar N+1 no frontend — o JS recebe todos os dados necessários para
+ * renderizar o card de agenda sem precisar de chamadas adicionais.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record SessaoResponse(
 
     UUID id,

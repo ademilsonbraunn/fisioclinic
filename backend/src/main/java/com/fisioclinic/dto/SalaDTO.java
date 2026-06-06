@@ -5,6 +5,13 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * SalaDTO — Entrada para criação e atualização de sala/box
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — request)
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record SalaDTO(
 
     @NotBlank(message = "Nome é obrigatório")

@@ -10,6 +10,18 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PlanoTratamentoDTO — Entrada para criação do plano terapêutico (Módulo 3)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — request)
+ *
+ * frequenciaSemanal: validado entre 1 e 7 (máximo uma sessão por dia da semana).
+ * tecnicas: lista JSON de técnicas planejadas — valores livres (sem enum),
+ *   exemplos: "Ultrassom 1MHz", "TENS convencional", "Cinesioterapia".
+ * status: string "ativo" | "concluido" | "suspenso" — validado no Service.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 public record PlanoTratamentoDTO(
 
     @NotNull(message = "Paciente é obrigatório")

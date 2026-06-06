@@ -11,6 +11,26 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Sessao — Entidade JPA que representa um agendamento de atendimento (Módulo 4)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Model (mapeamento objeto-relacional)
+ * Tabela: sessoes
+ *
+ * Elo central do fluxo clínico: vincula paciente + fisioterapeuta + sala em
+ * um slot de tempo. O sessao.id é a chave estrangeira consumida pelo Módulo 5
+ * (Evolucao) — cada evolução pertence a exatamente uma sessão.
+ *
+ * Enums centralizados aqui (reutilizados em SessaoService, DTOs e frontend):
+ *  TipoSessao:   AVALIACAO | SESSAO | REAVALIACAO | ALTA
+ *  StatusSessao: AGENDADO | CONFIRMADO | REALIZADO | FALTOU | CANCELADO
+ *
+ * motivoCancelamento é preenchido apenas quando status = CANCELADO.
+ * dataHoraFim e duracaoMinutos são opcionais — calculados pela recepção ou
+ * ao registrar a evolução.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Entity
 @Table(name = "sessoes")
 @EntityListeners(AuditingEntityListener.class)

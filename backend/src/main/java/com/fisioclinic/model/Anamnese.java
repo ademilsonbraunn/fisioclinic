@@ -15,6 +15,28 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Anamnese — Entidade JPA que representa a avaliação inicial do paciente (M2)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Model (mapeamento objeto-relacional)
+ * Tabela: anamneses
+ *
+ * Contém os dados coletados na primeira consulta: queixa, histórico de saúde
+ * e avaliação física. O campo avaliacaoFisica é JSONB — estrutura flexível
+ * para armazenar postura, ADM, força muscular, goniometria e testes especiais
+ * sem forçar um schema fixo (cada especialidade usa campos diferentes).
+ *
+ * Relacionamentos:
+ *  - paciente (ManyToOne): a anamnese pertence a um paciente
+ *  - fisioterapeuta (ManyToOne): quem realizou a avaliação (opcional)
+ *
+ * Este registro é consumido pelo Módulo 3 (PlanoTratamento) para embasar o
+ * diagnóstico fisioterapêutico.
+ *
+ * Dados clínicos são sensíveis pela LGPD art. 11 — nunca logar os campos TEXT.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Entity
 @Table(name = "anamneses")
 @EntityListeners(AuditingEntityListener.class)

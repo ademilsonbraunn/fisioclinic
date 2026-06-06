@@ -11,6 +11,22 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * JwtUtil — Utilitário para geração e validação de tokens JWT
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Config / Segurança
+ *
+ * Claims incluídas no token:
+ *  - subject: email do fisioterapeuta (identificador de autenticação)
+ *  - perfil:  FISIOTERAPEUTA | ADMIN (usado pelo SecurityConfig para autorização)
+ *  - nome:    nome do profissional (exibido no frontend sem decodificar o JWT)
+ *
+ * Algoritmo: HMAC-SHA (tamanho derivado do comprimento da chave secreta).
+ * jwt.secret deve ter no mínimo 32 chars para HS256 — trocar em produção.
+ * jwt.expiration em ms (padrão: 28800000 = 8 horas).
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Component
 public class JwtUtil {
 

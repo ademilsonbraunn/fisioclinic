@@ -8,6 +8,16 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PlanoTratamentoRepository — Repositório JPA para a entidade PlanoTratamento
+ * ─────────────────────────────────────────────────────────────────────────────
+ * findByPacienteId(): lista todos os planos do paciente, mais recente primeiro.
+ * findByPacienteIdAndStatus(): filtra por status — usado pelo frontend para
+ *   exibir apenas planos "ativo" no prontuário (ignora concluídos/suspensos).
+ * Ambas carregam fisioterapeuta e anamnese via JOIN FETCH para evitar N+1.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Repository
 public interface PlanoTratamentoRepository extends JpaRepository<PlanoTratamento, UUID> {
 

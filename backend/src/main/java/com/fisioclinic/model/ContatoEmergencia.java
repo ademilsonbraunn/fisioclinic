@@ -6,6 +6,21 @@ import lombok.*;
 
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * ContatoEmergencia — Entidade JPA que representa o contato de emergência (M1)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Model (mapeamento objeto-relacional)
+ * Tabela: contatos_emergencia
+ *
+ * Relação 1:1 com Paciente (UniqueConstraint em paciente_id):
+ * cada paciente tem no máximo um contato de emergência.
+ * Todos os campos são opcionais — o contato pode ser cadastrado depois.
+ *
+ * Enum Parentesco define as opções válidas de grau de parentesco,
+ * impedindo que o frontend envie valores livres neste campo.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Entity
 @Table(name = "contatos_emergencia",
        uniqueConstraints = @UniqueConstraint(columnNames = "paciente_id"))

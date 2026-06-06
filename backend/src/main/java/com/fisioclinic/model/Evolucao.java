@@ -14,6 +14,30 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Evolucao — Entidade JPA que representa o registro clínico SOAP (Módulo 5)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Model (mapeamento objeto-relacional)
+ * Tabela: evolucoes
+ *
+ * Registro imutável após criação (Resolução CFM 1.821/07): uma vez registrado,
+ * o prontuário não deve ser alterado — a camada de serviço deve impor isso.
+ *
+ * Campos SOAP mapeados para colunas do schema existente:
+ *  subjetivo    → coluna "subjetivo"       (S — relato do paciente)
+ *  objetivo     → coluna "objetivo"        (O — achados clínicos)
+ *  avaliacao    → coluna "avaliacao_clinica" (A — análise do fisioterapeuta)
+ *  planoEvolucao → coluna "plano"          (P — conduta para próxima sessão)
+ *
+ * tecnicasRealizadas: lista JSON de técnicas efetivamente executadas
+ *   (pode diferir do plano de tratamento).
+ * evaAntes / evaDepois: escala EVA 0–10 para acompanhamento da dor.
+ * codigoTuss: código TUSS/CBHPM para faturamento de convênio (opcional).
+ *
+ * Dados clínicos são sensíveis pela LGPD art. 11 — nunca logar campos TEXT.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Entity
 @Table(name = "evolucoes")
 @EntityListeners(AuditingEntityListener.class)

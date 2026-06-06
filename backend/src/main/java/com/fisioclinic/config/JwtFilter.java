@@ -15,6 +15,23 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * JwtFilter — Filtro de autenticação JWT executado uma vez por requisição
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Config / Segurança
+ *
+ * Fluxo por requisição:
+ *  1. Extrai o token do header "Authorization: Bearer <token>"
+ *  2. Valida assinatura e expiração via JwtUtil
+ *  3. Verifica se o fisioterapeuta ainda está ativo no banco
+ *  4. Se tudo ok, registra a autenticação no SecurityContext com a role
+ *     "ROLE_<perfil>" (ex: ROLE_ADMIN, ROLE_FISIOTERAPEUTA)
+ *
+ * A consulta ao banco no passo 3 impede que tokens válidos de profissionais
+ * desativados continuem autenticando — custo: 1 SELECT por requisição.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {

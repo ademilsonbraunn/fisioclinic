@@ -15,6 +15,24 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PlanoTratamento — Entidade JPA que representa o plano terapêutico (Módulo 3)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Model (mapeamento objeto-relacional)
+ * Tabela: planos_tratamento
+ *
+ * Gerado a partir da Anamnese (M2) e consumido pelo Agendamento (M4): os
+ * campos frequenciaSemanal e numSessoesEstimado orientam a criação das sessões.
+ *
+ * diagnosticoCif: diagnóstico segundo a Classificação Internacional de
+ *   Funcionalidade (CIF) — campo obrigatório pelo CFM.
+ * cid10: opcional, código CID-10 para faturamento de convênio.
+ * tecnicas: lista JSON de técnicas e recursos fisioterapêuticos planejados.
+ * status: "ativo" | "concluido" | "suspenso" — string simples (candidato a
+ *   enum em refatoração futura, ver issue no corrigirprocedimentos.md #19).
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Entity
 @Table(name = "planos_tratamento")
 @EntityListeners(AuditingEntityListener.class)

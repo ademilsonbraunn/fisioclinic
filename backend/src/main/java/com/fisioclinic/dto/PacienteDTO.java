@@ -10,9 +10,21 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 /**
- * DTO de entrada para criação (POST) e atualização parcial (PATCH) de paciente.
- * Para POST, use @Valid no controller — os campos marcados com @Not* serão validados.
- * Para PATCH, não use @Valid — campos nulos significam "manter valor atual".
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PacienteDTO — Entrada para criação (POST) e atualização parcial (PATCH)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: DTO (Data Transfer Object — request)
+ * Módulo: 1 — Cadastro do paciente
+ *
+ * Agrega em um único record os dados do paciente, convênio e contato de
+ * emergência — evitando três requisições separadas no formulário de cadastro.
+ *
+ * POST:  usar @Valid no controller — campos marcados com @Not* são validados.
+ * PATCH: não usar @Valid — campos nulos significam "manter valor atual".
+ *
+ * CPF e telefone devem chegar sem máscara (apenas dígitos):
+ *   CPF = 11 chars, telefone = 11 chars (com DDD).
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 public record PacienteDTO(
 
