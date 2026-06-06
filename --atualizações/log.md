@@ -2,6 +2,33 @@
 
 ---
 
+## 📅 09/06/2026 — Terça-feira
+
+### ⏰ 17:00 — Backend
+- Criado `Alta.java` — entidade JPA mapeada para a tabela `altas` (M6)
+- Criado `AltaDTO.java` — DTO de request com validação (motivo, resultado, satisfacao_nota 1–5)
+- Criado `AltaResponse.java` — DTO de response com nested PacienteResumo, PlanoResumo, FisioterapeutaResumo
+- Criado `AltaRepository.java` — consultas JPA com JOIN FETCH; `existsByPacienteIdAndPlanoTratamentoId` previne duplicata por plano
+- `SessaoRepository`: adicionado `countByPacienteIdAndStatus` usado pelo AltaService para calcular sessões realizadas (M6)
+- Criado `AltaService.java` — valida paciente, plano e fisioterapeuta; calcula `num_sessoes_realizadas` automaticamente; marca plano como "concluido" ao registrar alta com plano vinculado
+- Criado `AltaController.java` — endpoints: `POST /api/altas`, `GET /api/altas/paciente/{id}`, `GET /api/altas/{id}`
+- `SecurityConfig`: adicionado `/api/altas/**` ao bloco autenticado
+
+### ⏰ 17:30 — Frontend
+- Criado `js/api/altas.js` — fetch wrapper: `criarAlta`, `listarAltasPaciente`, `buscarAlta`
+- Criado `pages/alta.html` — página standalone com formulário de alta (motivo, resultado, relatórios, retorno, satisfação)
+- Criado `js/pages/alta.js` — lógica completa: carrega paciente + planos + resumo do tratamento + altas existentes; valida e envia formulário
+- Criado `css/pages/alta.css` — estilos: seções colapsáveis, chips de motivo com semântica, estrelas de satisfação, rodapé fixo
+- `pages/prontuario.html`: adicionado botão "Registrar Alta" na toolbar da aba Evolução (M5 → M6)
+- `js/pages/prontuario.js`: botão "Registrar Alta" recebe href com paciente_id dinâmico
+
+### ⏰ 18:00 — Geral
+- `atualizacoes_sistema`: inserido card "Alta e Relatórios disponível" (v1.4, NOVO_RECURSO)
+- `CLAUDE.md`: Módulo 6 marcado como ✅ Concluído; versão atualizada v1.3 → v1.4
+- 🔢 Versão: v1.3 → v1.4 — conclusão do Módulo 6 (Alta e Relatórios)
+
+---
+
 ## 📅 08/06/2026 — Segunda-feira
 
 ### ⏰ 10:00 — Backend
