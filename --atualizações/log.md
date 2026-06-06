@@ -4,6 +4,21 @@
 
 ## 📅 07/06/2026 — Domingo
 
+### ⏰ 15:40 — Geral — Conclusão do Módulo 5 (Evolução Clínica SOAP)
+
+- **Validação obrigatória do backend executada (CLAUDE.md — 4 etapas):**
+  - Compilação: `mvn compile -q` — OK, sem erros
+  - Inicialização: `mvn spring-boot:run` — servidor iniciou corretamente (`Started FisioclinicApplication`)
+  - Endpoints testados com token JWT:
+    - `POST /api/evolucoes` → HTTP 201 ✅ (SOAP + EVA + técnicas JSONB persistidos)
+    - `GET /api/evolucoes/paciente/{id}` → HTTP 200 ✅ (histórico com 3 evoluções)
+    - `GET /api/evolucoes/sessao/{id}` → HTTP 200 ✅ (evolução por sessão retornada)
+    - `POST /api/evolucoes` (duplicado) → HTTP 409 ✅ (unicidade por sessão validada)
+  - Banco de dados: dados persistidos corretamente
+- **CLAUDE.md:** M5 marcado como ✅ Concluído; versão bumped v1.2 → v1.3
+- **`atualizacoes_sistema`:** registro inserido — "Evolução Clínica (SOAP) disponível" (v1.3, NOVO_RECURSO)
+- 🔢 Versão: v1.2 → v1.3 — conclusão do Módulo 5 (Evolução Clínica SOAP)
+
 ### ⏰ Frontend — Melhorias visuais e de UX (redesign de UI)
 
 - **`css/base.css` — Design tokens e shell global**
