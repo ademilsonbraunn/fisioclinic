@@ -22,17 +22,17 @@
 
 | # | Problema | Arquivo | Status |
 |---|----------|---------|--------|
-| 8 | CORS com wildcard `*` | `backend/.../config/SecurityConfig.java:81` | ⬜ Pendente |
-| 9 | Token com fallback para `localStorage` | `frontend/js/utils/auth.js:22` | ⬜ Pendente |
-| 10 | Inconsistência de token entre módulos API (pacientes.js usa localStorage) | `frontend/js/api/pacientes.js:21` | ⬜ Pendente |
-| 11 | Logs em nível DEBUG em produção (risco LGPD) | `backend/src/main/resources/application.properties:35` | ⬜ Pendente |
-| 12 | Ausência de paginação nas listagens de fisioterapeutas/salas | `FisioterapeutaService.java`, `SalaService.java` | ⬜ Pendente |
-| 13 | Memory leak — event listeners acumulados a cada renderização | `frontend/js/pages/pacientes.js:163` | ⬜ Pendente |
-| 14 | Erro de busca de CEP silenciado sem feedback ao usuário | `frontend/js/pages/pacientes.js` (buscarCEP) | ⬜ Pendente |
-| 15 | Sem logging de contexto nos erros de chamadas API | Todos os `frontend/js/api/*.js` | ⬜ Pendente |
-| 16 | Sem rotação de logs no backend (disco pode esgotar) | Ausência de `logback-spring.xml` | ⬜ Pendente |
-| 17 | URLs do backend hardcoded em 5+ arquivos JS | `frontend/js/api/pacientes.js`, `sessoes.js`, etc. | ⬜ Pendente |
-| 18 | Sem pipeline de CI/CD | Ausência de `.github/workflows/` | ⬜ Pendente |
+| 8 | CORS com wildcard `*` | `backend/.../config/SecurityConfig.java:81` | ✅ Concluído |
+| 9 | Token com fallback para `localStorage` | `frontend/js/utils/auth.js:22` | ✅ Concluído |
+| 10 | Inconsistência de token entre módulos API (pacientes.js usa localStorage) | `frontend/js/api/pacientes.js:21` | ✅ Concluído |
+| 11 | Logs em nível DEBUG em produção (risco LGPD) | `backend/src/main/resources/application.properties:35` | ✅ Concluído |
+| 12 | Ausência de paginação nas listagens de fisioterapeutas/salas | `FisioterapeutaService.java`, `SalaService.java` | ✅ Concluído |
+| 13 | Memory leak — event listeners acumulados a cada renderização | `frontend/js/pages/pacientes.js:163` | ✅ Concluído |
+| 14 | Erro de busca de CEP silenciado sem feedback ao usuário | `frontend/js/pages/pacientes.js` (buscarCEP) | ✅ Concluído |
+| 15 | Sem logging de contexto nos erros de chamadas API | Todos os `frontend/js/api/*.js` | ✅ Concluído |
+| 16 | Sem rotação de logs no backend (disco pode esgotar) | Ausência de `logback-spring.xml` | ✅ Concluído |
+| 17 | URLs do backend hardcoded em 5+ arquivos JS | `frontend/js/api/pacientes.js`, `sessoes.js`, etc. | ✅ Concluído |
+| 18 | Sem pipeline de CI/CD | Ausência de `.github/workflows/` | ✅ Concluído |
 
 ---
 

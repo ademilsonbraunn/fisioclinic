@@ -4,6 +4,21 @@
 
 ## 📅 06/06/2026 — Sábado
 
+### ⏰ Backend + Frontend — Itens "Possivelmente preocupantes" (revisão de código)
+- **#8 CORS restrito** (`SecurityConfig.java`): substituído `allowedOriginPatterns("*")` pela lista de origens lida de `cors.allowed-origins` em `application.properties`; wildcard removido
+- **#9 Token localStorage documentado** (`auth.js`): adicionado comentário explicando que o fallback para `localStorage` é intencional para o recurso "lembrar de mim"; tradeoff vs. cookies httpOnly registrado
+- **#10/#15/#17 API centralizada** (`frontend/js/`): criado `config.js` com `API_BASE_URL` único; todos os 6 módulos de API (`pacientes`, `sessoes`, `anamneses`, `planos`, `evolucoes`, `atualizacoes`) atualizados para importar de `config.js` e usar `getToken()` de `auth.js`; adicionado `console.error` com contexto de endpoint em todas as falhas de API
+- **#11 Nível de log seguro** (`application.properties`): `logging.level.com.fisioclinic` alterado de `DEBUG` fixo para `${LOG_LEVEL:INFO}`; em desenvolvimento, exportar `LOG_LEVEL=DEBUG`
+- **#12 Limite de registros** (`FisioterapeutaService`, `SalaService`): listagem passou a usar `PageRequest.of(0, 200, Sort.by("nome"))` — previne queries ilimitadas sem mudar o contrato da API (`List<>`)
+- **#13 Memory leak corrigido** (`pacientes.js`): substituídos event listeners individuais adicionados a cada renderização por event delegation único no container `#listaPacientes` (listener adicionado uma só vez em `bindEvents`)
+- **#14 Feedback de CEP** (`pacientes.js`): `buscarCEP()` agora exibe toast `warning` quando o CEP não é encontrado no ViaCEP e quando o serviço está indisponível; antes os erros eram silenciados
+- **#16 Rotação de logs** (`backend/src/main/resources/logback-spring.xml`): criado arquivo de configuração Logback com rotação diária, retenção de 30 dias e cap de 500 MB em disco; console habilitado apenas fora do perfil `prod`
+- **#18 Pipeline CI/CD** (`.github/workflows/ci.yml`): criado workflow GitHub Actions com dois jobs — backend (compilação + testes com PostgreSQL 11) e frontend (lint básico de arquivos JS)
+
+---
+
+
+
 ### ⏰ Geral — Comentários no backend (Models, Repositories, DTOs, Config, Exceptions)
 - **Comentários adicionados em 46 arquivos do backend** (continuação da sessão de documentação iniciada em 05/06):
   - **Models (9 arquivos)**: `Fisioterapeuta`, `Sala`, `Sessao`, `Anamnese`, `PlanoTratamento`, `Evolucao`, `ContatoEmergencia`, `ConvenioPaciente`, `AtualizacaoSistema` — blocos de cabeçalho com tabela, relacionamentos, regras de negócio e observações de LGPD onde aplicável
