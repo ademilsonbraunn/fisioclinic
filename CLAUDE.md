@@ -234,6 +234,84 @@ fisioclinic/
 
 ---
 
+## 💬 Comentários de código (OBRIGATÓRIO)
+
+### Princípio
+Todo código criado ou modificado em módulos ou adaptações deve conter comentários que expliquem **o que foi feito e por quê** — facilitando a manutenção futura e o entendimento contextual das decisões tomadas.
+
+### Quando comentar obrigatoriamente
+
+| Situação | O que comentar |
+|---|---|
+| Criação de novo módulo | Cabeçalho no arquivo principal com nome do módulo, propósito e dependências |
+| Adaptação de código existente | Indicar o que foi alterado e a razão da mudança |
+| Lógica de negócio não óbvia | Explicar a regra ou restrição que motivou aquele trecho |
+| Integração entre módulos | Indicar de qual módulo vem o dado e para qual módulo vai |
+| Correção de bug ou discordância | Descrever o problema anterior e como foi resolvido |
+| Trecho que poderia ser feito de outra forma | Justificar a escolha adotada |
+
+### Formato dos comentários
+
+#### JavaScript / HTML
+```js
+// [M2] Carrega dados da anamnese ao abrir o prontuário
+// Depende de pacienteId vindo do M1 (localStorage)
+async function carregarAnamnese(pacienteId) { ... }
+```
+
+```js
+// ADAPTAÇÃO: campo 'diagnostico' renomeado para 'diagnosticoFisio' (alinhamento com M3)
+// Razão: M3 usa 'diagnosticoFisio' como chave do DTO — sem esta mudança o bind falha
+```
+
+#### Java
+```java
+// [M5] Valida que a sessão não possui evolução registrada antes de criar uma nova
+// Regra de negócio: apenas uma evolução por sessão (CLAUDE.md § Regras de negócio)
+```
+
+```java
+// CORREÇÃO: adicionado fetch EAGER no relacionamento Sessao → Evolucao
+// Razão: lazy loading causava LazyInitializationException fora do contexto JPA
+```
+
+#### SQL / Migrations
+```sql
+-- [M3] Tabela planos_tratamento: campo 'frequencia_semanal' adicionado
+-- Necessário para que M4 (Agendamento) saiba quantas sessões por semana agendar
+```
+
+### Regras de conteúdo
+
+1. **Identifique o módulo** de origem com `[M#]` quando o comentário se refere a uma integração ou regra modular.
+2. **Use o prefixo `ADAPTAÇÃO:`** para sinalizar que um trecho existente foi modificado.
+3. **Use o prefixo `CORREÇÃO:`** para sinalizar a resolução de um bug ou discordância.
+4. **Não repita o que o código já diz** — comentários óbvios (`// incrementa contador`) são proibidos.
+5. **Comentários de cabeçalho** devem ser adicionados ao topo de arquivos novos:
+
+```js
+/**
+ * Módulo 5 — Evolução Clínica (SOAP)
+ * Responsável por registrar e exibir evoluções vinculadas a sessões (M4).
+ * Dados enviados para M6 (Alta) como histórico de evolução.
+ */
+```
+
+```java
+/**
+ * Módulo 3 — Plano de Tratamento
+ * Gerencia criação e consulta de planos vinculados ao paciente (M1/M2).
+ * Fornece plano_tratamento_id para M4 (Agendamento).
+ */
+```
+
+### Quando NÃO comentar
+- Getters, setters e construtores padrão sem lógica especial
+- Código autoexplicativo por nomes bem escolhidos
+- Imports e declarações de dependência
+
+---
+
 ## Endpoints REST (padrão)
 
 | Método | Endpoint                        | Descrição                        |
@@ -625,6 +703,9 @@ VALUES (
 | Criou ou alterou código backend | Executar as 4 etapas de validação e reportar com o formato `✅ VALIDAÇÃO DO BACKEND` |
 | Módulo muda status para ✅ Concluído | Atualizar `**Versão atual:**` no CLAUDE.md, registrar bump no `log.md` e criar commit `release: vX.Y` |
 | Concluiu alteração visível ao usuário | Inserir registro em `atualizacoes_sistema` com título e descrição amigáveis (sem jargão técnico) |
+| Criou arquivo novo (módulo ou adaptação) | Adicionar comentário de cabeçalho `/** Módulo N — ... */` ao topo do arquivo |
+| Adaptou ou corrigiu código existente | Adicionar comentário `ADAPTAÇÃO:` ou `CORREÇÃO:` no trecho alterado, explicando o que e o porquê |
+| Implementou lógica de integração entre módulos | Adicionar comentário `[M#]` identificando origem e destino do dado compartilhado |
 
 
 
