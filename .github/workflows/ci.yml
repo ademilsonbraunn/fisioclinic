@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  backend:
+    name: Backend — Compilação e testes
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_DB: fisioclinic_test
+          POSTGRES_USER: fisio
+          POSTGRES_PASSWORD: fisio123
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Compilar (sem testes)
+        working-directory: backend
+        run: mvn compile -q
+
+      - name: Executar testes
+        working-directory: backend
+        env:
+          DB_URL: jdbc:postgresql://localhost:5432/fisioclinic_test
+          DB_USERNAME: fisio
+          DB_PASSWORD: fisio123
+          JWT_SECRET: ci-secret-apenas-para-testes-nao-usar-em-producao
+          LOG_LEVEL: WARN
+        run: mvn test -q
+
+  frontend:
+    name: Frontend — Lint básico
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar arquivos JS não-vazios
+        run: |
+          echo "Verificando arquivos JS do frontend..."
+          find frontend/js -name "*.js" -empty -print | grep . && exit 1 || echo "OK — nenhum arquivo JS vazio"

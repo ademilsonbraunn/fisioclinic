@@ -9,14 +9,15 @@
 //   criarAnamnese(dados)        → POST /api/anamneses
 //   atualizarAnamnese(id, dados) → PATCH /api/anamneses/{id}
 //
-// Lê token de sessionStorage com fallback para localStorage.
+// Lê token de sessionStorage com fallback para localStorage (ver auth.js#getToken).
 // Redireciona para index.html em caso de 401.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const API_BASE = 'http://localhost:8080/api';
+import { getToken } from '../utils/auth.js';
+import { API_BASE_URL as API_BASE } from '../config.js';
 
 function headers() {
-  const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+  const token = getToken();
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -28,6 +29,7 @@ async function req(path, opts = {}) {
   if (res.status === 401) { location.href = '../index.html'; return; }
   if (!res.ok) {
     const err = await res.json().catch(() => ({ erro: 'Erro desconhecido' }));
+    console.error(`[anamneses] ${opts.method || 'GET'} ${path} → HTTP ${res.status}`, err);
     throw err;
   }
   if (res.status === 204) return null;

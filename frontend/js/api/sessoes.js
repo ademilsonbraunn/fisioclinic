@@ -12,16 +12,16 @@
 //   atualizarSessao(id, dados)        → PATCH /api/sessoes/{id}
 //   excluirSessao(id)                 → DELETE /api/sessoes/{id}
 //
-// Lê token de sessionStorage com fallback para localStorage.
+// Lê token de sessionStorage com fallback para localStorage (ver auth.js#getToken).
 // Redireciona para index.html automaticamente se receber HTTP 401.
 // Retorna null para respostas 204 No Content (excluirSessao).
 // ─────────────────────────────────────────────────────────────────────────────
 
-const API_BASE = 'http://localhost:8080/api';
+import { getToken } from '../utils/auth.js';
+import { API_BASE_URL as API_BASE } from '../config.js';
 
-// Monta headers com token de sessão ou localStorage
 function headers() {
-  const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+  const token = getToken();
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -33,6 +33,7 @@ async function req(path, opts = {}) {
   if (res.status === 401) { location.href = '../index.html'; return; }
   if (!res.ok) {
     const err = await res.json().catch(() => ({ erro: 'Erro desconhecido' }));
+    console.error(`[sessoes] ${opts.method || 'GET'} ${path} → HTTP ${res.status}`, err);
     throw err;
   }
   if (res.status === 204) return null;

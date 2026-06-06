@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +45,7 @@ public class FisioterapeutaService {
 
     @Transactional(readOnly = true)
     public List<FisioterapeutaResponse> listar() {
-        return repository.findAllByOrderByNomeAsc().stream()
+        return repository.findAll(PageRequest.of(0, 200, Sort.by("nome"))).stream()
             .map(this::toResponse)
             .toList();
     }

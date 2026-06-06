@@ -1,5 +1,6 @@
 package com.fisioclinic.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,9 +28,8 @@ import java.util.List;
  * Camada: Config / Segurança
  *
  * Modelo de autenticação: JWT stateless (sem sessão HTTP).
- * CORS: allowedOriginPatterns("*") com allowCredentials=false — compatível
- *   com requisições do frontend local (localhost:5500, localhost:3000).
- *   Em produção, restringir para o domínio real da aplicação.
+ * CORS: origens lidas de cors.allowed-origins em application.properties.
+ *   Em produção, definir apenas o domínio real da aplicação.
  *
  * Matriz de autorização:
  *  - /api/auth/login          → público (sem token)
@@ -48,6 +49,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+
+    @Value("${cors.allowed-origins}")
+    private String corsAllowedOrigins;
 
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
@@ -100,8 +104,9 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        List<String> origens = Arrays.asList(corsAllowedOrigins.split(","));
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedOrigins(origens);
         config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         config.setExposedHeaders(List.of("Authorization"));

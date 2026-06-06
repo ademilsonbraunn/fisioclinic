@@ -19,6 +19,9 @@ import { initNotificacoes } from '../components/notificacoes.js';
 
 // Utilitário central de autenticação — usado por todas as páginas protegidas
 
+// Verifica sessionStorage primeiro; cai para localStorage apenas quando o usuário
+// escolheu "lembrar de mim" no login (login.js grava nesse storage nesse caso).
+// Trocar por cookies httpOnly exigiria mudança no backend — aceito como tradeoff consciente.
 export function getToken() {
   return sessionStorage.getItem('token') || localStorage.getItem('token');
 }

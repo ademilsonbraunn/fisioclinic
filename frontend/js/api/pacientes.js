@@ -12,8 +12,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { getToken } from '../utils/auth.js';
-
-const API_BASE = 'http://localhost:8080/api';
+import { API_BASE_URL as API_BASE } from '../config.js';
 
 // Monta headers com Content-Type e Bearer token
 function headers() {
@@ -30,6 +29,7 @@ async function req(path, opts = {}) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
+    console.error(`[pacientes] ${opts.method || 'GET'} ${path} → HTTP ${res.status}`, body);
     throw new Error(body.erro || `Erro ${res.status}`);
   }
   return res.json();

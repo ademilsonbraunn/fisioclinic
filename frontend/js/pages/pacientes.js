@@ -158,10 +158,6 @@ function renderLista() {
   }
 
   $('listaPacientes').innerHTML = lista.map(linhaHTML).join('');
-
-  $('listaPacientes').querySelectorAll('[data-action="editar"]').forEach(btn => {
-    btn.addEventListener('click', () => abrirModalEditar(btn.dataset.id));
-  });
 }
 
 function linhaHTML(p) {
@@ -417,14 +413,17 @@ async function buscarCEP(cep) {
   try {
     const res = await fetch(`https://viacep.com.br/ws/${c}/json/`);
     const json = await res.json();
-    if (json.erro) return;
+    if (json.erro) {
+      showToast('CEP não encontrado. Verifique o número informado.', 'warning');
+      return;
+    }
     $('logradouro').value = json.logradouro || '';
     $('bairro').value     = json.bairro     || '';
     $('cidade').value     = json.localidade || '';
     $('uf').value         = json.uf         || '';
     $('numero').focus();
   } catch {
-    // ViaCEP indisponível — ignora silenciosamente
+    showToast('Não foi possível consultar o CEP. Preencha o endereço manualmente.', 'warning');
   } finally {
     $('wrapCep').classList.remove('cep-loading');
   }
@@ -495,6 +494,12 @@ function bindFotoEvents() {
 function bindEvents() {
   // Novo paciente
   $('btnNovoPaciente').addEventListener('click', abrirModalNovo);
+
+  // Delegação: clique em qualquer botão "Editar" na tabela (evita re-bind a cada render)
+  $('listaPacientes').addEventListener('click', e => {
+    const btn = e.target.closest('[data-action="editar"]');
+    if (btn) abrirModalEditar(btn.dataset.id);
+  });
 
   // Fechar modal
   $('btnFecharModal').addEventListener('click', () => closeModal('modalBackdrop'));

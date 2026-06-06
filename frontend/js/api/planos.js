@@ -15,58 +15,61 @@
 // campos como status HTTP e campos de validação.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const API_BASE = 'http://localhost:8080/api';
-
-function token() {
-  return sessionStorage.getItem('token') || localStorage.getItem('token');
-}
+import { getToken } from '../utils/auth.js';
+import { API_BASE_URL as API_BASE } from '../config.js';
 
 function headers() {
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` };
+  return { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` };
 }
 
 // Extrai JSON da resposta e relança como erro se status não for OK
-async function handleResponse(res) {
+async function handleResponse(res, path, method) {
   const data = await res.json().catch(() => null);
-  if (!res.ok) throw data ?? { erro: `HTTP ${res.status}`, status: res.status };
+  if (!res.ok) {
+    console.error(`[planos] ${method} ${path} → HTTP ${res.status}`, data);
+    throw data ?? { erro: `HTTP ${res.status}`, status: res.status };
+  }
   return data;
 }
 
 export async function listarPlanos(pacienteId) {
-  const res = await fetch(`${API_BASE}/planos?paciente_id=${pacienteId}`, {
-    headers: headers(),
-  });
-  return handleResponse(res);
+  const path = `/planos?paciente_id=${pacienteId}`;
+  const res = await fetch(`${API_BASE}${path}`, { headers: headers() });
+  return handleResponse(res, path, 'GET');
 }
 
 export async function buscarPlano(id) {
-  const res = await fetch(`${API_BASE}/planos/${id}`, { headers: headers() });
-  return handleResponse(res);
+  const path = `/planos/${id}`;
+  const res = await fetch(`${API_BASE}${path}`, { headers: headers() });
+  return handleResponse(res, path, 'GET');
 }
 
 export async function criarPlano(payload) {
-  const res = await fetch(`${API_BASE}/planos`, {
+  const path = '/planos';
+  const res = await fetch(`${API_BASE}${path}`, {
     method: 'POST',
     headers: headers(),
     body: JSON.stringify(payload),
   });
-  return handleResponse(res);
+  return handleResponse(res, path, 'POST');
 }
 
 export async function atualizarPlano(id, payload) {
-  const res = await fetch(`${API_BASE}/planos/${id}`, {
+  const path = `/planos/${id}`;
+  const res = await fetch(`${API_BASE}${path}`, {
     method: 'PATCH',
     headers: headers(),
     body: JSON.stringify(payload),
   });
-  return handleResponse(res);
+  return handleResponse(res, path, 'PATCH');
 }
 
 export async function atualizarStatusPlano(id, status) {
-  const res = await fetch(`${API_BASE}/planos/${id}/status`, {
+  const path = `/planos/${id}/status`;
+  const res = await fetch(`${API_BASE}${path}`, {
     method: 'PATCH',
     headers: headers(),
     body: JSON.stringify({ status }),
   });
-  return handleResponse(res);
+  return handleResponse(res, path, 'PATCH');
 }
