@@ -9,17 +9,15 @@
 //   buscarPaciente(id)      → GET /api/pacientes/{id}
 //   criarPaciente(dados)    → POST /api/pacientes
 //   atualizarPaciente(id, dados) → PATCH /api/pacientes/{id}
-//
-// Nota: lê token do localStorage (não sessionStorage) pois pacientes.js foi
-// escrito antes da padronização para sessionStorage feita nos módulos seguintes.
-// Erros de API são relançados como Error com a mensagem do campo "erro" do JSON.
 // ─────────────────────────────────────────────────────────────────────────────
+
+import { getToken } from '../utils/auth.js';
 
 const API_BASE = 'http://localhost:8080/api';
 
 // Monta headers com Content-Type e Bearer token
 function headers() {
-  const token = localStorage.getItem('token');
+  const token = getToken();
   const h = { 'Content-Type': 'application/json' };
   if (token) h['Authorization'] = `Bearer ${token}`;
   return h;

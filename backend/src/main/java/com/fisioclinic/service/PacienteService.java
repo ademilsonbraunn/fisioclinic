@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
@@ -55,7 +57,26 @@ public class PacienteService {
             ? pacienteRepository.findAll()
             : pacienteRepository.buscar(busca.trim());
 
-        return pacientes.stream().map(this::toResponse).toList();
+        if (pacientes.isEmpty()) return List.of();
+
+        // Carrega contatos e convênios em batch (2 queries fixas, independente do N)
+        List<UUID> ids = pacientes.stream().map(Paciente::getId).toList();
+
+        Map<UUID, ContatoEmergencia> contatoMap = contatoEmergenciaRepository
+            .findByPacienteIdIn(ids).stream()
+            .collect(Collectors.toMap(c -> c.getPaciente().getId(), c -> c));
+
+        Map<UUID, ConvenioPaciente> convenioMap = convenioPacienteRepository
+            .findByPacienteIdIn(ids).stream()
+            .collect(Collectors.toMap(
+                c -> c.getPaciente().getId(),
+                c -> c,
+                (existing, replacement) -> existing
+            ));
+
+        return pacientes.stream()
+            .map(p -> toResponse(p, contatoMap.get(p.getId()), convenioMap.get(p.getId())))
+            .toList();
     }
 
     // ── Busca por ID ─────────────────────────────────────────────────────────
@@ -189,10 +210,12 @@ public class PacienteService {
     private PacienteResponse toResponse(Paciente paciente) {
         ContatoEmergencia contato = contatoEmergenciaRepository
             .findByPacienteId(paciente.getId()).orElse(null);
-
         ConvenioPaciente convenio = convenioPacienteRepository
             .findFirstByPacienteIdOrderByIdAsc(paciente.getId()).orElse(null);
+        return toResponse(paciente, contato, convenio);
+    }
 
+    private PacienteResponse toResponse(Paciente paciente, ContatoEmergencia contato, ConvenioPaciente convenio) {
         return new PacienteResponse(
             paciente.getId(),
             paciente.getNomeCompleto(),

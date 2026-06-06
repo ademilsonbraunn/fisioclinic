@@ -2,6 +2,18 @@
 
 ---
 
+## 📅 06/06/2026 — Sábado
+
+### ⏰ Geral — Correções de segurança e performance (revisão de código)
+- **Segurança — XSS corrigido** (`frontend/js/utils/auth.js`): substituído `innerHTML` com template literal por `createElement` + `textContent` no dropdown do usuário; elimina vetor de XSS via campo `nome`
+- **Segurança — Autenticação obrigatória em pacientes** (`backend/.../SecurityConfig.java`): removido `permitAll()` na rota `/api/pacientes/**`; agora exige token JWT; `frontend/js/api/pacientes.js` atualizado para importar `getToken()` de `auth.js` em vez de ler `localStorage` diretamente
+- **Segurança — Botão demo removido** (`frontend/index.html`): removido link "Acessar demonstração (sem login)" que permitia acesso ao sistema sem credenciais
+- **Segurança — Credenciais via variáveis de ambiente** (`backend/src/main/resources/application.properties`): credenciais do banco (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`) e JWT secret (`JWT_SECRET`) agora usam `${VAR:default}` — dev continua funcionando com valores padrão, produção deve definir as variáveis
+- **Performance — N+1 queries corrigido** (`backend/.../service/PacienteService.java`): listagem de pacientes passou de `1 + 2N` queries para `3` queries fixas; adicionados métodos `findByPacienteIdIn()` em `ContatoEmergenciaRepository` e `ConvenioPacienteRepository`; `toResponse` refatorado em dois overloads (individual para `buscarPorId`, batch para `listar`)
+- **Criado** `--atualizações/corrigirprocedimentos.md`: tabela com os 22 problemas identificados na revisão e status de cada um
+
+---
+
 ## 📅 05/06/2026 — Sexta-feira
 
 ### ⏰ 23:59 — Geral

@@ -40,8 +40,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // Auth — público
                 .requestMatchers("/api/auth/login").permitAll()
-                // Pacientes — mantém acesso aberto enquanto auth do frontend não está integrado
-                .requestMatchers("/api/pacientes/**").permitAll()
+                // Pacientes — requer autenticação
+                .requestMatchers("/api/pacientes/**").authenticated()
                 // Admin — requer perfil ADMIN
                 .requestMatchers("/api/fisioterapeutas/**").hasRole("ADMIN")
                 .requestMatchers("/api/salas/**").hasRole("ADMIN")
