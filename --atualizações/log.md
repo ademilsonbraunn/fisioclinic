@@ -2,6 +2,50 @@
 
 ---
 
+## 📅 07/06/2026 — Domingo
+
+### ⏰ Frontend — Melhorias visuais e de UX (redesign de UI)
+
+- **`css/base.css` — Design tokens e shell global**
+  - Cor de fundo `--bg` atualizada de `#F0F0F0` para `#F4F6FB` (azul-acinzentado sutil)
+  - Tons de `--surface2`, `--border`, `--text`, `--text2`, `--text3` refinados para paleta mais fria e sofisticada
+  - `--radius-sm` ampliado de 4px para 6px (cantos mais suaves em toda a UI)
+  - Topbar: `border-bottom` substituído por `box-shadow` duplo (linha + névoa leve)
+  - Sidebar: mesmo tratamento de sombra lateral
+  - Nav item ativo: `border-left: 3px` removido; substituído por estilo de pílula com `border-radius` e padding lateral
+  - Adicionado `::selection` com cor accent; `*:focus-visible` com outline suave; `scroll-behavior: smooth`
+
+- **`css/components.css` — Componentes reutilizáveis**
+  - Botão primário: gradiente `linear-gradient(135deg, #3366F0, #2D5BE3)` + elevação e sombra colorida no hover + retorno ao plano no active
+  - Inputs: padding de `8px 12px` → `9px 14px`
+  - Tabela: linhas pares com fundo `#FAFBFE`; hover com `--accent-bg` em vez de cinza
+  - Modal backdrop: `backdrop-filter: blur(4px)` adicionado para efeito profissional de desfoque
+  - Toast: redesenhado com fundo escuro temático por tipo (sucesso/erro/alerta), borda-left colorida, animação spring e barra de progresso CSS com expiração visual
+
+- **`css/pages/login.css` + `index.html` — Redesign da tela de login**
+  - Novo layout dois painéis em desktop (≥ 900px): painel esquerdo com gradiente azul profundo, logo, tagline, lista de 3 benefícios do sistema e círculos decorativos de fundo; painel direito com formulário em fundo branco
+  - Mobile (< 900px): colapsa para coluna única com card centralizado — comportamento igual ao anterior
+  - Botão de login: gradiente + hover elevado com sombra
+
+- **`css/pages/dashboard.css` — Dashboard**
+  - Saudação (`dash-greeting`): 1.5rem → 1.75rem, `letter-spacing` negativo; data com ponto decorativo accent
+  - Stat chips: padding maior, número 1.75rem, ícones com gradiente sutil, hover com elevação leve
+  - Module cards: barra superior de 3px → 4px com gradiente; ícone-wrap de 44px → 48px com gradiente radial e sombra colorida; hover com sombra intensa e borda temática
+  - Quick actions: padding maior, hover com elevação e sombra azul
+
+- **`css/pages/agenda.css` — Agenda**
+  - Eventos no calendário: `border-left` 3px → 4px; sombra base; hover com escala leve (`scale(1.01)`) e sombra mais intensa
+  - Dia atual (`is-today`): fundo `--accent-bg` no cabeçalho + sombra colorida no número circular
+  - Botões de navegação de semana: envolvidos em container toggle com fundo cinza e borda
+
+- **`css/pages/prontuario.css` — Prontuário**
+  - Header do paciente: borda-left accent (4px) + avatar com gradiente e sombra colorida
+  - Abas: redesenhadas em estilo segmented control (container pill com fundo cinza; tab ativo branco com sombra)
+  - EVA slider: track 6px → 8px; 5 zonas de cor (verde → limão → âmbar → laranja → vermelho); thumb com sombra e hover scale; labels extremos coloridos ("Sem dor" em verde / "Dor máxima" em vermelho)
+  - Letras SOAP: substituído fundo translúcido por gradientes coloridos (azul/verde/âmbar/vermelho) com texto branco e sombra
+
+---
+
 ## 📅 06/06/2026 — Sábado
 
 ### ⏰ Backend + Frontend — Itens "Possivelmente preocupantes" (revisão de código)
