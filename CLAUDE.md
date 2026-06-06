@@ -3,7 +3,7 @@
 ## Visão geral
 Sistema de gestão clínica para fisioterapia. Porte: clínica média (6–20 fisioterapeutas).
 Módulos: Cadastro, Anamnese, Plano de Tratamento, Agendamento, Evolução Clínica, Alta.
-**Versão atual:** v1.3
+**Versão atual:** v1.4
 
 ---
 
@@ -41,7 +41,7 @@ Módulos: Cadastro, Anamnese, Plano de Tratamento, Agendamento, Evolução Clín
 | 3 | Diagnóstico e plano de tratamento        | 🔲 Pendente         |
 | 4 | Agendamento / Recepção                   | ✅ Concluído        |
 | 5 | Evolução clínica (SOAP)                  | ✅ Concluído        |
-| 6 | Alta e relatórios                        | 🔲 Pendente         |
+| 6 | Alta e relatórios                        | ✅ Concluído        |
 
 ---
 

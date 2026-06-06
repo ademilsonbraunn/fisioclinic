@@ -1,0 +1,349 @@
+<!--
+  pages/alta.html — Alta e Relatórios (Módulo 6)
+  ─────────────────────────────────────────────────────────────────────────────
+  Acessado via: alta.html?paciente_id=UUID[&plano_id=UUID]
+  Se paciente_id estiver ausente, exibe #no-patient e interrompe o carregamento.
+
+  CSS: base.css + components.css + pages/alta.css
+  JS:  js/pages/alta.js (type=module)
+
+  Estrutura do DOM:
+    header.topbar            → topbar padrão com notificações
+    #no-patient              → aviso quando URL não tem paciente_id
+    .patient-header-card     → card com nome, CPF, data nascimento do paciente
+    #alta-registrada         → card exibido quando o paciente já tem alta (oculto por padrão)
+    form#form-alta           → formulário de registro de alta
+      .alta-section          → seção "Dados da Alta" (obrigatório, aberta por padrão)
+      .alta-section          → seção "Relatórios" (opcional, colapsada)
+      .alta-section          → seção "Retorno" (opcional, colapsada)
+      .alta-section          → seção "Pesquisa de Satisfação" (opcional, colapsada)
+    .alta-footer             → rodapé fixo com botões Cancelar / Registrar Alta
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alta — FisioClinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/alta.css">
+</head>
+<body>
+
+  <!-- ── Topbar ─────────────────────────────────── -->
+  <header class="topbar">
+    <a href="dashboard.html" class="topbar-brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="7" fill="#2D5BE3"/>
+        <path d="M13 6v14M6 13h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      FisioClinic
+    </a>
+    <div class="topbar-divider"></div>
+    <a id="topbar-back" href="dashboard.html" class="topbar-back-btn" title="Voltar ao prontuário">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Prontuário
+    </a>
+    <div class="topbar-spacer"></div>
+    <a href="admin.html" class="topbar-admin-btn" id="topbar-admin-btn" style="display:none" title="Administrador">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </a>
+    <a href="usuarios.html" class="topbar-admin-btn" id="topbar-users-btn" style="display:none" title="Usuários">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </a>
+    <div class="notif-wrapper">
+      <button class="notif-btn" id="notifBtn" title="Novidades do sistema" aria-label="Ver atualizações">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span class="notif-badge" id="notifBadge" style="display:none"></span>
+      </button>
+      <div class="notif-panel" id="notifPanel" style="display:none">
+        <div class="notif-panel-header">
+          <span>Novidades do Sistema</span>
+          <button class="notif-close" id="notifClose" aria-label="Fechar">×</button>
+        </div>
+        <div class="notif-list" id="notifList"></div>
+      </div>
+    </div>
+    <div class="topbar-user" id="topbar-user">
+      <div class="avatar" id="topbar-avatar" style="background:var(--surface2);color:var(--text2);">U</div>
+      <span id="topbar-nome">Usuário</span>
+    </div>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────── -->
+  <main class="main">
+    <div class="alta-page">
+
+      <!-- Aviso sem paciente -->
+      <div id="no-patient" style="display:none" class="empty-state">
+        <p>Nenhum paciente selecionado. <a href="pacientes.html">Ir para lista de pacientes</a></p>
+      </div>
+
+      <!-- Cabeçalho do paciente -->
+      <div id="patient-header" class="patient-header-card" style="display:none">
+        <div class="patient-header-avatar" id="ph-avatar">?</div>
+        <div class="patient-header-info">
+          <p class="patient-header-nome" id="ph-nome">Carregando...</p>
+          <div class="patient-header-meta">
+            <span id="ph-cpf"></span>
+            <span id="ph-nasc"></span>
+            <span id="ph-convenio"></span>
+          </div>
+        </div>
+        <div class="patient-header-actions">
+          <a id="btn-prontuario" href="#" class="btn btn-secondary btn-sm">Ver prontuário</a>
+        </div>
+      </div>
+
+      <!-- Resumo do tratamento -->
+      <div id="resumo-wrap" style="display:none" class="resumo-tratamento">
+        <div class="resumo-tratamento-titulo">Resumo do Tratamento</div>
+        <div class="resumo-stats">
+          <div class="resumo-stat">
+            <div class="resumo-stat-valor" id="res-sessoes">—</div>
+            <div class="resumo-stat-label">Sessões realizadas</div>
+          </div>
+          <div class="resumo-stat">
+            <div class="resumo-stat-valor" id="res-dias">—</div>
+            <div class="resumo-stat-label">Dias de tratamento</div>
+          </div>
+          <div class="resumo-stat">
+            <div class="resumo-stat-valor" id="res-eva">—</div>
+            <div class="resumo-stat-label">Sessões com EVA</div>
+          </div>
+        </div>
+        <div class="resumo-diagnostico" id="res-diagnostico" style="display:none"></div>
+      </div>
+
+      <!-- Card alta já registrada (exibido quando já existe alta) -->
+      <div id="alta-registrada" style="display:none" class="alta-registrada-card">
+        <div class="alta-registrada-header">
+          <div class="alta-registrada-icon">
+            <svg width="16" height="16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <span class="alta-registrada-title">Alta registrada</span>
+        </div>
+        <div class="alta-registrada-detalhe">
+          <div class="alta-detail-item">
+            <div class="alta-detail-label">Data</div>
+            <div class="alta-detail-valor" id="ar-data">—</div>
+          </div>
+          <div class="alta-detail-item">
+            <div class="alta-detail-label">Motivo</div>
+            <div class="alta-detail-valor" id="ar-motivo">—</div>
+          </div>
+          <div class="alta-detail-item" style="grid-column:1/-1">
+            <div class="alta-detail-label">Resultado vs Objetivos</div>
+            <div class="alta-detail-valor" id="ar-resultado">—</div>
+          </div>
+        </div>
+        <p style="margin-top:12px;font-size:.8rem;color:var(--text2)">
+          Você pode registrar uma nova alta abaixo se necessário (ex: retorno do paciente com novo plano).
+        </p>
+      </div>
+
+      <!-- ── Formulário de alta ──────────────────── -->
+      <form id="form-alta" novalidate>
+
+        <!-- Seção: Dados da Alta (obrigatória, aberta por padrão) -->
+        <div class="alta-section open" id="sec-dados">
+          <div class="alta-section-header" data-section="sec-dados">
+            <span class="alta-section-title">Dados da Alta</span>
+            <span class="alta-section-badge obrigatorio">Obrigatório</span>
+            <svg class="alta-section-chevron" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="alta-section-body">
+            <!-- Motivo -->
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label">Motivo da Alta <span class="req">*</span></label>
+              <div class="motivo-chips" id="motivo-chips">
+                <div class="motivo-chip">
+                  <input type="radio" name="motivo" id="m-alta-clinica" value="alta_clinica">
+                  <label for="m-alta-clinica">Alta Clínica</label>
+                </div>
+                <div class="motivo-chip">
+                  <input type="radio" name="motivo" id="m-alta-admin" value="alta_administrativa">
+                  <label for="m-alta-admin">Alta Administrativa</label>
+                </div>
+                <div class="motivo-chip">
+                  <input type="radio" name="motivo" id="m-desistencia" value="desistencia">
+                  <label for="m-desistencia">Desistência</label>
+                </div>
+                <div class="motivo-chip">
+                  <input type="radio" name="motivo" id="m-encaminhamento" value="encaminhamento">
+                  <label for="m-encaminhamento">Encaminhamento</label>
+                </div>
+                <div class="motivo-chip risco">
+                  <input type="radio" name="motivo" id="m-obito" value="obito">
+                  <label for="m-obito">Óbito</label>
+                </div>
+              </div>
+              <span class="form-error" id="err-motivo"></span>
+            </div>
+
+            <!-- Data da alta -->
+            <div class="form-row cols-2" style="margin-top:14px">
+              <div class="form-group">
+                <label class="form-label" for="inp-data-alta">Data da Alta</label>
+                <input type="date" class="form-input" id="inp-data-alta">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-plano">Plano vinculado</label>
+                <select class="form-input" id="inp-plano">
+                  <option value="">— Nenhum (sem plano formal) —</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Fisioterapeuta -->
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="inp-fisio-alta">Fisioterapeuta responsável</label>
+              <select class="form-input" id="inp-fisio-alta">
+                <option value="">— Selecione —</option>
+              </select>
+            </div>
+
+            <!-- Resultado vs objetivos -->
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="inp-resultado">Resultado vs Objetivos <span class="req">*</span></label>
+              <textarea class="form-input" id="inp-resultado" rows="4"
+                placeholder="Descreva o resultado obtido em relação aos objetivos propostos no plano de tratamento..."></textarea>
+              <span class="form-error" id="err-resultado"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção: Relatórios (opcional) -->
+        <div class="alta-section" id="sec-relatorios">
+          <div class="alta-section-header" data-section="sec-relatorios">
+            <span class="alta-section-title">Relatórios</span>
+            <span class="alta-section-badge">Opcional</span>
+            <svg class="alta-section-chevron" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="alta-section-body">
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="inp-orientacoes">Orientações Domiciliares</label>
+              <textarea class="form-input" id="inp-orientacoes" rows="3"
+                placeholder="Exercícios, cuidados e recomendações para continuidade em casa..."></textarea>
+            </div>
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="inp-rel-evolucao">Relatório de Evolução</label>
+              <textarea class="form-input" id="inp-rel-evolucao" rows="4"
+                placeholder="Resumo narrativo da evolução clínica ao longo do tratamento (para o prontuário)..."></textarea>
+            </div>
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="inp-rel-medico">Relatório para Médico</label>
+              <textarea class="form-input" id="inp-rel-medico" rows="4"
+                placeholder="Relatório destinado ao médico solicitante do tratamento..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção: Retorno (opcional) -->
+        <div class="alta-section" id="sec-retorno">
+          <div class="alta-section-header" data-section="sec-retorno">
+            <span class="alta-section-title">Agendamento de Retorno</span>
+            <span class="alta-section-badge">Opcional</span>
+            <svg class="alta-section-chevron" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="alta-section-body">
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="inp-retorno">Data de Retorno Programado</label>
+              <input type="date" class="form-input" id="inp-retorno"
+                style="max-width:220px">
+              <p style="margin-top:6px;font-size:.78rem;color:var(--text2)">
+                Informe se há consulta de retorno ou reavaliação já agendada.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção: Pesquisa de Satisfação (opcional) -->
+        <div class="alta-section" id="sec-satisfacao">
+          <div class="alta-section-header" data-section="sec-satisfacao">
+            <span class="alta-section-title">Pesquisa de Satisfação</span>
+            <span class="alta-section-badge">Opcional</span>
+            <svg class="alta-section-chevron" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="alta-section-body">
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label">Como o paciente avalia o atendimento?</label>
+              <div class="satisfacao-wrap satisfacao-stars" id="satisfacao-stars">
+                <div class="satisfacao-star">
+                  <input type="radio" name="satisfacao_nota" id="s1" value="1">
+                  <label for="s1" title="Ruim">★</label>
+                </div>
+                <div class="satisfacao-star">
+                  <input type="radio" name="satisfacao_nota" id="s2" value="2">
+                  <label for="s2" title="Regular">★</label>
+                </div>
+                <div class="satisfacao-star">
+                  <input type="radio" name="satisfacao_nota" id="s3" value="3">
+                  <label for="s3" title="Bom">★</label>
+                </div>
+                <div class="satisfacao-star">
+                  <input type="radio" name="satisfacao_nota" id="s4" value="4">
+                  <label for="s4" title="Muito bom">★</label>
+                </div>
+                <div class="satisfacao-star">
+                  <input type="radio" name="satisfacao_nota" id="s5" value="5">
+                  <label for="s5" title="Excelente">★</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:14px">
+              <label class="form-label" for="inp-sat-comentario">Comentário (opcional)</label>
+              <textarea class="form-input" id="inp-sat-comentario" rows="2"
+                placeholder="Observações do paciente sobre o atendimento..."></textarea>
+            </div>
+          </div>
+        </div>
+
+      </form><!-- #form-alta -->
+
+    </div><!-- .alta-page -->
+  </main>
+
+  <!-- ── Rodapé fixo com ações ───────────────────── -->
+  <div class="alta-footer">
+    <button type="button" class="btn btn-secondary" id="btn-cancelar">Cancelar</button>
+    <button type="button" class="btn btn-primary" id="btn-registrar">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right:6px">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      Registrar Alta
+    </button>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" aria-live="polite"></div>
+
+  <script type="module" src="../js/pages/alta.js"></script>
+</body>
+</html>

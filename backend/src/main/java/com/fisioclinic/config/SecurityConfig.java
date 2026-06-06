@@ -76,6 +76,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/atualizacoes").authenticated()
                 // Anamneses — qualquer usuário autenticado
                 .requestMatchers("/api/anamneses/**").authenticated()
+                // Altas — qualquer usuário autenticado
+                .requestMatchers("/api/altas/**").authenticated()
                 // Troca de senha — qualquer usuário autenticado
                 .requestMatchers("/api/auth/senha").authenticated()
                 .anyRequest().authenticated()

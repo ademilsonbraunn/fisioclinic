@@ -573,12 +573,21 @@
         <!-- Lista de evoluções -->
         <div class="section-toolbar">
           <h2>Evoluções registradas</h2>
-          <button type="button" class="btn btn-primary btn-sm" id="btn-nova-evolucao">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Nova Evolução
-          </button>
+          <div style="display:flex;gap:8px;align-items:center">
+            <!-- [M6] Link para registrar alta — encerra o ciclo clínico -->
+            <a id="btn-registrar-alta" href="#" class="btn btn-secondary btn-sm" title="Registrar alta do paciente">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Registrar Alta
+            </a>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-nova-evolucao">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Nova Evolução
+            </button>
+          </div>
         </div>
 
         <div id="lista-evolucoes">

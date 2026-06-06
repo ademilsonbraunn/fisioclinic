@@ -97,6 +97,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   $('no-patient').style.display = 'none';
+  // [M6] Atualizar link "Registrar Alta" com paciente_id atual
+  const btnAltaLink = $('btn-registrar-alta');
+  if (btnAltaLink) btnAltaLink.href = `alta.html?paciente_id=${pacienteId}`;
   await Promise.all([carregarPaciente(), carregarAnamneses(), carregarPlanos(), carregarFisios(), carregarEvolucoes(), carregarSessoesPaciente()]);
   $('patient-header').style.display  = 'flex';
   $('prontuario-content').style.display = 'block';

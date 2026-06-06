@@ -75,4 +75,8 @@ public interface SessaoRepository extends JpaRepository<Sessao, UUID> {
                                           @Param("fim")             LocalDateTime fim,
                                           @Param("excludeId")       UUID excludeId,
                                           @Param("statusExcluidos") List<Sessao.StatusSessao> statusExcluidos);
+
+    // [M6] Conta sessões realizadas de um paciente — usado pelo AltaService para
+    // calcular num_sessoes_realizadas ao registrar a alta
+    int countByPacienteIdAndStatus(UUID pacienteId, Sessao.StatusSessao status);
 }
