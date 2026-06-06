@@ -16,6 +16,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AnamneseService — Regras de negócio da anamnese (Módulo 2)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Service (lógica de domínio)
+ *
+ * Responsabilidades:
+ *  - Criar e atualizar anamneses vinculando paciente e opcionalmente fisioterapeuta
+ *  - O campo avaliacaoFisica (Map<String,Object>) é salvo como JSONB no PostgreSQL
+ *    e pode conter postura, ADM, força muscular, EVA, goniometria e testes especiais
+ *    sem necessidade de alterar o schema do banco
+ *  - fisioterapeutaId é opcional — anamnese pode ser registrada sem vincular o profissional
+ *
+ * Um paciente pode ter múltiplas anamneses ao longo do tratamento (reavaliações).
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor

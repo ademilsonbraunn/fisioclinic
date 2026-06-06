@@ -1,3 +1,20 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// auth.js — Utilitário central de autenticação e topbar
+// ─────────────────────────────────────────────────────────────────────────────
+// Importado por todas as páginas protegidas (dashboard, pacientes, agenda,
+// prontuário, admin). NÃO importado pelo login.js — login faz fetch direto.
+//
+// Responsabilidades:
+//  - getToken() / getUsuarioNome() / getUsuarioPerfil():
+//      Lê credenciais do sessionStorage (padrão) ou localStorage ("lembrar de mim")
+//  - logout(): limpa ambos os storages e redireciona para index.html
+//      Caminho relativo ../index.html funciona porque todas as páginas protegidas
+//      estão em pages/, um nível abaixo do login
+//  - initTopbar(): popula avatar, nome e perfil no topbar; cria dropdown de logout
+//      dinamicamente se não existir; exibe botão Admin apenas para perfil ADMIN;
+//      inicializa o painel de notificações (initNotificacoes)
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { initNotificacoes } from '../components/notificacoes.js';
 
 // Utilitário central de autenticação — usado por todas as páginas protegidas

@@ -15,6 +15,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AuthService — Autenticação e gerenciamento de senha
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Service (lógica de domínio)
+ *
+ * Responsabilidades:
+ *  - login(): valida e-mail + senha (BCrypt), verifica se o usuário está ativo
+ *    e retorna um TokenResponse com o JWT gerado pelo JwtUtil
+ *  - alterarSenha(): verifica a senha atual antes de substituí-la; lança
+ *    ConflictException (não UnauthorizedException) para não revelar ao atacante
+ *    que o e-mail existe — comportamento uniforme de erro
+ *
+ * O token JWT contém: subject=email, claim "perfil" e claim "nome".
+ * O JwtFilter valida esse token a cada requisição subsequente.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional

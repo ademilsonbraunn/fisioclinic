@@ -13,6 +13,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PlanoTratamentoController — Diagnóstico e plano de tratamento (Módulo 3)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Controller (entrada HTTP)
+ * Base URL: /api/planos
+ * Acesso: requer autenticação (qualquer perfil)
+ *
+ * O plano de tratamento formaliza o diagnóstico fisioterapêutico (CIF),
+ * os objetivos e as técnicas escolhidas. Pode ser vinculado a uma anamnese (M2).
+ * Seus campos frequencia_semanal e num_sessoes_estimado orientam o agendamento (M4).
+ *
+ * Status válidos: "ativo" | "concluido" | "cancelado"
+ *
+ * Endpoints:
+ *  GET   /api/planos?paciente_id=UUID → todos os planos do paciente
+ *  GET   /api/planos/{id}             → busca por ID
+ *  POST  /api/planos                  → cria novo plano
+ *  PATCH /api/planos/{id}             → atualização parcial
+ *  PATCH /api/planos/{id}/status      → muda status via body {"status": "concluido"}
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @RestController
 @RequestMapping("/api/planos")
 @RequiredArgsConstructor

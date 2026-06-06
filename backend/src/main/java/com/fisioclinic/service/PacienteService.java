@@ -17,6 +17,27 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PacienteService — Regras de negócio do cadastro de pacientes (Módulo 1)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Service (lógica de domínio)
+ *
+ * Responsabilidades:
+ *  - Validar unicidade de CPF (lança ConflictException se duplicado)
+ *  - Limpar máscara de CPF, telefone e CEP antes de persistir (apenas dígitos)
+ *  - Orquestrar a criação/atualização de três entidades relacionadas em uma
+ *    transação: Paciente + ContatoEmergencia + ConvenioPaciente
+ *  - Montar PacienteResponse com dados das três entidades (visão plana para o frontend)
+ *
+ * Nota sobre busca por ViaCEP: o lookup de CEP é feito exclusivamente no frontend
+ * (pacientes.js). Este service não acessa APIs externas.
+ *
+ * Transações:
+ *  - @Transactional na classe → toda operação de escrita é atômica
+ *  - @Transactional(readOnly=true) nos métodos de leitura → otimiza lock do banco
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional

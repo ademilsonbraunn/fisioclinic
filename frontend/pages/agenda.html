@@ -1,3 +1,39 @@
+<!--
+  pages/agenda.html — Módulo 4: Agenda / Calendário Semanal
+  ──────────────────────────────────────────────────────────
+  CSS: base.css + components.css + pages/agenda.css
+  JS:  js/pages/agenda.js (type=module)
+
+  Estrutura do DOM:
+    header.topbar           → topbar com notificações
+    .agenda-toolbar
+      #btnSemanaAnterior / #btnProximaSemana → navegação semanal
+      #labelSemana          → "DD/MM – DD/MM/AAAA"
+      #btnNovaSessao        → abre modal de agendamento
+      .filtros-toolbar      → #filtroFisio + #filtroSala (selects de filtro)
+
+    .cal-grid               → grade do calendário (gerada por agenda.js):
+      .cal-time-col         → coluna de horários (07:00–20:00, slots de 30min)
+      .cal-day-col × 7      → colunas de dias com header de data
+        eventos posicionados com top/height em px via cálculo de horário
+
+    ── Modal de Agendamento ─────────────────────────────────
+    #sessaoModalBackdrop
+      form#formSessao
+        #sessPaciente       → busca de paciente (com datalist ou select)
+        #sessFisio          → select de fisioterapeuta
+        #sessSala           → select de sala
+        #sessData / #sessHoraInicio / #sessHoraFim
+        #sessTipo           → tipo de sessão (chips)
+        #sessStatus         → status inicial
+
+    ── Modal de Detalhes da Sessão ──────────────────────────
+    #detalheSessaoBackdrop
+      → exibe dados da sessão com botões de alterar status e cancelar
+
+  Calendário: grade 7 colunas × 26 slots de 30min (07:00–20:00)
+  Eventos posicionados via JS com top e height calculados em pixels
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

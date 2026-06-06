@@ -1,3 +1,35 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// pages/agenda.js — Lógica completa do calendário semanal (Módulo 4)
+// ─────────────────────────────────────────────────────────────────────────────
+// Ponto de entrada: DOMContentLoaded → carrega dados + monta calendário
+//
+// Arquitetura do calendário:
+//  - Grade de 7 colunas (seg a dom) × 26 slots de 30min (07:00–20:00)
+//  - SLOT_HEIGHT = 48px/slot — eventos são posicionados com top e height
+//    calculados em px com base no horário (inicio - CAL_START) / 30 * SLOT_HEIGHT
+//  - Eventos são renderizados absolutamente dentro da coluna do dia correto
+//
+// Seções principais:
+//  Constantes    — SLOT_HEIGHT, CAL_START/END, DIAS_ABV, STATUS_LABEL, TIPO_LABEL
+//  MOCK data     — fisioterapeutas, salas, pacientes e sessões de exemplo
+//
+//  Estado (state {}) — semana exibida, sessões carregadas, filtros ativos,
+//                      dados de fisios/salas/pacientes para os selects
+//
+//  carregarDadosSemana() — GET /api/sessoes/semana (fallback: MOCK)
+//  carregarFisios()      — GET /api/fisioterapeutas para popular selects
+//  carregarSalas()       — GET /api/salas/ativas
+//  carregarPacientes()   — GET /api/pacientes
+//
+//  renderCalendario()    — monta o grid completo da semana com eventos
+//  renderEvento(s)       — posiciona e estiliza cada sessão como bloco clicável
+//
+//  Modal de agendamento — cria/edita sessão com todos os campos obrigatórios
+//  Painel de detalhes   — exibe dados da sessão clicada + botões de ação de status
+//
+//  Navegação de semana  — botões ← → recalculam getLunsDaSemana() e recarregam
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { listarSessoesSemana, listarSessoes, criarSessao, atualizarSessao, atualizarStatusSessao } from '../api/sessoes.js';
 import { showToast } from '../components/toast.js';
 import { openModal, closeModal } from '../components/modal.js';

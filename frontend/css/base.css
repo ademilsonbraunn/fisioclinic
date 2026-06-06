@@ -1,3 +1,22 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * base.css — Reset global + Design Tokens + Shell da aplicação
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Este arquivo é carregado em TODAS as páginas antes de qualquer outro CSS.
+ * Não deve conter estilos específicos de nenhuma página — apenas fundações.
+ *
+ * Seções:
+ *  1. Reset universal (box-sizing, margens)
+ *  2. Variáveis CSS (:root) — paleta, tipografia, bordas, sombras
+ *  3. Estilos base de elementos HTML (body, a, button, input…)
+ *  4. App shell — topbar, layout de página com padding-top para o topbar fixo
+ *  5. Componentes estruturais compartilhados (card, table, badge, empty-state,
+ *     notificações, dropdown de usuário, toast container)
+ *
+ * Paleta de cores (--accent, --green, --amber, --red):
+ *  Seguir APENAS os valores definidos em :root — nunca usar cores hardcoded fora daqui.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {

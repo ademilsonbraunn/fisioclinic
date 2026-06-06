@@ -1,3 +1,40 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// pages/prontuario.js — Lógica do prontuário eletrônico (Módulos 2, 3 e 5)
+// ─────────────────────────────────────────────────────────────────────────────
+// Acessado via prontuario.html?paciente_id=UUID
+// Se paciente_id estiver ausente na URL, exibe #no-patient e para a execução.
+//
+// Inicialização (DOMContentLoaded):
+//   1. initTopbar() — topbar com notificações
+//   2. bindTabs()   — troca de abas (Anamnese / Plano / Evolução)
+//   3. bindEva()    — slider de dor EVA 0–10 com atualização visual em tempo real
+//   4. Lê paciente_id da URL e carrega em paralelo:
+//       carregarPaciente()       → GET /api/pacientes/{id} → renderCabecalhoPaciente()
+//       carregarAnamneses()      → GET /api/anamneses?paciente_id
+//       carregarPlanos()         → GET /api/planos?paciente_id
+//       carregarFisios()         → GET /api/fisioterapeutas (para selects)
+//       carregarEvolucoes()      → GET /api/evolucoes/paciente/{id}
+//       carregarSessoesPaciente()→ GET /api/sessoes?paciente_id (para vincular evolução)
+//
+// Aba Anamnese (M2):
+//   - Lista anamneses existentes com data e queixa principal
+//   - Formulário expansível para nova anamnese com campo de avaliação física
+//   - bindForm() conecta submit → criarAnamnese() → atualiza lista
+//
+// Aba Plano de Tratamento (M3):
+//   - Exibe plano ativo com status (ativo/concluido/cancelado)
+//   - Botão de conclusão → atualizarStatusPlano()
+//   - bindFormPlano() → criarPlano()
+//
+// Aba Evolução SOAP (M5):
+//   - Lista evoluções com campos S/O/A/P
+//   - Select de sessão (apenas sessões REALIZADO sem evolução registrada)
+//   - bindFormEvolucao() → criarEvolucao()
+//
+// Estado local: pacienteId, anamneses[], planos[], evolucoes[],
+//               sessoesPaciente[], fisios[], formVisivel, formPlanoVisivel, formEvolVisivel
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { initTopbar } from '../utils/auth.js';
 import { showToast } from '../components/toast.js';
 import { listarAnamneses, criarAnamnese } from '../api/anamneses.js';

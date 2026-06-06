@@ -14,6 +14,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PacienteController — API REST de pacientes (Módulo 1)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Controller (entrada HTTP)
+ * Base URL: /api/pacientes
+ * Acesso: público (sem autenticação) — aguarda integração completa do JWT no frontend
+ *
+ * Responsabilidades:
+ *  - Receber requisições HTTP, validar DTOs e delegar ao PacienteService
+ *  - Devolver ResponseEntity com o status HTTP correto (200, 201, 409…)
+ *  - NÃO contém regras de negócio — apenas roteamento e conversão de tipos
+ *
+ * Dependências injetadas:
+ *  - PacienteService: CRUD e validações de pacientes
+ *  - SessaoService: listagem de sessões por paciente (cross-module M1→M4)
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @RestController
 @RequestMapping("/api/pacientes")
 @RequiredArgsConstructor
@@ -64,6 +82,11 @@ public class PacienteController {
         return ResponseEntity.ok(pacienteService.atualizar(id, dto));
     }
 
+    /**
+     * GET /api/pacientes/{id}/sessoes
+     * Cross-module M1→M4: retorna todas as sessões agendadas para um paciente.
+     * Usado no prontuário para montar o histórico de atendimentos.
+     */
     @GetMapping("/{id}/sessoes")
     public ResponseEntity<List<SessaoResponse>> listarSessoes(@PathVariable UUID id) {
         return ResponseEntity.ok(sessaoService.listarPorPaciente(id));

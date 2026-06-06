@@ -1,3 +1,27 @@
+<!--
+  pages/dashboard.html — Tela inicial pós-login (home do sistema)
+  ──────────────────────────────────────────────────────────────────
+  CSS: base.css + components.css + pages/dashboard.css
+  JS:  js/pages/dashboard.js (type=module)
+
+  Estrutura do DOM:
+    header.topbar           → topbar com notificações (populada por initTopbar())
+    .dash-header
+      #saudacao             → "Bom dia/tarde/noite, [Nome]!"
+      #dataAtual            → data por extenso em pt-BR
+    .stats-row              → chips de estatísticas:
+      #statPacientes        → total de pacientes cadastrados
+      #statSessoes          → sessões agendadas hoje
+      #statRealizadas       → sessões realizadas hoje
+    .tab-bar                → abas de navegação (data-tab):
+      "hoje"      → #tab-hoje      → sessões do dia
+      "pacientes" → #tab-pacientes → lista de pacientes recentes
+      "agenda"    → #tab-agenda    → grade semanal resumida
+    .module-grid            → atalhos para os módulos (cards clicáveis)
+
+  Lazy loading das abas: cada aba carrega seus dados apenas na primeira abertura
+  (controlado pelo objeto `loaded` em dashboard.js)
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

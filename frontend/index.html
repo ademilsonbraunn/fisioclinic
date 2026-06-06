@@ -1,3 +1,30 @@
+<!--
+  index.html — Tela de login (ponto de entrada da aplicação)
+  ────────────────────────────────────────────────────────────
+  Página raiz do sistema. Acessada em http://localhost:5500/ (Live Server)
+  ou qualquer servidor estático que sirva a pasta frontend/.
+
+  CSS carregado:
+    base.css         → reset + variáveis + tipografia
+    pages/login.css  → layout self-contained do card de login
+
+  JS carregado (type=module):
+    js/pages/login.js → setupPasswordToggle() + setupForm()
+
+  Estrutura do DOM:
+    .login-card
+      .login-brand        → logo + nome + subtítulo
+      form#formLogin
+        #email            → input e-mail
+        #senha + #toggleSenha + #eyeIcon → senha com toggle olho
+        #lembrar          → checkbox "Lembrar de mim" (UI presente, lógica pendente)
+        #loginError       → mensagem de erro (oculta por padrão)
+        #btnLogin → #btnLoginLabel + #btnLoginSpinner (estado de loading)
+
+  Fluxo de autenticação:
+    POST /api/auth/login → sucesso → sessionStorage token/nome/perfil
+    → redirect pages/dashboard.html
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

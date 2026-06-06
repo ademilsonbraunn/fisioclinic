@@ -1,3 +1,39 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// pages/pacientes.js — Lógica completa da tela de pacientes (Módulo 1)
+// ─────────────────────────────────────────────────────────────────────────────
+// Ponto de entrada: DOMContentLoaded → initTopbar() + carregarPacientes() + bindEvents()
+//
+// Seções principais:
+//  MOCK data     — 3 pacientes de exemplo usados como fallback quando o backend
+//                  não está disponível (TypeError na chamada fetch)
+//
+//  state {}      — estado da página: lista de pacientes carregados, filtros ativos,
+//                  ID do paciente em edição e foto em base64
+//
+//  carregarPacientes() — tenta GET /api/pacientes; usa MOCK se falhar
+//
+//  renderLista() — filtra state.pacientes por busca+tipoPagamento e gera HTML
+//                  da tabela; exibe empty-state quando vazio
+//
+//  linhaHTML(p)  — template de uma linha da tabela (avatar, nome, CPF, badge,
+//                  data, botões Prontuário e Editar)
+//
+//  Modal de cadastro/edição:
+//    abrirModalNovo() / abrirModalEditar(id) — configura estado e abre modal
+//    preencherForm(p) — popula campos do formulário com dados do paciente
+//    handleSubmit()   — valida, coleta dados, chama API e atualiza state
+//    validar()        — validações de front: nome, nascimento, sexo, telefone, CPF
+//    coletarDados()   — lê FormData e limpa máscaras (CPF, telefone, CEP)
+//
+//  Radio chips   — setRadioValue() / syncChip() gerenciam a aparência visual
+//                  dos campos sexo, estado civil e parentesco de emergência
+//
+//  Máscaras de input — maskCPF(), maskTel(), maskCEP() formatam em tempo real
+//  ViaCEP        — buscarCEP() preenche logradouro/bairro/cidade/UF automaticamente
+//  Foto          — FileReader converte imagem para base64 (máx 5MB)
+//  validarCPF()  — algoritmo dos dois dígitos verificadores do CPF
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { showToast } from '../components/toast.js';
 import { openModal, closeModal } from '../components/modal.js';
 import * as API from '../api/pacientes.js';

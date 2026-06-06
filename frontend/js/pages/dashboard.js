@@ -1,3 +1,28 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// pages/dashboard.js — Lógica da tela inicial (dashboard.html)
+// ─────────────────────────────────────────────────────────────────────────────
+// Ponto de entrada: DOMContentLoaded → initTopbar + preencherData + initTabs + carregarStats
+//
+// Saudação dinâmica:
+//   preencherData() — usa getUsuarioNome() e a hora atual para exibir
+//   "Bom dia / Boa tarde / Boa noite, [Primeiro Nome]!" e a data por extenso em pt-BR
+//
+// Sistema de abas com lazy loading:
+//   initTabs() — escuta click na .tab-bar, ativa .tab-btn e .tab-panel correspondente
+//   Estado local `loaded{}` garante que cada aba carrega dados apenas na primeira abertura:
+//     - "hoje"      → carregarHoje()      → lista sessões do dia
+//     - "pacientes" → carregarPacientes() → lista pacientes recentes
+//     - "agenda"    → carregarAgenda()    → grade semanal resumida
+//
+// Stats do cabeçalho (sempre carregam ao abrir a página):
+//   carregarStats() → em paralelo:
+//     - listarPacientes()            → #statPacientes, #cardPacientes
+//     - listarSessoes({ hoje, hoje }) → #statSessoes, #statRealizadas
+//   Falhas individuais exibem "—" sem travar o restante
+//
+// Cada aba tem mock interno para funcionar sem backend (mesmo padrão de agenda.js e pacientes.js)
+// ─────────────────────────────────────────────────────────────────────────────
+
 import * as PacientesAPI from '../api/pacientes.js';
 import { listarSessoes, listarSessoesSemana } from '../api/sessoes.js';
 import { initTopbar, getUsuarioNome } from '../utils/auth.js';

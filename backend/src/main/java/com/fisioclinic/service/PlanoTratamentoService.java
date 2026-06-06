@@ -19,11 +19,29 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PlanoTratamentoService — Regras de negócio do plano de tratamento (Módulo 3)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Service (lógica de domínio)
+ *
+ * Responsabilidades:
+ *  - Criar planos vinculando paciente (obrigatório), anamnese e fisioterapeuta (opcionais)
+ *  - Validar status contra lista permitida: "ativo" | "concluido" | "cancelado"
+ *  - dataInicio padrão = LocalDate.now() quando não informado
+ *  - atualizarStatus(): endpoint dedicado para mudar o ciclo de vida do plano
+ *    sem precisar reenviar todos os campos (usado no card de prontuário)
+ *
+ * O plano pode existir sem anamnese vinculada (anamneseId opcional), mas quando
+ * informado, o AnamneseResumo é incluído na resposta para contextualizar o diagnóstico.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class PlanoTratamentoService {
 
+    // Status aceitos pelo sistema — validado manualmente pois é String, não enum
     private static final List<String> STATUS_VALIDOS = List.of("ativo", "concluido", "cancelado");
 
     private final PlanoTratamentoRepository planoRepository;

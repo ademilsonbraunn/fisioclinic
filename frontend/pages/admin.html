@@ -1,3 +1,44 @@
+<!--
+  pages/admin.html — Painel Administrativo (ROLE_ADMIN exclusivo)
+  ──────────────────────────────────────────────────────────────────
+  Se o usuário não for ADMIN, admin.js redireciona para dashboard.html ao carregar.
+
+  CSS: base.css + components.css + pages/admin.css
+  JS:  js/pages/admin.js (type=module)
+
+  Estrutura do DOM:
+    header.topbar             → topbar com notificações
+    .admin-header             → título + subtítulo da página
+    .stats-row
+      #statFisios / #statSalas / #statPacientes → contadores gerais
+
+    .admin-tabs               → abas (data-tab):
+      "fisios"  → #tab-fisios  → tabela de fisioterapeutas + botão Novo Fisioterapeuta
+      "salas"   → #tab-salas   → tabela de salas + botão Nova Sala
+      "senha"   → #tab-senha   → formulário de troca de senha do admin
+
+    ── Busca ──────────────────────────────────────────────
+    #buscaAdmin               → filtro por texto na aba ativa
+
+    ── Modal de Fisioterapeuta ────────────────────────────
+    #fisioModalBackdrop
+      form#formFisio
+        #fisioId (hidden) / #fisioNome / #fisioCrf / #fisioEmail / #fisioTelefone
+        Novo → POST /api/fisioterapeutas (senha padrão "Fisio@123" gerada no backend)
+        Editar → PATCH /api/fisioterapeutas/{id}
+
+    ── Modal de Sala ──────────────────────────────────────
+    #salaModalBackdrop
+      form#formSala
+        #salaId (hidden) / #salaNome / #salaCapacidade / #salaTipo
+        Novo → POST /api/salas
+        Editar → PATCH /api/salas/{id}
+
+    ── Formulário de Senha ────────────────────────────────
+    form#formSenha
+      #senhaAtual / #novaSenha / #confirmarSenha
+      POST /api/auth/senha → { senhaAtual, novaSenha }
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

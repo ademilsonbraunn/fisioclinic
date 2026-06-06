@@ -1,3 +1,23 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * pacientes.css — Estilos da tela de lista e cadastro de pacientes (Módulo 1)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Carregado após base.css e components.css.
+ *
+ * Seções:
+ *  1. .page-header — cabeçalho com título e botão "Novo paciente"
+ *  2. .filter-bar — barra de busca + select de filtro por convênio
+ *  3. Tabela de pacientes — .patient-cell, .patient-name, .patient-cpf,
+ *                           .row-actions (botões Prontuário e Editar)
+ *  4. .avatar — círculo colorido com iniciais do nome do paciente
+ *  5. Modal de cadastro — abas de dados (pessoal, contato, endereço, convênio,
+ *                         emergência), chips de radio, photo upload, campos de convênio
+ *  6. .radio-chips — overrides específicos para os grupos sexo/estado civil
+ *  7. .cep-loading — estado de carregamento durante busca no ViaCEP
+ *  8. .empty-state — tela vazia quando não há pacientes ou nenhum resultado no filtro
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 /* ── Page header ────────────────────────────────── */
 
 .page-header {

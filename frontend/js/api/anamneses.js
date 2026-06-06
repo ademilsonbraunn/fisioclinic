@@ -1,3 +1,18 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// api/anamneses.js — Fetch wrapper para /api/anamneses
+// ─────────────────────────────────────────────────────────────────────────────
+// Módulo de acesso à API de anamnese e avaliação inicial (Módulo 2).
+//
+// Funções exportadas:
+//   listarAnamneses(pacienteId) → GET /api/anamneses?paciente_id={id}
+//   buscarAnamnese(id)          → GET /api/anamneses/{id}
+//   criarAnamnese(dados)        → POST /api/anamneses
+//   atualizarAnamnese(id, dados) → PATCH /api/anamneses/{id}
+//
+// Lê token de sessionStorage com fallback para localStorage.
+// Redireciona para index.html em caso de 401.
+// ─────────────────────────────────────────────────────────────────────────────
+
 const API_BASE = 'http://localhost:8080/api';
 
 function headers() {

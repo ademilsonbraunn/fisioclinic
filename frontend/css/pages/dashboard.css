@@ -1,3 +1,23 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * dashboard.css — Estilos da tela inicial / dashboard
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Carregado após base.css e components.css.
+ * Primeira tela após o login — ponto de navegação para todos os módulos.
+ *
+ * Seções:
+ *  1. .dash-header — saudação personalizada (bom dia/tarde/noite + nome do usuário)
+ *       e data formatada em pt-BR
+ *  2. .stat-row / .stat-chip — chips de estatísticas rápidas (total de pacientes,
+ *       sessões de hoje, sessões da semana)
+ *  3. Abas — .tab-bar com três painéis: Hoje / Pacientes / Agenda
+ *  4. Painel "Hoje" — lista de sessões do dia corrente com status colorido
+ *  5. Painel "Pacientes" — mini lista dos últimos pacientes com link para prontuário
+ *  6. Painel "Agenda" — mini calendário semanal (versão compacta)
+ *  7. .module-grid — grade de atalhos para os módulos do sistema
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 /* ── Welcome header ─────────────────────────────────────────── */
 
 .dash-header {

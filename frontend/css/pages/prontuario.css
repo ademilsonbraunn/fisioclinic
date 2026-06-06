@@ -1,3 +1,24 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * prontuario.css — Estilos do prontuário eletrônico (Módulos 2, 3 e 5)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Carregado após base.css e components.css.
+ * Página acessada via prontuario.html?paciente_id=UUID
+ *
+ * Seções:
+ *  1. .patient-header-card — card de identificação do paciente no topo (avatar,
+ *       nome, CPF, data de nascimento, convênio)
+ *  2. Abas do prontuário — .tab-bar, .tab-btn, .tab-panel (Anamnese / Plano / Evolução)
+ *  3. Anamnese (M2) — .section-card, formulário expandível, campo de avaliação física,
+ *       lista de anamneses anteriores
+ *  4. Plano de tratamento (M3) — card de plano ativo com status badge, formulário
+ *       de criação, chips de técnicas
+ *  5. Evolução SOAP (M5) — lista de evoluções por sessão, formulário SOAP,
+ *       slider EVA, seletor de técnicas realizadas
+ *  6. .no-patient — tela exibida quando paciente_id não está na URL
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 /* ── Cabeçalho do paciente ──────────────────────────────────────────────── */
 .patient-header-card {
   background: var(--surface);

@@ -1,3 +1,24 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * components.css — Biblioteca de componentes de UI reutilizáveis
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Carregado nas páginas que usam o sistema de design completo (pacientes,
+ * prontuário, agenda, admin). NÃO incluído no login (login.css é autocontido).
+ *
+ * Seções:
+ *  1. Buttons — .btn, .btn-primary, .btn-secondary, .btn-ghost, .btn-danger,
+ *               .btn-sm, .btn-icon
+ *  2. Form elements — .form-group, .form-label, .form-input, .form-select,
+ *                     .input-wrap (campo com ícone/botão embutido)
+ *  3. Radio chips — .radio-chips, .chip (botões de seleção com visual de pílula)
+ *  4. Modais — .modal-backdrop, .modal (overlay + container centralizado)
+ *  5. Search bar — .search-wrap com ícone de lupa
+ *  6. Spinners — animação de loading inline
+ *
+ * Todos os tokens de cor e tamanho vêm de variáveis definidas em base.css.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 /* ── Buttons ────────────────────────────────────── */
 
 .btn {

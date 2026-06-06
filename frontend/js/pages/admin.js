@@ -1,3 +1,35 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// pages/admin.js — Painel administrativo (admin.html) — ROLE_ADMIN exclusivo
+// ─────────────────────────────────────────────────────────────────────────────
+// Ponto de entrada: DOMContentLoaded → verifica getUsuarioPerfil() === 'ADMIN'
+//   Se não for ADMIN, redireciona imediatamente para dashboard.html (sem exibir nada)
+//
+// apiFetch(path, options) — wrapper interno que:
+//   - Injeta Authorization: Bearer token em todas as requisições
+//   - Redireciona para ../index.html em caso de 401
+//   (Nota: não usa os módulos em js/api/ — faz fetch direto, pois as operações
+//    de admin (criar fisio, criar sala) não têm wrapper nos módulos de api/)
+//
+// Seções gerenciadas:
+//   1. Stats (#statFisios, #statSalas, #statPacientes) — carregados em paralelo via carregarStats()
+//
+//   2. Fisioterapeutas — bindFisioModal():
+//      - abrirFisioModal(dados?)  → abre backdrop com formulário pré-preenchido (edição) ou vazio (novo)
+//      - salvarFisio()            → POST /api/fisioterapeutas ou PATCH /api/fisioterapeutas/{id}
+//      - carregarFisios()         → GET /api/fisioterapeutas → renderiza tabela
+//      - ações inline: editar + inativar (PATCH status)
+//
+//   3. Salas — bindSalaModal():
+//      - mesmo padrão de fisioterapeutas (criar / editar / inativar)
+//
+//   4. Troca de senha — bindSenhaForm():
+//      - POST /api/auth/senha com { senhaAtual, novaSenha }
+//      - Valida campos localmente antes de enviar
+//
+//   5. Busca — bindBusca():
+//      - Filtra tabela ativa (fisios ou salas) por texto conforme digitação
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { initTopbar, getToken, getUsuarioPerfil } from '../utils/auth.js';
 
 const API = 'http://localhost:8080/api';

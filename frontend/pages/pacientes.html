@@ -1,3 +1,34 @@
+<!--
+  pages/pacientes.html — Módulo 1: Cadastro de Pacientes
+  ────────────────────────────────────────────────────────
+  CSS: base.css + components.css + pages/pacientes.css
+  JS:  js/pages/pacientes.js (type=module)
+
+  Estrutura do DOM:
+    header.topbar           → topbar com notificações
+    .page-header
+      .search-bar           → #buscaPaciente + ícone de lupa
+      #btnNovoPaciente      → abre o modal de cadastro
+
+    #listaPacientes         → cards de paciente gerados por pacientes.js
+                              (renderizados dinamicamente, não existem no HTML estático)
+
+    ── Modal de Cadastro/Edição ──────────────────────────────
+    #pacienteModalBackdrop (.modal-backdrop)
+      .modal-box
+        #pacienteModalTitulo → "Novo paciente" | "Editar paciente"
+        form#formPaciente
+          Seções: Dados pessoais, Contato, Endereço (ViaCEP), Convênio, Contato emergência
+          Radio chips: sexo (Masculino/Feminino/Outro), estadoCivil, parentesco
+          #cepInput → autocomplete via ViaCEP (api.postmon.com.br/v1/cep/)
+
+    ── Modal de Visualização ────────────────────────────────
+    #verPacienteModalBackdrop
+      → exibe dados do paciente em modo leitura (sem campos de formulário)
+      → botões: Editar, Agendar, Prontuário
+
+  Fluxo principal: listar → buscar (filtro local) → criar/editar → salvar → recarregar lista
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

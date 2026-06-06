@@ -11,6 +11,29 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Paciente — Entidade JPA que representa um paciente da clínica (Módulo 1)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Model (mapeamento objeto-relacional)
+ * Tabela: pacientes
+ *
+ * Chave primária: UUID gerado automaticamente pelo banco (não exposto sequencialmente).
+ * CPF é único e armazenado sem máscara (apenas dígitos, 11 chars).
+ * Telefone é armazenado sem máscara (apenas dígitos, 11 chars).
+ *
+ * Relacionamentos (entidades separadas para normalização):
+ *  - ContatoEmergencia: 1 paciente → 0..1 contato de emergência
+ *  - ConvenioPaciente:  1 paciente → 0..1 registro de convênio/pagamento
+ *
+ * Auditoria automática: createdAt e updatedAt preenchidos pelo JPA Auditing
+ * (@EnableJpaAuditing na FisioclinicApplication).
+ *
+ * Enums centralizados aqui para garantir valores válidos em qualquer módulo:
+ *  - Sexo: FEMININO | MASCULINO | OUTRO | NAO_INFORMADO
+ *  - EstadoCivil: SOLTEIRO | CASADO | DIVORCIADO | VIUVO | UNIAO_ESTAVEL
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Entity
 @Table(name = "pacientes")
 @EntityListeners(AuditingEntityListener.class)

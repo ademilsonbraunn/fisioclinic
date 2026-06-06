@@ -1,3 +1,25 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * agenda.css — Estilos da tela de agendamento / calendário semanal (Módulo 4)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Carregado após base.css e components.css.
+ *
+ * Seções:
+ *  1. .agenda-header — título + navegação de semana (botões ← →) + label de período
+ *  2. .agenda-filters — filtros de fisioterapeuta, sala e status
+ *  3. Calendário semanal — grid com colunas por dia da semana:
+ *       .cal-wrap, .cal-header (dias SEG–DOM), .cal-body (slots de horário)
+ *       .time-col (coluna de horários à esquerda, 07:00–20:00)
+ *       .day-col (coluna de um dia, contém slots de 30min)
+ *       .cal-slot (slot individual de 30 minutos)
+ *  4. Eventos — .cal-event posicionado absolutamente dentro da coluna de dia,
+ *       altura proporcional à duração; badges de status (cores por enum StatusSessao)
+ *  5. Modal de agendamento — formulário com selects de paciente, fisioterapeuta,
+ *       sala, tipo, status, data/hora e observações
+ *  6. Painel lateral de detalhes da sessão — aberto ao clicar em um evento
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 /* ── Page header ─────────────────────────────── */
 
 .agenda-header {

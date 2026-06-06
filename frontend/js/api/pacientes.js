@@ -1,5 +1,23 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// api/pacientes.js — Fetch wrapper para /api/pacientes
+// ─────────────────────────────────────────────────────────────────────────────
+// Módulo de acesso à API de pacientes. Toda chamada HTTP do frontend relativa
+// a pacientes deve passar por aqui — nunca fazer fetch inline nas páginas.
+//
+// Funções exportadas:
+//   listarPacientes(params) → GET /api/pacientes?[busca=termo]
+//   buscarPaciente(id)      → GET /api/pacientes/{id}
+//   criarPaciente(dados)    → POST /api/pacientes
+//   atualizarPaciente(id, dados) → PATCH /api/pacientes/{id}
+//
+// Nota: lê token do localStorage (não sessionStorage) pois pacientes.js foi
+// escrito antes da padronização para sessionStorage feita nos módulos seguintes.
+// Erros de API são relançados como Error com a mensagem do campo "erro" do JSON.
+// ─────────────────────────────────────────────────────────────────────────────
+
 const API_BASE = 'http://localhost:8080/api';
 
+// Monta headers com Content-Type e Bearer token
 function headers() {
   const token = localStorage.getItem('token');
   const h = { 'Content-Type': 'application/json' };

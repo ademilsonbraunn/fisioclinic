@@ -13,6 +13,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * FisioterapeutaController — Gestão de fisioterapeutas e usuários do sistema
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Controller (entrada HTTP)
+ * Base URL: /api/fisioterapeutas
+ * Acesso: requer ROLE_ADMIN (configurado em SecurityConfig)
+ *
+ * Fisioterapeutas são também os usuários do sistema — um mesmo registro armazena
+ * dados profissionais (CRF) e credenciais de acesso (e-mail + senha_hash).
+ *
+ * Endpoints:
+ *  GET    /api/fisioterapeutas        → lista todos, ordenados por nome
+ *  GET    /api/fisioterapeutas/{id}   → busca por ID
+ *  POST   /api/fisioterapeutas        → cadastra novo (senha padrão: "Fisio@123")
+ *  PATCH  /api/fisioterapeutas/{id}   → atualização parcial de dados
+ *  PATCH  /api/fisioterapeutas/{id}/status → ativa ou desativa o acesso
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @RestController
 @RequestMapping("/api/fisioterapeutas")
 @RequiredArgsConstructor

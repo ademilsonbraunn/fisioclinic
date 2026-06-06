@@ -1,5 +1,25 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// api/sessoes.js — Fetch wrapper para /api/sessoes
+// ─────────────────────────────────────────────────────────────────────────────
+// Módulo de acesso à API de agendamento (Módulo 4).
+//
+// Funções exportadas:
+//   listarSessoes(params)             → GET /api/sessoes?[data_inicio&data_fim&paciente_id]
+//   listarSessoesSemana(params)       → GET /api/sessoes/semana
+//   buscarSessao(id)                  → GET /api/sessoes/{id}
+//   criarSessao(dados)                → POST /api/sessoes
+//   atualizarStatusSessao(id, status, motivo) → PATCH /api/sessoes/{id}/status
+//   atualizarSessao(id, dados)        → PATCH /api/sessoes/{id}
+//   excluirSessao(id)                 → DELETE /api/sessoes/{id}
+//
+// Lê token de sessionStorage com fallback para localStorage.
+// Redireciona para index.html automaticamente se receber HTTP 401.
+// Retorna null para respostas 204 No Content (excluirSessao).
+// ─────────────────────────────────────────────────────────────────────────────
+
 const API_BASE = 'http://localhost:8080/api';
 
+// Monta headers com token de sessão ou localStorage
 function headers() {
   const token = sessionStorage.getItem('token') || localStorage.getItem('token');
   return {

@@ -1,3 +1,17 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// api/evolucoes.js — Fetch wrapper para /api/evolucoes
+// ─────────────────────────────────────────────────────────────────────────────
+// Módulo de acesso à API de evolução clínica SOAP (Módulo 5).
+//
+// Funções exportadas:
+//   listarEvolucoesPaciente(pacienteId) → GET /api/evolucoes/paciente/{id}
+//   buscarEvolucaoSessao(sessaoId)      → GET /api/evolucoes/sessao/{id}
+//   criarEvolucao(dados)               → POST /api/evolucoes
+//
+// Leitura: nota que não existe endpoint de atualização de evolução — prontuários
+// são imutáveis após registro (Resolução CFM 1.821/07).
+// ─────────────────────────────────────────────────────────────────────────────
+
 const API_BASE = 'http://localhost:8080/api';
 
 function headers() {

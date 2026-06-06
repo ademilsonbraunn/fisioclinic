@@ -4,6 +4,20 @@
 
 ## 📅 05/06/2026 — Sexta-feira
 
+### ⏰ 23:59 — Geral
+- **Comentários em todo o frontend**: adicionados blocos de cabeçalho e comentários de seção em todos os 30 arquivos do frontend:
+  - 8 arquivos CSS (`base.css`, `components.css`, 6 páginas)
+  - 4 arquivos JS utilitários/componentes (`auth.js`, `modal.js`, `toast.js`, `notificacoes.js`)
+  - 6 arquivos JS API wrappers (`pacientes.js`, `sessoes.js`, `anamneses.js`, `planos.js`, `evolucoes.js`, `atualizacoes.js`)
+  - 6 arquivos JS pages (`login.js`, `pacientes.js`, `agenda.js`, `prontuario.js`, `dashboard.js`, `admin.js`)
+  - 6 arquivos HTML (`index.html`, `dashboard.html`, `pacientes.html`, `agenda.html`, `prontuario.html`, `admin.html`)
+- **Comentários no backend**: adicionados cabeçalhos e Javadocs em 20 arquivos Java:
+  - `FisioclinicApplication.java`
+  - 9 Controllers (`PacienteController`, `AuthController`, `FisioterapeutaController`, `SalaController`, `SessaoController`, `AnamneseController`, `PlanoTratamentoController`, `EvolucaoController`, `AtualizacaoSistemaController`)
+  - 9 Services (`PacienteService`, `AuthService`, `FisioterapeutaService`, `SalaService`, `SessaoService`, `AnamneseService`, `PlanoTratamentoService`, `EvolucaoService`, `AtualizacaoSistemaService`)
+  - 1 Model (`Paciente.java`)
+- **Arquivo de estado**: criado `--atualizações/estado-comentarios.md` com tabela completa de todos os arquivos comentados e pendentes (50/94 concluídos)
+
 ### ⏰ 18:30 — Frontend
 - **Dashboard — Card Prontuário**: removido badge "Em breve"; link atualizado de `prontuario.html` para `pacientes.html` (fluxo correto: pacientes → prontuário do paciente); descrição do card revisada; stat alterado para "Acessar prontuários"
 - **Lista de pacientes — botões de ação**: substituídos botões icon-only (`btn-ghost btn-icon btn-sm`) por botões com ícone + texto — "Prontuário" (estilo primário em azul com borda) e "Editar Cadastro" (estilo ghost neutro); gap da `.row-actions` aumentado de 2px para 6px; adicionadas classes `.btn-action-prontuario` e `.btn-action-editar` em `pacientes.css`

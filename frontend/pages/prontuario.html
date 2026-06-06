@@ -1,3 +1,44 @@
+<!--
+  pages/prontuario.html — Prontuário Eletrônico (Módulos 2, 3 e 5)
+  ──────────────────────────────────────────────────────────────────
+  Acessado via: prontuario.html?paciente_id=UUID
+  Se paciente_id estiver ausente, exibe #no-patient e interrompe o carregamento.
+
+  CSS: base.css + components.css + pages/prontuario.css
+  JS:  js/pages/prontuario.js (type=module)
+
+  Estrutura do DOM:
+    header.topbar             → topbar com notificações
+    #no-patient               → aviso exibido quando URL não tem paciente_id (oculto por padrão)
+
+    #cabecalhoPaciente        → card com nome, CPF, data nascimento, convênio
+                                (populado por carregarPaciente() em prontuario.js)
+
+    .tab-bar                  → 3 abas principais:
+      "anamnese"  → #tab-anamnese  → Módulo 2 (Anamnese e Avaliação)
+      "plano"     → #tab-plano     → Módulo 3 (Diagnóstico e Plano de Tratamento)
+      "evolucao"  → #tab-evolucao  → Módulo 5 (Evolução SOAP)
+
+    ── Aba Anamnese (M2) ──────────────────────────────────
+    #listaAnamneses           → cards de anamneses existentes
+    #btnNovaAnamnese          → expande formulário
+    form#formAnamnese
+      #queixaPrincipal / #historicoDoenca / #tempoSintomas
+      #doencasPreexistentes (checkboxes) / #medicamentos / #alergias
+      Avaliação física: postura, ADM, força, #evaSlider (0–10), testes
+
+    ── Aba Plano de Tratamento (M3) ───────────────────────
+    #listaPlanos              → plano ativo e histórico
+    form#formPlano
+      #diagnosticoCif / #objetivosCurto / #objetivosLongo
+      #tecnicasRecursos / #frequenciaSemanal / #numSessoes / #status
+
+    ── Aba Evolução SOAP (M5) ─────────────────────────────
+    #listaEvolucoes           → evoluções registradas
+    form#formEvolucao
+      #evolSessao (select) / #evolSubjetivo / #evolObjetivo
+      #evolAvaliacao / #evolPlano / #evolTecnicas / #evolTempo
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

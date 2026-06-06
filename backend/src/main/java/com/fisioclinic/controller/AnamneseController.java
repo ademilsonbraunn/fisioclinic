@@ -12,6 +12,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AnamneseController — Anamnese e avaliação inicial (Módulo 2)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Controller (entrada HTTP)
+ * Base URL: /api/anamneses
+ * Acesso: requer autenticação (qualquer perfil)
+ *
+ * A anamnese é o primeiro documento clínico do paciente: registra queixa,
+ * histórico e avaliação física. Seu ID é referenciado pelo Módulo 3
+ * (PlanoTratamento) para contextualizar o diagnóstico.
+ *
+ * O campo avaliacao_fisica é armazenado como JSONB no PostgreSQL, permitindo
+ * dados de avaliação com estrutura dinâmica (postura, ADM, força, EVA, etc.).
+ *
+ * Endpoints:
+ *  GET   /api/anamneses?paciente_id=UUID → todas as anamneses do paciente
+ *  GET   /api/anamneses/{id}             → busca por ID
+ *  POST  /api/anamneses                  → registra nova anamnese
+ *  PATCH /api/anamneses/{id}             → atualização parcial
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @RestController
 @RequestMapping("/api/anamneses")
 @RequiredArgsConstructor

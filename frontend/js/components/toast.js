@@ -1,3 +1,21 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// toast.js — Notificações temporárias (toasts) no canto da tela
+// ─────────────────────────────────────────────────────────────────────────────
+// Exporta showToast(message, type, duration):
+//   - message: texto a exibir
+//   - type: 'success' | 'error' | 'warning' | 'default'
+//   - duration: ms até desaparecer (padrão: 4000ms)
+//
+// Funcionamento:
+//   1. Localiza #toastContainer no DOM (deve existir no HTML da página)
+//   2. Cria um <div class="toast [type]"> com ícone SVG inline + texto
+//   3. Agenda a remoção com dismiss() após `duration` ms
+//   4. Clicar no toast dispara dismiss() imediatamente
+//   5. dismiss() anima opacidade e translateX antes de remover o elemento
+//
+// CSS dos toasts está em base.css (.toast, .toast.success, .toast.error, etc.)
+// ─────────────────────────────────────────────────────────────────────────────
+
 const ICON = {
   success: `<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`,
   error:   `<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,

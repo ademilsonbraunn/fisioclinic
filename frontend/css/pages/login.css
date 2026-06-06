@@ -1,3 +1,20 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * login.css — Estilos exclusivos da página de login (index.html)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Autocontido: não depende de components.css. Apenas base.css é carregado antes.
+ *
+ * Seções:
+ *  1. Layout — centraliza o card na tela com flexbox no body
+ *  2. .login-card — container branco com sombra, largura máxima de 400px
+ *  3. .login-brand — logo + nome do sistema
+ *  4. .login-error — alerta vermelho exibido quando as credenciais são inválidas
+ *  5. .login-form — campos de e-mail e senha com toggle de visibilidade
+ *  6. .login-options — "lembrar de mim" + link "esqueci minha senha"
+ *  7. .btn-login — botão de envio com estado de loading (spinner)
+ *  8. .btn-demo — link de acesso sem login (modo demonstração)
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 body {
   display: flex;
   align-items: center;

@@ -25,11 +25,31 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * SessaoService — Regras de negócio do agendamento (Módulo 4)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Service (lógica de domínio)
+ *
+ * Responsabilidades principais:
+ *  - Criar e atualizar sessões validando:
+ *      1. Intervalo de horário (fim > início)
+ *      2. Existência de paciente, fisioterapeuta e sala
+ *      3. Conflito de sala: duas sessões ativas não podem ocupar a mesma sala
+ *         no mesmo horário (sessões CANCELADO/FALTOU são ignoradas na checagem)
+ *  - listarSemana(): calcula automaticamente seg–dom da semana corrente
+ *  - atualizarStatus(): exige motivo_cancelamento quando status = CANCELADO
+ *  - calcularDuracao(): persiste duração em minutos para facilitar relatórios
+ *
+ * STATUS_SEM_CONFLITO define quais status liberam o slot de sala novamente.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class SessaoService {
 
+    // Sessões nesses status não travam a sala — slot considerado livre
     private static final List<Sessao.StatusSessao> STATUS_SEM_CONFLITO = List.of(
         Sessao.StatusSessao.CANCELADO,
         Sessao.StatusSessao.FALTOU

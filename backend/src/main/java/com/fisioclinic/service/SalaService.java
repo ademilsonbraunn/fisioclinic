@@ -13,6 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * SalaService — Gestão de salas e boxes de atendimento
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Service (lógica de domínio)
+ *
+ * Responsabilidades:
+ *  - Validar unicidade de nome de sala (case-insensitive)
+ *  - Definir capacidade padrão = 1 quando não informada
+ *  - Separar listagem completa (admin) de listagem de ativas (formulário de agendamento)
+ *
+ * Salas inativas continuam referenciadas em sessões históricas — nunca são excluídas,
+ * apenas desativadas via PATCH ativo=false.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional

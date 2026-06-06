@@ -20,6 +20,27 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * EvolucaoService — Regras de negócio da evolução clínica SOAP (Módulo 5)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Service (lógica de domínio)
+ *
+ * Responsabilidades:
+ *  - Garantir unicidade de evolução por sessão (1 sessão → 1 evolução)
+ *  - Derivar o paciente diretamente da sessão (não precisa vir no DTO)
+ *  - dataHora padrão = LocalDateTime.now() quando não informado
+ *  - Vincular opcionalmente fisioterapeuta e plano de tratamento
+ *
+ * Campos SOAP mapeados:
+ *  subjetivo      → S (queixa subjetiva do paciente)
+ *  objetivo       → O (achados objetivos do fisioterapeuta)
+ *  avaliacao      → A (avaliação/diagnóstico)
+ *  planoEvolucao  → P (plano para a próxima sessão)
+ *
+ * tecnicasRealizadas é salvo como JSONB (lista de strings).
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor

@@ -14,6 +14,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * FisioterapeutaService — Gestão de profissionais e usuários do sistema
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Camada: Service (lógica de domínio)
+ *
+ * Responsabilidades:
+ *  - Validar unicidade de e-mail e CRF antes de cadastrar
+ *  - Normalizar dados: CRF em maiúsculas, e-mail em minúsculas, telefone só dígitos
+ *  - Definir senha inicial "Fisio@123" quando o campo senha não é enviado
+ *  - alterarStatus(): ativa ou desativa o acesso sem excluir o registro
+ *    (fisioterapeuta inativo não consegue autenticar — verificado no AuthService)
+ *
+ * FisioterapeutaResponse nunca expõe o campo senhaHash.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional

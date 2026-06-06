@@ -1,3 +1,23 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * admin.css — Estilos da tela de administração do sistema
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Carregado após base.css e components.css.
+ * Acesso restrito: apenas usuários com perfil ADMIN (redirecionamento em admin.js).
+ *
+ * Seções:
+ *  1. .page-header + .admin-badge — cabeçalho com badge de identificação ADMIN
+ *  2. .stat-row — grid 4 colunas: fisioterapeutas, salas, pacientes, sessões do mês
+ *  3. Seção Fisioterapeutas — tabela com CRF, e-mail, status ativo/inativo e
+ *       botões de editar e ativar/desativar
+ *  4. Seção Salas — tabela com tipo (BOX / SALA_INDIVIDUAL / SALA_GRUPO),
+ *       capacidade e status
+ *  5. Modais — cadastro/edição de fisioterapeuta e sala
+ *  6. Troca de senha — formulário de alteração de senha do usuário atual
+ *  7. .busca-row — campo de busca filtrado em tempo real
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 /* ── Page header ─────────────────────────────── */
 
 .page-header {

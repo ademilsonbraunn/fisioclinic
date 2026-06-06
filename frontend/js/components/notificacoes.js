@@ -1,3 +1,24 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// notificacoes.js — Painel de atualizações do sistema no topbar
+// ─────────────────────────────────────────────────────────────────────────────
+// Exporta initNotificacoes() — chamado por auth.js → initTopbar() em toda página.
+//
+// Funcionamento:
+//   1. Busca as últimas 10 atualizações via GET /api/atualizacoes
+//   2. Renderiza cada item no painel #notifPanel com: versão, tipo (badge colorido),
+//      título, descrição e data de lançamento
+//   3. Controla estado de leitura em localStorage (chave: fisioclinic_notif_lidas)
+//      — IDs lidos são persistidos; não lidos exibem ponto azul e contagem no badge
+//   4. Permite marcar itens individualmente ou todos de uma vez como lidos
+//   5. O painel abre/fecha pelo botão #notifBtn; fecha ao clicar fora
+//
+// Tipos de atualização e cores dos badges:
+//   NOVO_RECURSO → .badge-blue | MELHORIA → .badge-amber | CORRECAO → .badge-green
+//
+// escHtml() sanitiza todos os dados vindos da API antes de inserir no DOM,
+// evitando XSS mesmo que o banco contenha caracteres especiais.
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { listarAtualizacoes } from '../api/atualizacoes.js';
 
 const LABELS = {

@@ -1,3 +1,25 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// pages/login.js — Lógica da tela de autenticação (index.html)
+// ─────────────────────────────────────────────────────────────────────────────
+// Não usa nenhum módulo de api/ — faz o fetch direto para /api/auth/login.
+// Isso é intencional: o login precisa funcionar antes de qualquer token existir.
+//
+// Seções:
+//  1. setupPasswordToggle() — alterna type=password / type=text no campo senha
+//     e troca o ícone do olho (SVG inline: olho aberto ↔ olho cortado)
+//
+//  2. setupForm() — escuta o submit do #formLogin:
+//     a. Previne submit padrão e exibe estado de loading no botão
+//     b. POST /api/auth/login com { email, senha }
+//     c. Sucesso (200): salva token, nome e perfil no sessionStorage e redireciona
+//        para pages/dashboard.html
+//     d. Erro (4xx/5xx ou rede): exibe #loginError com mensagem genérica
+//     e. finally: restaura o botão independente do resultado
+//
+// Armazenamento: sessionStorage (padrão) — funcionalidade "Lembrar de mim" via
+// checkbox #lembrar ainda não está implementada no código atual.
+// ─────────────────────────────────────────────────────────────────────────────
+
 document.addEventListener('DOMContentLoaded', () => {
   setupPasswordToggle();
   setupForm();
