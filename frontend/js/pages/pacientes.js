@@ -190,6 +190,14 @@ function linhaHTML(p) {
             </svg>
             Prontuário
           </a>
+          <!-- [M6] Acesso direto à alta do paciente — evita 3 cliques via prontuário -->
+          <a class="btn btn-action-alta" href="alta.html?paciente_id=${p.id}"
+            title="Registrar alta" aria-label="Alta de ${esc(p.nomeCompleto)}">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Alta
+          </a>
           <button class="btn btn-action-editar" data-action="editar" data-id="${p.id}"
             title="Editar cadastro" aria-label="Editar ${esc(p.nomeCompleto)}">
             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">

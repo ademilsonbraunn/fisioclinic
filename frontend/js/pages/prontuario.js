@@ -41,6 +41,8 @@ import { listarAnamneses, criarAnamnese } from '../api/anamneses.js';
 import { listarPlanos, criarPlano, atualizarStatusPlano } from '../api/planos.js';
 import { listarEvolucoesPaciente, criarEvolucao } from '../api/evolucoes.js';
 import { listarSessoes } from '../api/sessoes.js';
+// [M6] API de altas reutilizada da página standalone alta.js
+import { criarAlta, listarAltasPaciente } from '../api/altas.js';
 
 const API_BASE = 'http://localhost:8080/api';
 
@@ -54,6 +56,9 @@ let fisios            = [];
 let formVisivel       = false;
 let formPlanoVisivel  = false;
 let formEvolVisivel   = false;
+// [M6] Flags da aba Alta — lazy-load e controle de envio
+let altaTabCarregada  = false;
+let salvandoAlta      = false;
 
 // ── DOM helpers ──────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -107,6 +112,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindForm();
   bindFormPlano();
   bindFormEvolucao();
+  // [M6] Bind das interações da aba Alta (seções colapsáveis + estrelas + submit)
+  bindFormAlta();
+  bindSatisfacaoStarsTab();
+  bindSectionsTab();
 });
 
 // ── Dados ─────────────────────────────────────────────────────────────────────
@@ -363,6 +372,11 @@ function bindTabs() {
       btn.classList.add('active');
       btn.setAttribute('aria-selected', 'true');
       $('tab-' + btn.dataset.tab)?.classList.add('active');
+
+      // [M6] Lazy-load da aba Alta: carrega dados apenas na primeira ativação
+      if (btn.dataset.tab === 'alta' && pacienteId && !altaTabCarregada) {
+        carregarAltaTab();
+      }
     });
   });
 }
@@ -922,5 +936,208 @@ async function salvarEvolucao() {
     btn.disabled          = false;
     label.style.display   = 'block';
     spinner.style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MÓDULO 6 — Alta e Relatórios (aba integrada no prontuário)
+// Consume dados já carregados: planos[], fisios[], sessoesPaciente[], evolucoes[]
+// Registra alta via POST /api/altas; exibe feedback inline (sem redirecionamento).
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Carregamento inicial da aba Alta ──────────────────────────────────────────
+async function carregarAltaTab() {
+  altaTabCarregada = true;
+
+  // Preenche resumo do tratamento com dados já carregados
+  preencherResumoTab();
+
+  // Popula selects com dados já na memória (planos[] e fisios[])
+  popularSelectPlanosTab();
+  popularSelectFisioTab();
+
+  // Data padrão = hoje
+  const hoje = new Date().toISOString().split('T')[0];
+  if ($('tab-inp-data-alta')) $('tab-inp-data-alta').value = hoje;
+
+  // Pré-seleciona plano_id se informado na URL
+  const planoIdUrl = new URLSearchParams(window.location.search).get('plano_id');
+  if (planoIdUrl && $('tab-inp-plano')) $('tab-inp-plano').value = planoIdUrl;
+
+  // Busca altas existentes e exibe card se houver
+  try {
+    const altas = await listarAltasPaciente(pacienteId);
+    if (altas.length > 0) mostrarAltaTabRegistrada(altas[0]);
+  } catch { /* silencioso — não bloqueia o formulário */ }
+}
+
+// ── Popula o resumo de sessões/evoluções na aba Alta ─────────────────────────
+function preencherResumoTab() {
+  const realizadas = sessoesPaciente.filter(s =>
+    (s.status ?? '').toUpperCase() === 'REALIZADO'
+  );
+  if ($('res-tab-sessoes')) $('res-tab-sessoes').textContent = realizadas.length;
+
+  // Dias de tratamento: distância entre primeira sessão realizada e hoje
+  if (realizadas.length) {
+    const datas = realizadas
+      .map(s => new Date(s.data_hora_inicio ?? s.dataHoraInicio ?? s.dataHora))
+      .filter(d => !isNaN(d));
+    if (datas.length) {
+      const primeira = new Date(Math.min(...datas));
+      const hoje     = new Date();
+      const dias     = Math.round((hoje - primeira) / 86400000);
+      if ($('res-tab-dias')) $('res-tab-dias').textContent = dias;
+    }
+  }
+
+  // Sessões com EVA registrado (antes ou depois)
+  const comEva = evolucoes.filter(e => (e.eva_antes ?? e.evaAntes) > 0 || (e.eva_depois ?? e.evaDepois) > 0);
+  if ($('res-tab-eva')) $('res-tab-eva').textContent = comEva.length;
+
+  // Diagnóstico CIF do plano ativo
+  const planoAtivo = planos.find(p => p.status === 'ativo');
+  const diagEl = $('res-tab-diagnostico');
+  if (diagEl && planoAtivo) {
+    const cif = planoAtivo.diagnostico_cif ?? planoAtivo.diagnosticoCif;
+    if (cif) {
+      diagEl.textContent = `Diagnóstico CIF: ${cif}`;
+      diagEl.style.display = 'block';
+    }
+  }
+
+  if ($('resumo-wrap-tab')) $('resumo-wrap-tab').style.display = 'block';
+}
+
+// ── Popula selects da aba Alta ────────────────────────────────────────────────
+function popularSelectPlanosTab() {
+  const sel = $('tab-inp-plano');
+  if (!sel) return;
+  if (!planos.length) return;
+  sel.innerHTML = '<option value="">— Nenhum (sem plano formal) —</option>'
+    + planos.map(p => {
+        const cif  = String(p.diagnostico_cif ?? p.diagnosticoCif ?? '').slice(0, 50);
+        const stat = p.status ?? '';
+        return `<option value="${esc(p.id)}">${esc(cif)} (${esc(stat)})</option>`;
+      }).join('');
+}
+
+function popularSelectFisioTab() {
+  const sel = $('tab-inp-fisio-alta');
+  if (!sel) return;
+  if (!fisios.length) return;
+  sel.innerHTML = '<option value="">— Selecione —</option>'
+    + fisios.map(f => `<option value="${esc(f.id)}">${esc(f.nome)} (CRF ${esc(f.crf)})</option>`).join('');
+}
+
+// ── Exibe o card de alta já registrada ───────────────────────────────────────
+function mostrarAltaTabRegistrada(alta) {
+  const motivos = {
+    alta_clinica: 'Alta Clínica', alta_administrativa: 'Alta Administrativa',
+    desistencia: 'Desistência', encaminhamento: 'Encaminhamento', obito: 'Óbito',
+  };
+  if ($('ar-tab-data'))      $('ar-tab-data').textContent    = formatData(alta.data_alta ?? alta.dataAlta);
+  if ($('ar-tab-motivo'))    $('ar-tab-motivo').textContent  = motivos[alta.motivo] ?? alta.motivo ?? '—';
+  if ($('ar-tab-resultado')) $('ar-tab-resultado').textContent = alta.resultado_objetivos ?? alta.resultadoObjetivos ?? '—';
+  if ($('alta-tab-registrada')) $('alta-tab-registrada').style.display = 'block';
+}
+
+// ── Seções colapsáveis da aba Alta ────────────────────────────────────────────
+function bindSectionsTab() {
+  document.querySelectorAll('#tab-alta .alta-section-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const secId = header.dataset.section;
+      if (!secId) return;
+      const sec = $(secId);
+      if (sec) sec.classList.toggle('open');
+    });
+  });
+}
+
+// ── Estrelas de satisfação da aba Alta ────────────────────────────────────────
+// [M6] Mesmo padrão de alta.js: radio + label separados dentro de .satisfacao-star
+function bindSatisfacaoStarsTab() {
+  const stars = document.querySelectorAll('#tab-satisfacao-stars .satisfacao-star input[type="radio"]');
+  stars.forEach(input => {
+    input.addEventListener('change', () => {
+      const nota = parseInt(input.value, 10);
+      stars.forEach((s, idx) => {
+        s.nextElementSibling.classList.toggle('ativa', idx < nota);
+      });
+    });
+  });
+}
+
+// ── Submit do formulário de alta ─────────────────────────────────────────────
+function bindFormAlta() {
+  const btn = $('btn-registrar-alta-tab');
+  if (!btn) return;
+  btn.addEventListener('click', registrarAlta);
+}
+
+async function registrarAlta() {
+  if (salvandoAlta) return;
+
+  // Validação dos campos obrigatórios
+  const motivo    = document.querySelector('input[name="tab-motivo"]:checked')?.value;
+  const resultado = $('tab-inp-resultado')?.value.trim();
+
+  const errMotivo    = $('tab-err-motivo');
+  const errResultado = $('tab-err-resultado');
+  if (errMotivo)    errMotivo.textContent    = '';
+  if (errResultado) errResultado.textContent = '';
+
+  let invalido = false;
+  if (!motivo) {
+    if (errMotivo) errMotivo.textContent = 'Selecione o motivo da alta.';
+    $('sec-tab-dados')?.classList.add('open');
+    invalido = true;
+  }
+  if (!resultado) {
+    if (errResultado) errResultado.textContent = 'Descreva o resultado vs objetivos.';
+    $('sec-tab-dados')?.classList.add('open');
+    invalido = true;
+  }
+  if (invalido) return;
+
+  // Monta payload com todos os campos do Módulo 6
+  const notaRaw = document.querySelector('input[name="tab-satisfacao"]:checked')?.value;
+  const payload = {
+    paciente_id:              pacienteId,
+    motivo,
+    data_alta:                $('tab-inp-data-alta')?.value       || null,
+    plano_id:                 $('tab-inp-plano')?.value           || null,
+    fisioterapeuta_id:        $('tab-inp-fisio-alta')?.value      || null,
+    resultado_objetivos:      resultado,
+    orientacoes_domiciliares: $('tab-inp-orientacoes')?.value.trim()   || null,
+    relatorio_evolucao:       $('tab-inp-rel-evolucao')?.value.trim()  || null,
+    relatorio_medico:         $('tab-inp-rel-medico')?.value.trim()    || null,
+    agendamento_retorno:      $('tab-inp-retorno')?.value              || null,
+    satisfacao_nota:          notaRaw ? parseInt(notaRaw, 10) : null,
+    satisfacao_comentario:    $('tab-inp-sat-comentario')?.value.trim() || null,
+  };
+
+  const btn = $('btn-registrar-alta-tab');
+  salvandoAlta    = true;
+  btn.disabled    = true;
+  btn.textContent = 'Registrando...';
+
+  try {
+    const alta = await criarAlta(payload);
+    mostrarAltaTabRegistrada(alta);
+    // Feedback inline: oculta formulário e exibe card de sucesso — sem redirecionamento
+    if ($('form-alta-tab'))   $('form-alta-tab').style.display   = 'none';
+    if ($('alta-tab-footer')) $('alta-tab-footer').style.display = 'none';
+    showToast('Alta registrada com sucesso!', 'success');
+  } catch (err) {
+    const msg = err?.erro ?? err?.message ?? 'Erro ao registrar alta. Tente novamente.';
+    showToast(msg, 'error');
+    salvandoAlta = false;
+    btn.disabled = false;
+    btn.innerHTML = `
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      Registrar Alta`;
   }
 }

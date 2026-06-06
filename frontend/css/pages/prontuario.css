@@ -437,3 +437,20 @@
 
 /* ── Badge âmbar ─────────────────────────────────────────────────────────── */
 .badge-amber { background: color-mix(in srgb, var(--amber) 14%, transparent); color: var(--amber); }
+
+
+/* ── Aba Alta (M6) — sobrescreve estilos do alta.css que não se aplicam em contexto de tab ── */
+/* [M6] .alta-footer no contexto da aba é relativo ao fluxo, não fixo na janela */
+#tab-alta .alta-footer {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  padding: 16px 0 32px;
+  background: transparent;
+  border-top: none;
+  justify-content: flex-end;
+}
+
+/* [M6] Espaçamento interno da aba Alta equivalente às outras abas */
+#tab-alta .alta-section:first-of-type { margin-top: 0; }

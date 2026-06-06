@@ -74,6 +74,7 @@
 }
 
 .btn-action-prontuario,
+.btn-action-alta,
 .btn-action-editar {
   display: inline-flex;
   align-items: center;
@@ -104,6 +105,18 @@
   background: transparent;
   color: var(--text2);
   border: 1px solid var(--border);
+}
+
+/* [M6] Botão Alta — verde suave para distinguir da ação de prontuário */
+.btn-action-alta {
+  background: color-mix(in srgb, var(--green) 10%, transparent);
+  color: var(--green);
+  border: 1px solid color-mix(in srgb, var(--green) 30%, transparent);
+}
+
+.btn-action-alta:hover {
+  background: color-mix(in srgb, var(--green) 18%, transparent);
+  border-color: color-mix(in srgb, var(--green) 50%, transparent);
 }
 
 .btn-action-editar:hover {
