@@ -2,6 +2,20 @@
 
 ---
 
+## 📅 11/06/2026 — Quarta-feira
+
+### ⏰ 11:00 — Frontend
+- `pages/prontuario.html`: adicionada 4ª aba "Alta e Relatórios" integrada ao prontuário (Tab button + painel completo Módulo 6)
+- `pages/prontuario.html`: importado `alta.css` para reutilizar estilos de seções colapsáveis, chips e estrelas
+- `js/pages/prontuario.js`: adicionado import de `criarAlta` e `listarAltasPaciente` de `api/altas.js`
+- `js/pages/prontuario.js`: adicionadas funções `carregarAltaTab`, `preencherResumoTab`, `popularSelectPlanosTab`, `popularSelectFisioTab`, `mostrarAltaTabRegistrada`, `bindSectionsTab`, `bindSatisfacaoStarsTab`, `bindFormAlta`, `registrarAlta`
+- `js/pages/prontuario.js`: aba Alta usa lazy-load na primeira ativação; após submit exibe card de sucesso inline sem redirecionamento
+- `js/pages/pacientes.js`: adicionado botão "Alta" verde em cada linha de paciente (link direto para `alta.html?paciente_id=UUID`)
+- `css/pages/pacientes.css`: adicionado estilo `.btn-action-alta` (verde suave, segue padrão dos outros botões de ação)
+- `css/pages/prontuario.css`: adicionado override `#tab-alta .alta-footer { position: relative }` para evitar que o rodapé fique fixo dentro da aba
+
+---
+
 ## 📅 09/06/2026 — Terça-feira
 
 ### ⏰ 17:00 — Backend
