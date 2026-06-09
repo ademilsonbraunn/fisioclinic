@@ -2,6 +2,36 @@
 
 ---
 
+## 📅 13/06/2026 — Sábado
+
+### ⏰ 10:00 — Frontend (M2 + M3 — Prioridade 1)
+
+**M2 — Anamnese: Upload e gerenciamento de arquivos**
+- `js/pages/prontuario.js`: adicionados imports `listarArquivos`, `uploadArquivo`, `deletarArquivo` de `api/anamneses.js`
+- `js/pages/prontuario.js`: adicionado estado `arquivosAnamnese = {}` para cache por anamnese
+- `js/pages/prontuario.js`: `cartaoAnamnese()` — adicionado `data-anamnese-id` no card e seção "Arquivos / Exames" com input de upload oculto
+- `js/pages/prontuario.js`: `renderAnamneses()` — lazy-load de arquivos na primeira abertura do card + delegação de eventos para upload e remoção
+- `js/pages/prontuario.js`: adicionadas funções `carregarArquivosCard()`, `renderArquivosCard()`, `uploadArquivosAnamnese()`, `deletarArquivoAnamnese()`, `downloadArquivo()`, `formatBytes()`
+- `css/pages/prontuario.css`: adicionados estilos das classes `arq-*` (toolbar, item, ícone, nome, tamanho, botões de download e remoção)
+
+**M3 — Plano de Tratamento: TCLE pós-salvar + badge**
+- `js/pages/prontuario.js`: adicionados imports `registrarTcle`, `listarTclesPlano` de `api/planos.js`
+- `js/pages/prontuario.js`: `carregarPlanos()` — verifica TCLE de cada plano em paralelo e seta `p._tcle = true/false`
+- `js/pages/prontuario.js`: `cartaoPlano()` — exibe badge "TCLE ✓" quando `p._tcle === true`
+- `js/pages/prontuario.js`: `salvarPlano()` — após criar o plano, se checkbox TCLE marcado, chama `registrarTcle()` e marca `novo._tcle = true`
+
+**M3 — Plano de Tratamento: Dropdown de plano na agenda**
+- `pages/agenda.html`: adicionado campo `sel-plano-sessao` na seção "Informações adicionais" do modal de agendamento
+- `js/pages/agenda.js`: adicionado import `listarPlanos` de `api/planos.js`
+- `js/pages/agenda.js`: adicionado estado `planosCache = {}` para evitar requisições repetidas
+- `js/pages/agenda.js`: adicionada função `carregarPlanosModal(pacienteId, selecionarId)` — popula dropdown de planos ao selecionar paciente
+- `js/pages/agenda.js`: `limparModal()` — reseta o select de plano ao abrir novo agendamento
+- `js/pages/agenda.js`: `abrirModalEditar()` — carrega planos do paciente e pré-seleciona o plano vinculado
+- `js/pages/agenda.js`: `coletarDados()` — inclui campo `plano_id` no payload enviado ao backend
+- `js/pages/agenda.js`: `bindEvents()` — listener `change` em `sel-paciente` para recarregar os planos ao trocar o paciente
+
+---
+
 ## 📅 11/06/2026 — Quarta-feira
 
 ### ⏰ 11:00 — Frontend

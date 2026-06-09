@@ -17,8 +17,8 @@ Cada item contém: descrição, impacto clínico, esforço estimado e status de 
 
 | # | Melhoria | Descrição | Esforço | Status |
 |---|----------|-----------|---------|--------|
-| 1 | **Concluir M2 — Anamnese** | Validação de campos obrigatórios ✅ · Backend upload multipart (`POST /api/anamneses/{id}/arquivos`, GET, DELETE, download) ✅ · Frontend de upload/listagem/remoção de arquivos no card da anamnese 🔨 | Baixo | 🔨 Em andamento |
-| 2 | **Concluir M3 — Plano de Tratamento** | Integração `anamneseId` com M2 ✅ · Backend TCLE completo (`POST /api/termos`, `GET /api/termos/plano/{id}`) ✅ · `plano_id` em Sessao (model+DTO+service+response) ✅ · Frontend: TCLE pós-salvar + badge no cartão 🔨 · Frontend: dropdown de plano na agenda 🔨 | Baixo | 🔨 Em andamento |
+| 1 | **Concluir M2 — Anamnese** | Validação de campos obrigatórios ✅ · Backend upload multipart ✅ · Frontend de upload/listagem/remoção de arquivos no card da anamnese ✅ | Baixo | ✅ Implementado |
+| 2 | **Concluir M3 — Plano de Tratamento** | Integração `anamneseId` com M2 ✅ · Backend TCLE completo ✅ · `plano_id` em Sessao ✅ · Frontend: TCLE pós-salvar + badge no cartão ✅ · Frontend: dropdown de plano na agenda ✅ | Baixo | ✅ Implementado |
 
 ---
 
@@ -90,14 +90,14 @@ Cada item contém: descrição, impacto clínico, esforço estimado e status de 
 
 | Prioridade | Itens | Implementados | Pendentes |
 |------------|-------|---------------|-----------|
-| 🔴 P1 — Módulos base | 2 | 0 | 2 |
+| 🔴 P1 — Módulos base | 2 | 2 | 0 |
 | 🟠 P2 — Clínico alto valor | 5 | 0 | 5 |
 | 🟡 P3 — UX e Performance | 5 | 0 | 5 |
 | 🟡 P4 — Agendamento | 4 | 0 | 4 |
 | 🟢 P5 — Relatórios | 3 | 0 | 3 |
 | 🔵 P6 — Faturamento | 1 | 0 | 1 |
 | ⚙️ Técnicas | 4 | 0 | 4 |
-| **Total** | **24** | **0** | **24** |
+| **Total** | **24** | **2** | **22** |
 
 ---
 
