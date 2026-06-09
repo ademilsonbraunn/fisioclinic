@@ -2,12 +2,17 @@ package com.fisioclinic.controller;
 
 import com.fisioclinic.dto.AnamneseDTO;
 import com.fisioclinic.dto.AnamneseResponse;
+import com.fisioclinic.dto.ArquivoAnamneseResponse;
 import com.fisioclinic.service.AnamneseService;
+import com.fisioclinic.service.ArquivoAnamneseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +44,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AnamneseController {
 
-    private final AnamneseService anamneseService;
+    private final AnamneseService        anamneseService;
+    private final ArquivoAnamneseService arquivoService;
 
     // GET /api/anamneses?paciente_id=UUID
     @GetMapping
@@ -68,5 +74,41 @@ public class AnamneseController {
         @RequestBody AnamneseDTO dto
     ) {
         return ResponseEntity.ok(anamneseService.atualizar(id, dto));
+    }
+
+    // ── Arquivos (M2) ─────────────────────────────────────────────────────────
+
+    // POST /api/anamneses/{id}/arquivos  (multipart: file + tipo)
+    @PostMapping(value = "/{id}/arquivos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ArquivoAnamneseResponse> uploadArquivo(
+        @PathVariable UUID id,
+        @RequestParam("file") MultipartFile file,
+        @RequestParam("tipo") String tipo
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(arquivoService.salvar(id, file, tipo));
+    }
+
+    // GET /api/anamneses/{id}/arquivos
+    @GetMapping("/{id}/arquivos")
+    public ResponseEntity<List<ArquivoAnamneseResponse>> listarArquivos(@PathVariable UUID id) {
+        return ResponseEntity.ok(arquivoService.listar(id));
+    }
+
+    // GET /api/anamneses/{anamneseId}/arquivos/{arquivoId}/download
+    @GetMapping("/{anamneseId}/arquivos/{arquivoId}/download")
+    public ResponseEntity<byte[]> downloadArquivo(@PathVariable UUID arquivoId) {
+        byte[] bytes = arquivoService.download(arquivoId);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment")
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .body(bytes);
+    }
+
+    // DELETE /api/anamneses/{anamneseId}/arquivos/{arquivoId}
+    @DeleteMapping("/{anamneseId}/arquivos/{arquivoId}")
+    public ResponseEntity<Void> deletarArquivo(@PathVariable UUID arquivoId) {
+        arquivoService.deletar(arquivoId);
+        return ResponseEntity.noContent().build();
     }
 }

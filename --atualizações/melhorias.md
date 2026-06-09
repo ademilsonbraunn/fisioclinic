@@ -17,8 +17,8 @@ Cada item contém: descrição, impacto clínico, esforço estimado e status de 
 
 | # | Melhoria | Descrição | Esforço | Status |
 |---|----------|-----------|---------|--------|
-| 1 | **Concluir M2 — Anamnese** | Validação de campos obrigatórios, persistência de arquivos (exames/laudos) via `POST /api/anamneses/{id}/arquivos`, upload multipart no backend | Baixo | 🔨 Em andamento |
-| 2 | **Concluir M3 — Plano de Tratamento** | Validar integração do `anamneseId` com M2, persistência do TCLE com timestamp de assinatura, associação automática do plano ao agendamento | Baixo | 🔲 Pendente |
+| 1 | **Concluir M2 — Anamnese** | Validação de campos obrigatórios ✅ · Backend upload multipart (`POST /api/anamneses/{id}/arquivos`, GET, DELETE, download) ✅ · Frontend de upload/listagem/remoção de arquivos no card da anamnese 🔨 | Baixo | 🔨 Em andamento |
+| 2 | **Concluir M3 — Plano de Tratamento** | Integração `anamneseId` com M2 ✅ · Backend TCLE completo (`POST /api/termos`, `GET /api/termos/plano/{id}`) ✅ · `plano_id` em Sessao (model+DTO+service+response) ✅ · Frontend: TCLE pós-salvar + badge no cartão 🔨 · Frontend: dropdown de plano na agenda 🔨 | Baixo | 🔨 Em andamento |
 
 ---
 

@@ -44,7 +44,11 @@ public record SessaoResponse(
     String motivoCancelamento,
 
     @JsonProperty("created_at")
-    LocalDateTime createdAt
+    LocalDateTime createdAt,
+
+    // [M3→M4] Resumo do plano de tratamento vinculado (nulo se não vinculado)
+    @JsonProperty("plano_resumo")
+    PlanoResumo planoResumo
 
 ) {
 
@@ -64,5 +68,10 @@ public record SessaoResponse(
         UUID id,
         String nome,
         String tipo
+    ) {}
+
+    public record PlanoResumo(
+        UUID id,
+        @JsonProperty("diagnostico_cif") String diagnosticoCif
     ) {}
 }

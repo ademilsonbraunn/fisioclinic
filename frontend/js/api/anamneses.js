@@ -47,3 +47,37 @@ export const criarAnamnese = (dados) =>
 
 export const atualizarAnamnese = (id, dados) =>
   req(`/anamneses/${id}`, { method: 'PATCH', body: JSON.stringify(dados) });
+
+// ── Arquivos da anamnese (M2) ─────────────────────────────────────────────────
+
+export const listarArquivos = (anamneseId) =>
+  req(`/anamneses/${anamneseId}/arquivos`);
+
+// Upload multipart — não usa headers JSON; FormData define o Content-Type
+export async function uploadArquivo(anamneseId, formData) {
+  const tkn = getToken();
+  const res = await fetch(`${API_BASE}/anamneses/${anamneseId}/arquivos`, {
+    method: 'POST',
+    headers: tkn ? { Authorization: `Bearer ${tkn}` } : {},
+    body: formData,
+  });
+  if (res.status === 401) { location.href = '../index.html'; return; }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ erro: 'Erro ao enviar arquivo' }));
+    throw err;
+  }
+  return res.json();
+}
+
+export async function deletarArquivo(anamneseId, arquivoId) {
+  const tkn = getToken();
+  const res = await fetch(`${API_BASE}/anamneses/${anamneseId}/arquivos/${arquivoId}`, {
+    method: 'DELETE',
+    headers: tkn ? { Authorization: `Bearer ${tkn}` } : {},
+  });
+  if (res.status === 401) { location.href = '../index.html'; return; }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ erro: 'Erro ao remover arquivo' }));
+    throw err;
+  }
+}

@@ -73,3 +73,21 @@ export async function atualizarStatusPlano(id, status) {
   });
   return handleResponse(res, path, 'PATCH');
 }
+
+// ── TCLE (M3) ─────────────────────────────────────────────────────────────────
+
+export async function registrarTcle(payload) {
+  const path = '/termos';
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers: headers(),
+    body: JSON.stringify(payload),
+  });
+  return handleResponse(res, path, 'POST');
+}
+
+export async function listarTclesPlano(planoId) {
+  const path = `/termos/plano/${planoId}`;
+  const res = await fetch(`${API_BASE}${path}`, { headers: headers() });
+  return handleResponse(res, path, 'GET');
+}

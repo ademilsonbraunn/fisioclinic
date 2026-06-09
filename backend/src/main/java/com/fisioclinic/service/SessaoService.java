@@ -7,10 +7,12 @@ import com.fisioclinic.exception.ConflictException;
 import com.fisioclinic.exception.ResourceNotFoundException;
 import com.fisioclinic.model.Fisioterapeuta;
 import com.fisioclinic.model.Paciente;
+import com.fisioclinic.model.PlanoTratamento;
 import com.fisioclinic.model.Sala;
 import com.fisioclinic.model.Sessao;
 import com.fisioclinic.repository.FisioterapeutaRepository;
 import com.fisioclinic.repository.PacienteRepository;
+import com.fisioclinic.repository.PlanoTratamentoRepository;
 import com.fisioclinic.repository.SalaRepository;
 import com.fisioclinic.repository.SessaoRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,10 +57,11 @@ public class SessaoService {
         Sessao.StatusSessao.FALTOU
     );
 
-    private final SessaoRepository      sessaoRepository;
-    private final PacienteRepository    pacienteRepository;
+    private final SessaoRepository         sessaoRepository;
+    private final PacienteRepository       pacienteRepository;
     private final FisioterapeutaRepository fisioterapeutaRepository;
-    private final SalaRepository        salaRepository;
+    private final SalaRepository           salaRepository;
+    private final PlanoTratamentoRepository planoRepository;
 
     // ── Listagem ─────────────────────────────────────────────────────────────
 
@@ -111,8 +114,15 @@ public class SessaoService {
 
         verificarConflito(dto.salaId(), dto.dataHoraInicio(), dto.dataHoraFim(), null);
 
+        // [M3→M4] Vincula o plano de tratamento ativo, se informado
+        PlanoTratamento plano = null;
+        if (dto.planoId() != null) {
+            plano = planoRepository.findById(dto.planoId())
+                .orElseThrow(() -> new ResourceNotFoundException("Plano de tratamento não encontrado"));
+        }
+
         Sessao sessao = new Sessao();
-        preencherSessao(sessao, dto, paciente, fisioterapeuta, sala);
+        preencherSessao(sessao, dto, paciente, fisioterapeuta, sala, plano);
         return toResponse(sessaoRepository.save(sessao));
     }
 
@@ -183,10 +193,12 @@ public class SessaoService {
     // ── Helpers privados ─────────────────────────────────────────────────────
 
     private void preencherSessao(Sessao s, SessaoDTO dto,
-                                  Paciente paciente, Fisioterapeuta fisio, Sala sala) {
+                                  Paciente paciente, Fisioterapeuta fisio, Sala sala,
+                                  PlanoTratamento plano) {
         s.setPaciente(paciente);
         s.setFisioterapeuta(fisio);
         s.setSala(sala);
+        s.setPlano(plano);
         s.setDataHoraInicio(dto.dataHoraInicio());
         s.setDataHoraFim(dto.dataHoraFim());
         s.setTipoSessao(dto.tipoSessao());
@@ -226,6 +238,13 @@ public class SessaoService {
                 s.getSala().getTipo().name())
             : null;
 
+        // [M3→M4] Inclui resumo do plano vinculado, se existir
+        SessaoResponse.PlanoResumo planoResumo = s.getPlano() != null
+            ? new SessaoResponse.PlanoResumo(
+                s.getPlano().getId(),
+                s.getPlano().getDiagnosticoCif())
+            : null;
+
         return new SessaoResponse(
             s.getId(),
             new SessaoResponse.PacienteResumo(
@@ -245,7 +264,8 @@ public class SessaoService {
             s.getStatus(),
             s.getObservacoes(),
             s.getMotivoCancelamento(),
-            s.getCreatedAt()
+            s.getCreatedAt(),
+            planoResumo
         );
     }
 

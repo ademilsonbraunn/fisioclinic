@@ -78,6 +78,12 @@ public class Sessao {
     @Column(name = "observacoes")
     private String observacoes;
 
+    // [M3→M4] Plano de tratamento vinculado à sessão (opcional)
+    // Permite rastrear quantas sessões do plano foram realizadas
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plano_id")
+    private PlanoTratamento plano;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

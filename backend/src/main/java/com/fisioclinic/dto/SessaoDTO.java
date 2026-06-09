@@ -53,6 +53,10 @@ public record SessaoDTO(
     String observacoes,
 
     @JsonProperty("motivo_cancelamento")
-    String motivoCancelamento
+    String motivoCancelamento,
+
+    // [M3→M4] Vínculo opcional com o plano de tratamento ativo do paciente
+    @JsonProperty("plano_id")
+    UUID planoId
 
 ) {}
