@@ -1,3 +1,4 @@
+-- OBSOLETO — use database/setup.sql para instalações novas.
 -- ============================================================
 --  Migration: ajustes na tabela evolucoes para M5
 --  Aplica sobre schema_modulos_2a7.sql

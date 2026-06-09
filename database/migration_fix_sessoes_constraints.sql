@@ -1,3 +1,4 @@
+-- OBSOLETO — use database/setup.sql para instalações novas.
 -- ============================================================
 -- Migration: Corrige CHECK constraints da tabela sessoes
 -- Problema: Java @Enumerated(STRING) persiste valores em MAIUSCULAS,

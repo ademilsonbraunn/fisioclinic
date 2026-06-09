@@ -1,3 +1,4 @@
+-- OBSOLETO — use database/setup.sql para instalações novas.
 -- ============================================================
 --  FisioClinic -- Schema PostgreSQL
 --  Modulos 2 a 7: Anamnese, Plano de Tratamento, Agendamento,

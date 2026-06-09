@@ -1,3 +1,4 @@
+-- OBSOLETO — use database/setup.sql para instalações novas.
 -- ============================================================
 --  FisioClinic — Schema PostgreSQL
 --  Módulo 1: Cadastro de Paciente

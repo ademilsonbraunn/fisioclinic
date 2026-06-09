@@ -1,3 +1,4 @@
+-- OBSOLETO — use database/setup.sql para instalações novas.
 -- ============================================================
 --  Fix: cria as tabelas que falharam por depender de sessoes
 --  A regra de sobreposicao de sala/horario e aplicada

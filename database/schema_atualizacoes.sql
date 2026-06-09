@@ -1,3 +1,4 @@
+-- OBSOLETO — use database/setup.sql para instalações novas.
 -- Módulo: Card de Atualizações do Sistema
 -- Tabela que armazena novidades visíveis ao usuário final
 

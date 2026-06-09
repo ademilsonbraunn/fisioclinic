@@ -1,3 +1,4 @@
+-- OBSOLETO — use database/setup.sql para instalações novas.
 -- ============================================================
 --  Migração: normaliza enums da tabela sessoes para UPPERCASE
 --  e adiciona os valores REAVALIACAO e ALTA usados pelo frontend.

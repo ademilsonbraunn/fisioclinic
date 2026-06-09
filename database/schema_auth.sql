@@ -1,3 +1,4 @@
+-- OBSOLETO — use database/setup.sql para instalações novas.
 -- ============================================================
 --  FisioClinic — Migração de Autenticação
 --  Pré-requisito: schema.sql + schema_modulos_2a7.sql aplicados.
