@@ -37,8 +37,8 @@
 
 import { initTopbar } from '../utils/auth.js';
 import { showToast } from '../components/toast.js';
-import { listarAnamneses, criarAnamnese } from '../api/anamneses.js';
-import { listarPlanos, criarPlano, atualizarStatusPlano } from '../api/planos.js';
+import { listarAnamneses, criarAnamnese, listarArquivos, uploadArquivo, deletarArquivo } from '../api/anamneses.js';
+import { listarPlanos, criarPlano, atualizarStatusPlano, registrarTcle, listarTclesPlano } from '../api/planos.js';
 import { listarEvolucoesPaciente, criarEvolucao } from '../api/evolucoes.js';
 import { listarSessoes } from '../api/sessoes.js';
 // [M6] API de altas reutilizada da página standalone alta.js
@@ -59,6 +59,8 @@ let formEvolVisivel   = false;
 // [M6] Flags da aba Alta — lazy-load e controle de envio
 let altaTabCarregada  = false;
 let salvandoAlta      = false;
+// [M2] Cache de arquivos por anamnese — carregado sob demanda na abertura do card
+let arquivosAnamnese  = {};
 
 // ── DOM helpers ──────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -158,6 +160,15 @@ async function carregarPlanos() {
   } catch {
     planos = [];
   }
+  // [M3] Verifica TCLE para cada plano em paralelo para exibir o badge de consentimento
+  await Promise.all(planos.map(async p => {
+    try {
+      const termos = await listarTclesPlano(p.id);
+      p._tcle = termos.length > 0;
+    } catch {
+      p._tcle = false;
+    }
+  }));
   renderPlanos();
 }
 
@@ -225,11 +236,33 @@ function renderAnamneses() {
   }
 
   el.innerHTML = anamneses.map(a => cartaoAnamnese(a)).join('');
+
   el.querySelectorAll('.anamnese-card-header').forEach(h => {
     h.addEventListener('click', () => {
-      const card = h.closest('.anamnese-card');
+      const card   = h.closest('.anamnese-card');
+      const aberto = card.classList.contains('open');
       card.classList.toggle('open');
+      // [M2] Lazy-load: carrega arquivos na primeira abertura do card
+      if (!aberto && !card.dataset.arquivosCarregados) {
+        card.dataset.arquivosCarregados = '1';
+        carregarArquivosCard(card.dataset.anamneseId);
+      }
     });
+  });
+
+  // [M2] Delegação: upload de arquivo ao selecionar no input oculto
+  el.addEventListener('change', e => {
+    const inp = e.target.closest('.arq-file-input');
+    if (!inp) return;
+    uploadArquivosAnamnese(inp.dataset.anamneseId, inp.files);
+  });
+
+  // [M2] Delegação: botão de remoção — stopPropagation para não fechar o card
+  el.addEventListener('click', e => {
+    const btn = e.target.closest('[data-action="deletar-arquivo"]');
+    if (!btn) return;
+    e.stopPropagation();
+    deletarArquivoAnamnese(btn.dataset.anamneseId, btn.dataset.arquivoId);
   });
 }
 
@@ -243,7 +276,7 @@ function cartaoAnamnese(a) {
   const gonio     = a.avaliacao_fisica?.goniometria ?? a.avaliacaoFisica?.goniometria;
 
   return `
-    <div class="anamnese-card">
+    <div class="anamnese-card" data-anamnese-id="${esc(a.id)}">
       <div class="anamnese-card-header">
         <span class="anamnese-card-date">${esc(formatData(a.data_avaliacao ?? a.dataAvaliacao))}</span>
         <span class="anamnese-card-fisio">Dr(a). ${esc(fisioNome)}</span>
@@ -268,6 +301,21 @@ function cartaoAnamnese(a) {
         ${gonio          ? campoAnamnese('Goniometria', gonio) : ''}
         ${testes?.length ? campoAnamnese('Testes especiais', Array.isArray(testes) ? testes.join(' · ') : testes) : ''}
         ${a.observacoes  ? campoAnamnese('Observações', a.observacoes) : ''}
+        <div class="arq-wrap">
+          <div class="arq-toolbar">
+            <span class="anamnese-field-label" style="margin:0">Arquivos / Exames</span>
+            <label class="btn btn-ghost btn-sm arq-add-btn" for="arq-inp-${esc(a.id)}" title="Adicionar arquivo">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Adicionar
+            </label>
+            <input type="file" id="arq-inp-${esc(a.id)}" class="arq-file-input" data-anamnese-id="${esc(a.id)}" hidden multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+          </div>
+          <div id="arq-lista-${esc(a.id)}" class="arq-lista">
+            <span class="arq-placeholder">Abrindo arquivos...</span>
+          </div>
+        </div>
       </div>
     </div>`;
 }
@@ -279,6 +327,125 @@ function campoAnamnese(label, valor) {
       <div class="anamnese-field-label">${esc(label)}</div>
       <div class="anamnese-field-value">${esc(String(valor))}</div>
     </div>`;
+}
+
+// ── M2: Arquivos da anamnese ──────────────────────────────────────────────────
+
+async function carregarArquivosCard(anamneseId) {
+  const lista = $(`arq-lista-${anamneseId}`);
+  if (!lista) return;
+  try {
+    const arquivos = await listarArquivos(anamneseId);
+    arquivosAnamnese[anamneseId] = arquivos;
+    renderArquivosCard(anamneseId);
+  } catch {
+    if (lista) lista.innerHTML = '<span class="arq-placeholder" style="color:var(--red)">Erro ao carregar arquivos.</span>';
+  }
+}
+
+function renderArquivosCard(anamneseId) {
+  const lista = $(`arq-lista-${anamneseId}`);
+  if (!lista) return;
+  const arquivos = arquivosAnamnese[anamneseId] ?? [];
+  if (!arquivos.length) {
+    lista.innerHTML = '<span class="arq-placeholder">Nenhum arquivo. Clique em <strong>Adicionar</strong> para enviar laudos ou exames.</span>';
+    return;
+  }
+  lista.innerHTML = arquivos.map(arq => {
+    const nome = esc(arq.nome_arquivo ?? arq.nomeArquivo ?? 'arquivo');
+    const tam  = formatBytes(arq.tamanho_bytes ?? arq.tamanhoBytes);
+    return `
+      <div class="arq-item">
+        <svg class="arq-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+        </svg>
+        <span class="arq-nome" title="${nome}">${nome}</span>
+        ${tam ? `<span class="arq-tamanho">${tam}</span>` : ''}
+        <button type="button" class="btn btn-ghost btn-sm btn-icon arq-btn-download"
+          data-url="${esc(arq.url)}" data-nome="${nome}" title="Baixar arquivo">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon"
+          data-action="deletar-arquivo" data-anamnese-id="${esc(anamneseId)}" data-arquivo-id="${esc(arq.id)}"
+          title="Remover arquivo" style="color:var(--red)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+        </button>
+      </div>`;
+  }).join('');
+
+  // Download autenticado (token JWT no header, não exposto na URL)
+  lista.querySelectorAll('.arq-btn-download').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      downloadArquivo(btn.dataset.url, btn.dataset.nome);
+    });
+  });
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / 1048576).toFixed(1)} MB`;
+}
+
+async function uploadArquivosAnamnese(anamneseId, files) {
+  if (!files || !files.length) return;
+  const lista = $(`arq-lista-${anamneseId}`);
+  if (lista) lista.innerHTML = '<span class="arq-placeholder">Enviando...</span>';
+  let erros = 0;
+  for (const file of Array.from(files)) {
+    try {
+      const fd = new FormData();
+      fd.append('arquivo', file);
+      const arq = await uploadArquivo(anamneseId, fd);
+      if (!arquivosAnamnese[anamneseId]) arquivosAnamnese[anamneseId] = [];
+      arquivosAnamnese[anamneseId].push(arq);
+    } catch { erros++; }
+  }
+  renderArquivosCard(anamneseId);
+  const inp = $(`arq-inp-${anamneseId}`);
+  if (inp) inp.value = '';
+  if (erros) showToast(`${erros} arquivo(s) não puderam ser enviados.`, 'error');
+  else showToast('Arquivo(s) enviado(s) com sucesso.', 'success');
+}
+
+async function deletarArquivoAnamnese(anamneseId, arquivoId) {
+  if (!confirm('Remover este arquivo? Esta ação não pode ser desfeita.')) return;
+  try {
+    await deletarArquivo(anamneseId, arquivoId);
+    arquivosAnamnese[anamneseId] = (arquivosAnamnese[anamneseId] ?? []).filter(a => a.id !== arquivoId);
+    renderArquivosCard(anamneseId);
+    showToast('Arquivo removido.', 'success');
+  } catch {
+    showToast('Erro ao remover o arquivo.', 'error');
+  }
+}
+
+// [M2] Download autenticado: busca o arquivo com JWT no header e cria Blob local
+async function downloadArquivo(urlPath, nomeArquivo) {
+  try {
+    const res = await fetch(`http://localhost:8080${urlPath}`, {
+      headers: { Authorization: `Bearer ${token()}` },
+    });
+    if (!res.ok) throw new Error();
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = nomeArquivo;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch {
+    showToast('Erro ao baixar o arquivo.', 'error');
+  }
 }
 
 // ── Select fisioterapeutas ────────────────────────────────────────────────────
@@ -513,6 +680,7 @@ function cartaoPlano(p) {
         <span class="plano-card-date">${esc(dataInicio)}</span>
         <span class="plano-card-fisio">Dr(a). ${esc(fisioNome)}</span>
         <span class="badge ${statusCls}">${esc(statusLabel)}</span>
+        ${p._tcle ? '<span class="badge badge-blue" title="Termo de Consentimento Livre e Esclarecido assinado">TCLE ✓</span>' : ''}
         <span class="plano-card-diag">${esc(String(p.diagnostico_cif ?? p.diagnosticoCif ?? '').slice(0, 80))}</span>
         <svg class="plano-card-chevron" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
           <polyline points="6 9 12 15 18 9"/>
@@ -639,6 +807,22 @@ async function salvarPlano() {
 
   try {
     const novo = await criarPlano(payload);
+
+    // [M3] Se TCLE foi marcado, registra o Termo de Consentimento vinculado ao plano recém-criado
+    if ($('plano-tcle').checked) {
+      try {
+        await registrarTcle({
+          paciente_id: pacienteId,
+          plano_id: novo.id,
+          tipo: 'TCLE',
+          assinado_em: new Date().toISOString().slice(0, 19), // LocalDateTime sem timezone
+        });
+        novo._tcle = true;
+      } catch {
+        showToast('Plano salvo, mas houve erro ao registrar o TCLE.', 'warning');
+      }
+    }
+
     planos.unshift(novo);
     renderPlanos();
     fecharFormPlano();

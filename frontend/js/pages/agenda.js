@@ -31,6 +31,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { listarSessoesSemana, listarSessoes, criarSessao, atualizarSessao, atualizarStatusSessao } from '../api/sessoes.js';
+// [M3] Planos de tratamento — carregados ao selecionar paciente no modal de agendamento
+import { listarPlanos } from '../api/planos.js';
 import { showToast } from '../components/toast.js';
 import { openModal, closeModal } from '../components/modal.js';
 import { initTopbar } from '../utils/auth.js';
@@ -134,6 +136,8 @@ let filtroStatus      = '';
 let modoVista         = 'calendario';
 let sessaoEditando    = null;
 let salvando          = false;
+// [M3] Cache de planos por paciente — evita requisição repetida no mesmo modal
+let planosCache       = {};
 
 // ── Helpers de data ─────────────────────────────────────────────────────────
 
@@ -557,6 +561,36 @@ function renderLista() {
   }).join('');
 }
 
+// ── Planos do paciente no modal (M3) ─────────────────────────────────────────
+
+// [M3] Carrega os planos do paciente e popula o select de vínculo com o plano
+async function carregarPlanosModal(pacienteId, selecionarId = null) {
+  const sel = document.getElementById('sel-plano-sessao');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Carregando planos...</option>';
+  sel.disabled = true;
+  try {
+    if (!planosCache[pacienteId]) {
+      planosCache[pacienteId] = await listarPlanos(pacienteId);
+    }
+    const planos = planosCache[pacienteId];
+    sel.innerHTML = '<option value="">— Nenhum —</option>';
+    planos.forEach(p => {
+      const cif    = String(p.diagnostico_cif ?? p.diagnosticoCif ?? '').slice(0, 60);
+      const status = p.status ?? '';
+      const opt    = document.createElement('option');
+      opt.value    = p.id;
+      opt.textContent = `${cif} (${status})`;
+      sel.appendChild(opt);
+    });
+    if (selecionarId) sel.value = selecionarId;
+  } catch {
+    sel.innerHTML = '<option value="">Nenhum plano encontrado</option>';
+  } finally {
+    sel.disabled = false;
+  }
+}
+
 // ── Modal nova / editar sessão ───────────────────────────────────────────────
 
 function abrirModalNovo(data, hora) {
@@ -601,6 +635,9 @@ function abrirModalEditar(sessao) {
   setChipValue('status', sessao.status);
   onStatusChipChange();
   ocultarConflito();
+  // [M3] Carrega planos do paciente e pré-seleciona o plano vinculado (se houver)
+  const planoId = sessao.plano_id ?? sessao.planoId ?? null;
+  carregarPlanosModal(sessao.paciente.id, planoId);
   openModal('modal-sessao-backdrop');
 }
 
@@ -619,6 +656,12 @@ function limparModal() {
   resetChipsEm(document.getElementById('form-sessao'));
   document.getElementById('msg-erro-modal').hidden = true;
   document.getElementById('motivo-row').hidden = true;
+  // [M3] Reseta o select de plano para estado inicial (sem paciente selecionado)
+  const selPlano = document.getElementById('sel-plano-sessao');
+  if (selPlano) {
+    selPlano.innerHTML = '<option value="">— Selecione um paciente primeiro —</option>';
+    selPlano.disabled = false;
+  }
   ocultarConflito();
 }
 
@@ -715,6 +758,8 @@ function coletarDados() {
     status:              getChipValue('status'),
     observacoes:         document.getElementById('inp-observacoes').value.trim() || null,
     motivo_cancelamento: document.getElementById('inp-motivo').value.trim() || null,
+    // [M3] Vínculo opcional com o plano de tratamento ativo do paciente
+    plano_id:            document.getElementById('sel-plano-sessao')?.value || null,
   };
 }
 
@@ -829,6 +874,16 @@ function bindEvents() {
   // Tecla ESC fecha modal
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') fecharModal();
+  });
+
+  // [M3] Ao mudar paciente no modal, recarrega o select de plano de tratamento
+  document.getElementById('sel-paciente').addEventListener('change', e => {
+    const selPlano = document.getElementById('sel-plano-sessao');
+    if (!e.target.value) {
+      if (selPlano) selPlano.innerHTML = '<option value="">— Selecione um paciente primeiro —</option>';
+      return;
+    }
+    carregarPlanosModal(e.target.value);
   });
 
   // Chips no modal
