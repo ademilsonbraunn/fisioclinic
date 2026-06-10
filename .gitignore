@@ -51,3 +51,9 @@ Desktop.ini
 uploads/
 tmp/
 temp/
+
+# Arquivos internos Claude/CI
+CLAUDE.md
+README_GITHUB_PROFILE.md
+.claude/
+.github/
