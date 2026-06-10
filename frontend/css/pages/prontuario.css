@@ -475,3 +475,284 @@
 
 /* [M6] Espaçamento interno da aba Alta equivalente às outras abas */
 #tab-alta .alta-section:first-of-type { margin-top: 0; }
+
+/* ── [M5 P2] Fotos Comparativas da Evolução ─────────────────────────────────── */
+.evol-fotos-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.evol-fotos-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.evol-foto-label {
+  cursor: pointer;
+  font-size: .8125rem;
+  padding: 4px 10px;
+}
+
+.evol-fotos-vazia {
+  font-size: .8125rem;
+  color: var(--text3);
+  margin: 0;
+}
+
+.evol-fotos-galeria {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.evol-foto-item {
+  display: flex;
+  flex-direction: column;
+  width: 110px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface2);
+}
+
+.evol-foto-thumb-wrap {
+  width: 110px;
+  height: 90px;
+  overflow: hidden;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.evol-foto-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.evol-foto-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+}
+
+.evol-foto-tipo {
+  font-size: .75rem;
+  font-weight: 500;
+  color: var(--text2);
+}
+
+.btn-deletar-foto {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+}
+
+.btn-deletar-foto:hover { color: var(--red); }
+
+/* ── [M5 P2] Gráfico de Evolução EVA ──────────────────────────────────────── */
+.grafico-eva-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px 20px;
+  margin-bottom: 16px;
+}
+
+.grafico-eva-wrap {
+  position: relative;
+  width: 100%;
+  max-height: 260px;
+}
+
+/* ── [M2/M5 P2] Reavaliação Comparativa ────────────────────────────────────── */
+.reav-tabela-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.reav-cabecalho {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: .8125rem;
+  color: var(--text2);
+}
+
+.reav-col {
+  padding: 10px 14px;
+}
+
+.reav-col-label {
+  color: var(--text2);
+  font-style: italic;
+}
+
+.reav-col-inicial { color: var(--text2); }
+.reav-col-recente { color: var(--text); }
+
+.reav-linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+  font-size: .875rem;
+  transition: background .15s;
+}
+
+.reav-linha:last-child { border-bottom: none; }
+.reav-linha:hover { background: var(--surface2); }
+
+.reav-linha .reav-col-label {
+  font-weight: 500;
+  color: var(--text);
+  font-style: normal;
+}
+
+.reav-indicador {
+  font-size: .75rem;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.reav-melhora { color: var(--green); }
+.reav-piora   { color: var(--red); }
+.reav-estavel { color: var(--text2); }
+
+/* ── [M6 P2] Botão imprimir ─────────────────────────────────────────────────── */
+#btn-imprimir-wrap {
+  padding-top: 8px;
+}
+
+/* ── [Auditoria P2] Timeline de Histórico ───────────────────────────────────── */
+.auditoria-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.auditoria-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.auditoria-item:last-child { border-bottom: none; }
+.auditoria-item:hover { background: var(--surface2); }
+
+.auditoria-icone {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.auditoria-detalhe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: .875rem;
+}
+
+.auditoria-tipo {
+  font-weight: 600;
+  color: var(--text);
+  text-transform: capitalize;
+}
+
+.auditoria-fisio { color: var(--text2); }
+
+.auditoria-data {
+  font-size: .8rem;
+  color: var(--text3);
+  margin-left: auto;
+}
+
+/* ── [M6 P2] @media print — Relatório de Alta ────────────────────────────── */
+@media print {
+  /* Oculta todo o layout da aplicação */
+  .topbar,
+  #patient-header,
+  .prontuario-tabs,
+  .tab-panel,
+  #btn-imprimir-wrap,
+  .alta-footer,
+  .toast-container,
+  .notif-wrapper {
+    display: none !important;
+  }
+
+  /* Exibe apenas a view de impressão */
+  .relatorio-print-view {
+    display: block !important;
+    font-family: 'DM Sans', sans-serif;
+    color: #1A1A1A;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .rp-header {
+    text-align: center;
+    border-bottom: 2px solid #1A1A1A;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+
+  .rp-clinica {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+
+  .rp-titulo {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #666;
+    margin: 0;
+  }
+
+  .rp-section {
+    margin-bottom: 20px;
+    page-break-inside: avoid;
+  }
+
+  .rp-section h3 {
+    font-size: .875rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #666;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+    margin: 0 0 8px;
+  }
+
+  .rp-section p {
+    margin: 4px 0;
+    font-size: .9375rem;
+    line-height: 1.5;
+  }
+
+  .rp-rodape {
+    margin-top: 60px;
+    text-align: center;
+  }
+}

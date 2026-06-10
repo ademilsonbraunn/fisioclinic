@@ -39,10 +39,11 @@ import { initTopbar } from '../utils/auth.js';
 import { showToast } from '../components/toast.js';
 import { listarAnamneses, criarAnamnese, listarArquivos, uploadArquivo, deletarArquivo } from '../api/anamneses.js';
 import { listarPlanos, criarPlano, atualizarStatusPlano, registrarTcle, listarTclesPlano } from '../api/planos.js';
-import { listarEvolucoesPaciente, criarEvolucao } from '../api/evolucoes.js';
+import { listarEvolucoesPaciente, criarEvolucao, listarFotosEvolucao, uploadFotoEvolucao, deletarFotoEvolucao, urlFotoEvolucao } from '../api/evolucoes.js';
 import { listarSessoes } from '../api/sessoes.js';
 // [M6] API de altas reutilizada da página standalone alta.js
 import { criarAlta, listarAltasPaciente } from '../api/altas.js';
+import { listarAuditoriaPaciente } from '../api/auditoria.js';
 
 const API_BASE = 'http://localhost:8080/api';
 
@@ -61,6 +62,10 @@ let altaTabCarregada  = false;
 let salvandoAlta      = false;
 // [M2] Cache de arquivos por anamnese — carregado sob demanda na abertura do card
 let arquivosAnamnese  = {};
+// [Auditoria P2] Flag de lazy-load da trilha de auditoria
+let auditoriaCarregada = false;
+// [M5 P2] Cache de fotos por evolução — carregado sob demanda na abertura do card
+let fotosEvolucao = {};
 
 // ── DOM helpers ──────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -179,6 +184,8 @@ async function carregarEvolucoes() {
     evolucoes = [];
   }
   renderEvolucoes();
+  // [M5 P2] Atualiza gráfico EVA após cada carga/recarga de evoluções
+  renderGraficoEva();
 }
 
 async function carregarSessoesPaciente() {
@@ -544,6 +551,14 @@ function bindTabs() {
       if (btn.dataset.tab === 'alta' && pacienteId && !altaTabCarregada) {
         carregarAltaTab();
       }
+      // [M2/M5 P2] Reavaliação: renderiza ao ativar a aba (dados já em memória)
+      if (btn.dataset.tab === 'reavaliacao' && pacienteId) {
+        renderReavaliacao();
+      }
+      // [Auditoria P2] Histórico: carrega trilha de auditoria ao ativar a aba
+      if (btn.dataset.tab === 'historico' && pacienteId) {
+        carregarAuditoria();
+      }
     });
   });
 }
@@ -883,7 +898,26 @@ function renderEvolucoes() {
 
   el.innerHTML = evolucoes.map(e => cartaoEvolucao(e)).join('');
   el.querySelectorAll('.evol-card-header').forEach(h => {
-    h.addEventListener('click', () => h.closest('.evol-card').classList.toggle('open'));
+    h.addEventListener('click', () => {
+      const card = h.closest('.evol-card');
+      card.classList.toggle('open');
+      // [M5 P2] Carrega fotos ao abrir o card pela primeira vez
+      if (card.classList.contains('open')) {
+        const evolId = card.querySelector('[data-evol-id]')?.dataset.evolId;
+        if (evolId && !fotosEvolucao[evolId]) carregarFotosCard(evolId);
+      }
+    });
+  });
+
+  // [M5 P2] Event delegation para upload de fotos — inputs gerados dinamicamente
+  el.querySelectorAll('input[type="file"][data-evol-id]').forEach(input => {
+    input.addEventListener('change', async () => {
+      if (!input.files.length) return;
+      const evolId = input.dataset.evolId;
+      const tipo   = input.dataset.tipo;
+      await uploadFotoCard(evolId, input.files[0], tipo);
+      input.value = '';
+    });
   });
 }
 
@@ -928,6 +962,26 @@ function cartaoEvolucao(e) {
         ${tempo ? campoEvol('Tempo de atendimento', `${tempo} min`) : ''}
         ${e.codigo_tuss || e.codigoTuss ? campoEvol('Código TUSS', e.codigo_tuss ?? e.codigoTuss) : ''}
         ${e.observacoes ? campoEvol('Observações', e.observacoes) : ''}
+
+        <!-- [M5 P2] Seção de fotos comparativas — carregada sob demanda -->
+        <div class="evol-fotos-section">
+          <div class="evol-fotos-toolbar">
+            <span class="anamnese-field-label">Fotos Comparativas</span>
+            <label class="btn btn-secondary btn-xs evol-foto-label">
+              + Antes
+              <input type="file" accept="image/*" style="display:none"
+                data-tipo="antes" data-evol-id="${esc(String(e.id))}">
+            </label>
+            <label class="btn btn-secondary btn-xs evol-foto-label">
+              + Após
+              <input type="file" accept="image/*" style="display:none"
+                data-tipo="depois" data-evol-id="${esc(String(e.id))}">
+            </label>
+          </div>
+          <div class="evol-fotos-galeria" id="fotos-${esc(String(e.id))}">
+            <!-- preenchido por JS ao abrir o card -->
+          </div>
+        </div>
       </div>
     </div>`;
 }
@@ -1224,6 +1278,8 @@ function mostrarAltaTabRegistrada(alta) {
   if ($('ar-tab-motivo'))    $('ar-tab-motivo').textContent  = motivos[alta.motivo] ?? alta.motivo ?? '—';
   if ($('ar-tab-resultado')) $('ar-tab-resultado').textContent = alta.resultado_objetivos ?? alta.resultadoObjetivos ?? '—';
   if ($('alta-tab-registrada')) $('alta-tab-registrada').style.display = 'block';
+  // [M6 P2] Monta relatório de impressão e exibe botão — dados da alta disponíveis
+  montarRelatorioPrint(alta);
 }
 
 // ── Seções colapsáveis da aba Alta ────────────────────────────────────────────
@@ -1324,4 +1380,424 @@ async function registrarAlta() {
       </svg>
       Registrar Alta`;
   }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PRIORIDADE 2 — Funcionalidades Clínicas de Alto Valor
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Feature 4: Fotos Comparativas da Evolução ────────────────────────────────
+
+/**
+ * [M5 P2] Carrega fotos de uma evolução e renderiza a galeria no card.
+ * Chamada na primeira abertura do card (lazy-load via fotosEvolucao cache).
+ */
+async function carregarFotosCard(evolId) {
+  fotosEvolucao[evolId] = []; // marca como carregado para evitar chamadas duplas
+  try {
+    fotosEvolucao[evolId] = await listarFotosEvolucao(evolId);
+  } catch {
+    fotosEvolucao[evolId] = [];
+  }
+  renderFotosCard(evolId);
+}
+
+function renderFotosCard(evolId) {
+  const galeria = $('fotos-' + evolId);
+  if (!galeria) return;
+
+  const fotos = fotosEvolucao[evolId] ?? [];
+  if (!fotos.length) {
+    galeria.innerHTML = `<p class="evol-fotos-vazia">Nenhuma foto registrada.</p>`;
+    return;
+  }
+
+  const tipoLabel = { antes: 'Antes', depois: 'Após', comparativo: 'Comparativo', outro: 'Outro' };
+
+  galeria.innerHTML = fotos.map(f => `
+    <div class="evol-foto-item" data-foto-id="${esc(f.id)}">
+      <div class="evol-foto-thumb-wrap">
+        <img class="evol-foto-thumb" alt="${esc(tipoLabel[f.tipo] ?? f.tipo)}"
+             data-url="${esc(f.url)}" loading="lazy">
+      </div>
+      <div class="evol-foto-info">
+        <span class="evol-foto-tipo">${esc(tipoLabel[f.tipo] ?? f.tipo)}</span>
+        <button type="button" class="btn-icone btn-deletar-foto"
+          data-foto-id="${esc(f.id)}" data-evol-id="${esc(evolId)}"
+          title="Remover foto">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/>
+          </svg>
+        </button>
+      </div>
+    </div>`).join('');
+
+  // [M5 P2] Carrega cada imagem via fetch autenticado e gera blob URL para exibição segura
+  galeria.querySelectorAll('img.evol-foto-thumb[data-url]').forEach(img => {
+    const urlPath = img.dataset.url;
+    fetch(`http://localhost:8080${urlPath}`, {
+      headers: { Authorization: `Bearer ${token()}` },
+    })
+      .then(r => r.ok ? r.blob() : null)
+      .then(blob => {
+        if (blob) img.src = URL.createObjectURL(blob);
+      })
+      .catch(() => {});
+  });
+
+  // Bind dos botões de deletar após renderização
+  galeria.querySelectorAll('.btn-deletar-foto').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const fotoId = btn.dataset.fotoId;
+      const eId    = btn.dataset.evolId;
+      try {
+        await deletarFotoEvolucao(eId, fotoId);
+        fotosEvolucao[eId] = (fotosEvolucao[eId] ?? []).filter(f => f.id !== fotoId);
+        renderFotosCard(eId);
+        showToast('Foto removida.', 'success');
+      } catch {
+        showToast('Erro ao remover foto.', 'error');
+      }
+    });
+  });
+}
+
+/**
+ * [M5 P2] Envia uma foto para a evolução especificada.
+ * Após upload bem-sucedido, adiciona a foto ao cache e re-renderiza a galeria.
+ */
+async function uploadFotoCard(evolId, file, tipo) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('tipo', tipo);
+  try {
+    const novaFoto = await uploadFotoEvolucao(evolId, formData);
+    if (!fotosEvolucao[evolId]) fotosEvolucao[evolId] = [];
+    fotosEvolucao[evolId].push(novaFoto);
+    renderFotosCard(evolId);
+    showToast('Foto adicionada com sucesso.', 'success');
+  } catch (err) {
+    showToast(err?.erro ?? 'Erro ao enviar foto.', 'error');
+  }
+}
+
+// ── Feature 1: Gráfico de Evolução do EVA ────────────────────────────────────
+
+/**
+ * [M5 P2] Renderiza gráfico de linha com progressão da dor (EVA) ao longo das sessões.
+ * Usa Chart.js (carregado via CDN). Exibe somente quando há ≥2 evoluções com EVA.
+ * Destrói instância anterior para evitar sobreposição em reloads.
+ */
+function renderGraficoEva() {
+  const section = $('grafico-eva-section');
+  const canvas  = $('grafico-eva');
+  if (!section || !canvas) return;
+
+  // Ordena cronologicamente (a API retorna DESC) e filtra só quem tem EVA
+  const comEva = [...evolucoes]
+    .reverse()
+    .filter(e => (e.eva_antes ?? e.evaAntes) != null || (e.eva_depois ?? e.evaDepois) != null);
+
+  if (comEva.length < 2) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+
+  const labels = comEva.map(e => `S${e.num_sessao ?? e.numSessao ?? '?'}`);
+  const antes  = comEva.map(e => e.eva_antes  ?? e.evaAntes  ?? null);
+  const depois = comEva.map(e => e.eva_depois ?? e.evaDepois ?? null);
+
+  // Destrói instância anterior para não empilhar gráficos ao recarregar
+  if (window._graficoEvaInstance) {
+    window._graficoEvaInstance.destroy();
+    window._graficoEvaInstance = null;
+  }
+
+  window._graficoEvaInstance = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'EVA Antes',
+          data: antes,
+          borderColor: '#C0392B',
+          backgroundColor: 'rgba(192,57,43,0.08)',
+          pointBackgroundColor: '#C0392B',
+          tension: 0.3,
+          spanGaps: true,
+        },
+        {
+          label: 'EVA Após',
+          data: depois,
+          borderColor: '#1A7F4B',
+          backgroundColor: 'rgba(26,127,75,0.08)',
+          pointBackgroundColor: '#1A7F4B',
+          tension: 0.3,
+          spanGaps: true,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top' } },
+      scales: {
+        y: {
+          min: 0,
+          max: 10,
+          ticks: { stepSize: 1 },
+          title: { display: true, text: 'Escala de Dor (0–10)' },
+        },
+        x: {
+          title: { display: true, text: 'Sessão' },
+        },
+      },
+    },
+  });
+}
+
+// ── Feature 2: Reavaliação Comparativa ───────────────────────────────────────
+
+/**
+ * [M2/M5 P2] Compara avaliação inicial com a mais recente.
+ * Lê avaliacao_fisica JSONB de anamneses[] (já em memória). Requer ≥2 avaliações.
+ * Campos: eva, postura, adm, forca_muscular, goniometria.
+ */
+function renderReavaliacao() {
+  const semDados = $('reav-sem-dados');
+  const tabela   = $('reav-tabela');
+  if (!semDados || !tabela) return;
+
+  const anamOrdenadas = [...anamneses].sort((a, b) => {
+    const da = new Date(a.data_avaliacao ?? a.dataAvaliacao ?? 0);
+    const db = new Date(b.data_avaliacao ?? b.dataAvaliacao ?? 0);
+    return da - db;
+  });
+
+  if (anamOrdenadas.length < 2) {
+    semDados.innerHTML = `
+      <div style="text-align:center;padding:48px 24px;color:var(--text2)">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-bottom:12px">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+        <p style="margin:0">São necessárias ao menos <strong>2 avaliações</strong> para gerar o comparativo.<br>
+        Registre uma nova avaliação na aba <strong>Anamnese</strong>.</p>
+      </div>`;
+    semDados.style.display = 'block';
+    tabela.style.display   = 'none';
+    return;
+  }
+
+  const ini  = anamOrdenadas[0];
+  const rec  = anamOrdenadas[anamOrdenadas.length - 1];
+  const afIni = ini.avaliacao_fisica ?? ini.avaliacaoFisica ?? {};
+  const afRec = rec.avaliacao_fisica ?? rec.avaliacaoFisica ?? {};
+
+  const dataIni = ini.data_avaliacao ?? ini.dataAvaliacao;
+  const dataRec = rec.data_avaliacao ?? rec.dataAvaliacao;
+
+  if ($('reav-data-inicial')) $('reav-data-inicial').textContent = `Inicial (${formatData(dataIni)})`;
+  if ($('reav-data-recente')) $('reav-data-recente').textContent = `Mais recente (${formatData(dataRec)})`;
+
+  // [M2] Campos comparados: eva (menor=melhor), postura, adm, forca, goniometria
+  const campos = [
+    { label: 'Dor EVA (0–10)', vi: afIni.eva, vr: afRec.eva, menorMelhor: true },
+    { label: 'Postura',        vi: afIni.postura, vr: afRec.postura, menorMelhor: null },
+    { label: 'ADM',            vi: afIni.adm, vr: afRec.adm, menorMelhor: null },
+    { label: 'Força Muscular', vi: afIni.forca_muscular, vr: afRec.forca_muscular, menorMelhor: null },
+    { label: 'Goniometria',    vi: afIni.goniometria, vr: afRec.goniometria, menorMelhor: null },
+  ].filter(c => c.vi != null || c.vr != null);
+
+  if (!campos.length) {
+    semDados.innerHTML = `<div style="text-align:center;padding:48px 24px;color:var(--text2)"><p>As avaliações registradas não possuem dados de avaliação física para comparar.</p></div>`;
+    semDados.style.display = 'block';
+    tabela.style.display   = 'none';
+    return;
+  }
+
+  const linhasEl = $('reav-linhas');
+  if (linhasEl) {
+    linhasEl.innerHTML = campos.map(({ label, vi, vr, menorMelhor }) => {
+      let indicador = '';
+      if (menorMelhor !== null && vi != null && vr != null) {
+        const numVi = parseFloat(vi);
+        const numVr = parseFloat(vr);
+        if (!isNaN(numVi) && !isNaN(numVr)) {
+          const melhorou = menorMelhor ? numVr < numVi : numVr > numVi;
+          const estavel  = numVr === numVi;
+          indicador = estavel
+            ? '<span class="reav-indicador reav-estavel">= Estável</span>'
+            : (melhorou
+                ? '<span class="reav-indicador reav-melhora">▼ Melhora</span>'
+                : '<span class="reav-indicador reav-piora">▲ Piora</span>');
+        }
+      }
+      return `
+        <div class="reav-linha">
+          <div class="reav-col reav-col-label">${esc(label)}</div>
+          <div class="reav-col">${esc(String(vi ?? '—'))}</div>
+          <div class="reav-col">${esc(String(vr ?? '—'))} ${indicador}</div>
+        </div>`;
+    }).join('');
+  }
+
+  semDados.style.display = 'none';
+  tabela.style.display   = 'block';
+}
+
+// ── Feature 3: Relatório PDF da Alta ─────────────────────────────────────────
+
+/**
+ * [M6 P2] Monta a view de impressão com dados da alta e do plano ativo.
+ * Chamada por mostrarAltaTabRegistrada() após confirmar existência de alta.
+ * Exibe botão "Imprimir Relatório" e preenche #relatorio-print com dados estruturados.
+ */
+function montarRelatorioPrint(alta) {
+  const div = $('relatorio-print');
+  const btnWrap = $('btn-imprimir-wrap');
+  if (!div) return;
+
+  // Dados do paciente da URL de header (já carregados na página)
+  const nomeEl = $('ph-nome');
+  const cpfEl  = $('ph-cpf');
+  const nomePaciente = nomeEl?.textContent ?? alta.paciente?.nome_completo ?? alta.paciente?.nomeCompleto ?? '—';
+  const cpfPaciente  = cpfEl?.textContent  ?? formatCpf(alta.paciente?.cpf ?? '');
+
+  const rp = id => $('rp-' + id);
+
+  if (rp('paciente')) rp('paciente').innerHTML = `
+    <section class="rp-section">
+      <h3>Dados do Paciente</h3>
+      <p><strong>Nome:</strong> ${esc(nomePaciente)}</p>
+      ${cpfPaciente ? `<p><strong>CPF:</strong> ${esc(cpfPaciente)}</p>` : ''}
+    </section>`;
+
+  // Diagnóstico CIF do plano vinculado (usa plano da URL ou plano ativo em memória)
+  const planoVinculado = planos.find(p => p.id === (alta.plano_id ?? alta.planoId))
+                      ?? planos.find(p => p.status === 'ativo');
+  if (rp('diagnostico') && planoVinculado) {
+    const cif    = planoVinculado.diagnostico_cif ?? planoVinculado.diagnosticoCif ?? '';
+    const cid10  = planoVinculado.cid10 ?? '';
+    rp('diagnostico').innerHTML = `
+      <section class="rp-section">
+        <h3>Diagnóstico Fisioterapêutico</h3>
+        ${cif   ? `<p><strong>CIF:</strong> ${esc(cif)}</p>` : ''}
+        ${cid10 ? `<p><strong>CID-10:</strong> ${esc(cid10)}</p>` : ''}
+      </section>`;
+  }
+
+  const motivos = {
+    alta_clinica: 'Alta Clínica', alta_administrativa: 'Alta Administrativa',
+    desistencia: 'Desistência', encaminhamento: 'Encaminhamento', obito: 'Óbito',
+  };
+  const numSessoes = alta.num_sessoes_realizadas ?? alta.numSessoesRealizadas ?? '—';
+  if (rp('tratamento')) rp('tratamento').innerHTML = `
+    <section class="rp-section">
+      <h3>Resumo do Tratamento</h3>
+      <p><strong>Data da alta:</strong> ${esc(formatData(alta.data_alta ?? alta.dataAlta))}</p>
+      <p><strong>Motivo:</strong> ${esc(motivos[alta.motivo] ?? alta.motivo ?? '—')}</p>
+      <p><strong>Sessões realizadas:</strong> ${esc(String(numSessoes))}</p>
+    </section>`;
+
+  const resultado = alta.resultado_objetivos ?? alta.resultadoObjetivos ?? '—';
+  if (rp('objetivos')) rp('objetivos').innerHTML = `
+    <section class="rp-section">
+      <h3>Resultado vs Objetivos</h3>
+      <p style="white-space:pre-wrap">${esc(resultado)}</p>
+    </section>`;
+
+  const orientacoes = alta.orientacoes_domiciliares ?? alta.orientacoesDomiciliares ?? '';
+  if (rp('orientacoes') && orientacoes) rp('orientacoes').innerHTML = `
+    <section class="rp-section">
+      <h3>Orientações Domiciliares</h3>
+      <p style="white-space:pre-wrap">${esc(orientacoes)}</p>
+    </section>`;
+
+  const fisioNome = alta.fisioterapeuta?.nome ?? '—';
+  const fisioCrf  = alta.fisioterapeuta?.crf  ? `CREFITO: ${alta.fisioterapeuta.crf}` : '';
+  if (rp('rodape')) rp('rodape').innerHTML = `
+    <section class="rp-section rp-rodape">
+      <p>_________________________________________</p>
+      <p><strong>${esc(fisioNome)}</strong></p>
+      ${fisioCrf ? `<p>${esc(fisioCrf)}</p>` : ''}
+    </section>`;
+
+  div.style.display = 'block';
+  if (btnWrap) {
+    btnWrap.style.display = 'block';
+    // Bind único — remove listener anterior para evitar duplicatas em múltiplas altas
+    const btn = $('btn-imprimir-relatorio');
+    if (btn) {
+      const novo = btn.cloneNode(true);
+      btn.parentNode.replaceChild(novo, btn);
+      novo.addEventListener('click', () => window.print());
+    }
+  }
+}
+
+// ── Feature 5: Auditoria CFM (trilha de eventos) ─────────────────────────────
+
+/**
+ * [Auditoria P2] Carrega e exibe a trilha de auditoria do prontuário.
+ * Chamada com lazy-load na ativação da aba Histórico.
+ * Endpoint: GET /api/auditoria/paciente/{id}
+ */
+async function carregarAuditoria() {
+  const el = $('auditoria-lista');
+  if (!el) return;
+
+  el.innerHTML = `<div style="padding:24px;color:var(--text2);text-align:center">Carregando histórico...</div>`;
+
+  try {
+    // [Auditoria P2] Usa módulo api/auditoria.js — mantém padrão de centralização de chamadas
+    const eventos = await listarAuditoriaPaciente(pacienteId);
+    renderAuditoria(eventos ?? []);
+  } catch {
+    el.innerHTML = `<div style="padding:24px;color:var(--text2);text-align:center">
+      <p>Não foi possível carregar o histórico.</p></div>`;
+  }
+}
+
+function renderAuditoria(eventos) {
+  const el = $('auditoria-lista');
+  if (!el) return;
+
+  if (!eventos.length) {
+    el.innerHTML = `<div style="padding:24px;color:var(--text2);text-align:center"><p>Nenhum evento registrado.</p></div>`;
+    return;
+  }
+
+  // Ícones por tipo de entidade
+  const icones = {
+    ANAMNESE: '📋',
+    EVOLUCAO: '📝',
+    PLANO:    '🗂️',
+    ALTA:     '✅',
+  };
+
+  // Rótulos por ação
+  const acoes = {
+    CRIACAO:    'Criação',
+    ALTERACAO:  'Alteração',
+    ASSINATURA: 'Assinatura',
+  };
+
+  el.innerHTML = `<ul class="auditoria-timeline">` + eventos.map(ev => {
+    const icone     = icones[ev.tipo_entidade ?? ev.tipoEntidade] ?? '📄';
+    const tipo      = (ev.tipo_entidade ?? ev.tipoEntidade ?? '').replace(/_/g,' ');
+    const acao      = acoes[ev.acao] ?? ev.acao ?? '—';
+    const fisio     = ev.fisioterapeuta_nome ?? ev.fisioterapeutaNome ?? '—';
+    const dataHoraStr = formatDataHora(ev.created_at ?? ev.createdAt);
+    return `
+      <li class="auditoria-item">
+        <span class="auditoria-icone">${icone}</span>
+        <div class="auditoria-detalhe">
+          <span class="auditoria-tipo">${esc(tipo)}</span>
+          <span class="auditoria-acao badge badge-amber">${esc(acao)}</span>
+          <span class="auditoria-fisio">Dr(a). ${esc(fisio)}</span>
+          <span class="auditoria-data">${esc(dataHoraStr)}</span>
+        </div>
+      </li>`;
+  }).join('') + `</ul>`;
 }

@@ -45,9 +45,11 @@ public class PlanoTratamentoService {
     private static final List<String> STATUS_VALIDOS = List.of("ativo", "concluido", "cancelado");
 
     private final PlanoTratamentoRepository planoRepository;
-    private final PacienteRepository pacienteRepository;
-    private final AnamneseRepository anamneseRepository;
-    private final FisioterapeutaRepository fisioterapeutaRepository;
+    private final PacienteRepository        pacienteRepository;
+    private final AnamneseRepository        anamneseRepository;
+    private final FisioterapeutaRepository  fisioterapeutaRepository;
+    // [Auditoria P2] Registro de evento CFM 1.821/07 ao criar plano
+    private final AuditoriaService          auditoriaService;
 
     // ── Listagem por paciente ─────────────────────────────────────────────────
 
@@ -86,7 +88,12 @@ public class PlanoTratamentoService {
 
         PlanoTratamento plano = new PlanoTratamento();
         preencher(plano, dto, paciente, anamnese, fisio);
-        return toResponse(planoRepository.save(plano));
+        PlanoTratamento saved = planoRepository.save(plano);
+        // [Auditoria CFM] Registra criação do plano — metadados não-clínicos apenas (LGPD)
+        UUID fisioId = saved.getFisioterapeuta() != null ? saved.getFisioterapeuta().getId() : null;
+        auditoriaService.registrar("PLANO", saved.getId(), saved.getPaciente().getId(),
+            "CRIACAO", fisioId, "{\"status\":\"" + saved.getStatus() + "\"}");
+        return toResponse(saved);
     }
 
     // ── Atualização parcial (PATCH) ───────────────────────────────────────────

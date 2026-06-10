@@ -54,6 +54,8 @@ public class AltaService {
     private final PlanoTratamentoRepository  planoTratamentoRepository;
     private final FisioterapeutaRepository   fisioterapeutaRepository;
     private final SessaoRepository           sessaoRepository;
+    // [Auditoria P2] Registro de evento CFM 1.821/07 ao registrar alta
+    private final AuditoriaService           auditoriaService;
 
     // ── Registro de alta ─────────────────────────────────────────────────────
 
@@ -111,7 +113,12 @@ public class AltaService {
             dto.pacienteId(), Sessao.StatusSessao.REALIZADO);
         alta.setNumSessoesRealizadas(sessoesRealizadas);
 
-        return toResponse(altaRepository.save(alta));
+        Alta saved = altaRepository.save(alta);
+        // [Auditoria CFM] Registra alta — metadados não-clínicos apenas (LGPD)
+        UUID fisioAltaId = saved.getFisioterapeuta() != null ? saved.getFisioterapeuta().getId() : null;
+        auditoriaService.registrar("ALTA", saved.getId(), saved.getPaciente().getId(),
+            "CRIACAO", fisioAltaId, "{\"motivo\":\"" + saved.getMotivo() + "\"}");
+        return toResponse(saved);
     }
 
     // ── Listagem por paciente ────────────────────────────────────────────────

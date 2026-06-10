@@ -272,13 +272,16 @@ CREATE TABLE IF NOT EXISTS evolucoes (
 
 -- [M5] Fotos comparativas vinculadas à evolução
 CREATE TABLE IF NOT EXISTS fotos_evolucao (
-    id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    evolucao_id UUID        NOT NULL REFERENCES evolucoes(id) ON DELETE CASCADE,
-    tipo        VARCHAR(15) NOT NULL DEFAULT 'outro'
-                    CHECK (tipo IN ('antes','depois','comparativo','outro')),
-    url         TEXT        NOT NULL,
-    descricao   TEXT,
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    evolucao_id   UUID        NOT NULL REFERENCES evolucoes(id) ON DELETE CASCADE,
+    tipo          VARCHAR(15) NOT NULL DEFAULT 'outro'
+                      CHECK (tipo IN ('antes','depois','comparativo','outro')),
+    url           TEXT        NOT NULL,
+    -- [M5 P2] Metadados adicionados para exibição na galeria (padrão de arquivos_anamnese)
+    nome_arquivo  TEXT,
+    tamanho_bytes BIGINT,
+    descricao     TEXT,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- ============================================================
@@ -355,6 +358,33 @@ CREATE INDEX IF NOT EXISTS idx_atualizacoes_data        ON atualizacoes_sistema(
 --  PERMISSÕES — usuário 'fisio' usado pela aplicação
 -- ============================================================
 
+-- ============================================================
+--  AUDITORIA DE PRONTUÁRIO — CFM 1.821/07
+-- ============================================================
+
+-- [Auditoria P2] Trilha de eventos imutável para conformidade CFM 1.821/07
+-- Registra quem criou/alterou prontuário, quando e qual entidade — sem dados clínicos (LGPD)
+CREATE TABLE IF NOT EXISTS auditoria_prontuario (
+    id                UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    paciente_id       UUID        NOT NULL REFERENCES pacientes(id),
+    tipo_entidade     VARCHAR(20) NOT NULL
+                          CHECK (tipo_entidade IN ('ANAMNESE','EVOLUCAO','PLANO','ALTA')),
+    entidade_id       UUID        NOT NULL,
+    acao              VARCHAR(20) NOT NULL
+                          CHECK (acao IN ('CRIACAO','ALTERACAO','ASSINATURA')),
+    fisioterapeuta_id UUID        REFERENCES fisioterapeutas(id),
+    -- dados_novos: metadados não-clínicos apenas (ex: num_sessao, status)
+    dados_novos       JSONB,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_auditoria_paciente
+    ON auditoria_prontuario(paciente_id, created_at DESC);
+
+-- ============================================================
+--  PERMISSÕES
+-- ============================================================
+
 GRANT ALL PRIVILEGES ON TABLE pacientes             TO fisio;
 GRANT ALL PRIVILEGES ON TABLE contatos_emergencia   TO fisio;
 GRANT ALL PRIVILEGES ON TABLE convenios_paciente    TO fisio;
@@ -368,6 +398,7 @@ GRANT ALL PRIVILEGES ON TABLE sessoes               TO fisio;
 GRANT ALL PRIVILEGES ON TABLE evolucoes             TO fisio;
 GRANT ALL PRIVILEGES ON TABLE fotos_evolucao        TO fisio;
 GRANT ALL PRIVILEGES ON TABLE altas                 TO fisio;
+GRANT ALL PRIVILEGES ON TABLE auditoria_prontuario  TO fisio;
 GRANT SELECT, INSERT, UPDATE ON atualizacoes_sistema TO fisio;
 
 -- ============================================================

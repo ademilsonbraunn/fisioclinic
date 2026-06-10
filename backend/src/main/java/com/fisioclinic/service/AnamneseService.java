@@ -37,9 +37,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AnamneseService {
 
-    private final AnamneseRepository anamneseRepository;
-    private final PacienteRepository pacienteRepository;
+    private final AnamneseRepository       anamneseRepository;
+    private final PacienteRepository       pacienteRepository;
     private final FisioterapeutaRepository fisioterapeutaRepository;
+    // [Auditoria P2] Registro de evento CFM 1.821/07 ao criar/atualizar anamnese
+    private final AuditoriaService         auditoriaService;
 
     // ── Listagem por paciente ─────────────────────────────────────────────────
 
@@ -72,7 +74,12 @@ public class AnamneseService {
 
         Anamnese anamnese = new Anamnese();
         preencher(anamnese, dto, paciente, fisio);
-        return toResponse(anamneseRepository.save(anamnese));
+        Anamnese saved = anamneseRepository.save(anamnese);
+        // [Auditoria CFM] Registra criação da anamnese — metadados não-clínicos apenas (LGPD)
+        UUID fisioId = saved.getFisioterapeuta() != null ? saved.getFisioterapeuta().getId() : null;
+        auditoriaService.registrar("ANAMNESE", saved.getId(), saved.getPaciente().getId(),
+            "CRIACAO", fisioId, null);
+        return toResponse(saved);
     }
 
     // ── Atualização parcial (PATCH) ───────────────────────────────────────────
@@ -95,7 +102,12 @@ public class AnamneseService {
         if (dto.observacoes()          != null) anamnese.setObservacoes(dto.observacoes());
         if (dto.avaliacaoFisica()      != null) anamnese.setAvaliacaoFisica(dto.avaliacaoFisica());
 
-        return toResponse(anamneseRepository.save(anamnese));
+        Anamnese updated = anamneseRepository.save(anamnese);
+        // [Auditoria CFM] Registra alteração da anamnese
+        UUID fisioUpdId = updated.getFisioterapeuta() != null ? updated.getFisioterapeuta().getId() : null;
+        auditoriaService.registrar("ANAMNESE", updated.getId(), updated.getPaciente().getId(),
+            "ALTERACAO", fisioUpdId, null);
+        return toResponse(updated);
     }
 
     // ── Helpers privados ─────────────────────────────────────────────────────

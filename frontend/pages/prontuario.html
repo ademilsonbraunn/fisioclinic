@@ -53,6 +53,8 @@
   <link rel="stylesheet" href="../css/pages/prontuario.css">
   <!-- [M6] Estilos da aba Alta reutilizados do módulo standalone -->
   <link rel="stylesheet" href="../css/pages/alta.css">
+  <!-- [M5 P2] Chart.js — gráfico de evolução do EVA por sessão -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -149,6 +151,10 @@
         <button class="tab-btn" role="tab" data-tab="evolucao" aria-selected="false">Evolução</button>
         <!-- [M6] 4ª aba integrada — substitui o redirecionamento para alta.html -->
         <button class="tab-btn" role="tab" data-tab="alta" aria-selected="false">Alta e Relatórios</button>
+        <!-- [M2/M5 P2] 5ª aba — comparativo entre avaliação inicial e mais recente -->
+        <button class="tab-btn" role="tab" data-tab="reavaliacao" aria-selected="false">Reavaliação</button>
+        <!-- [Auditoria P2] 6ª aba — trilha de eventos CFM 1.821/07 -->
+        <button class="tab-btn" role="tab" data-tab="historico" aria-selected="false">Histórico</button>
       </div>
 
       <!-- Tab: Anamnese -->
@@ -574,6 +580,16 @@
           </div>
         </div>
 
+        <!-- [M5 P2] Gráfico de progressão da dor — visível quando há ≥2 evoluções com EVA -->
+        <div id="grafico-eva-section" class="grafico-eva-section" style="display:none">
+          <div class="section-toolbar" style="margin-bottom:12px">
+            <h2>Progresso da Dor (EVA)</h2>
+          </div>
+          <div class="grafico-eva-wrap">
+            <canvas id="grafico-eva" height="180"></canvas>
+          </div>
+        </div>
+
         <!-- Lista de evoluções -->
         <div class="section-toolbar">
           <h2>Evoluções registradas</h2>
@@ -824,7 +840,61 @@
           </div>
 
         </form>
+
+        <!-- [M6 P2] Botão de impressão — exibido apenas quando há alta registrada -->
+        <div id="btn-imprimir-wrap" style="display:none;margin-top:16px">
+          <button type="button" class="btn btn-secondary" id="btn-imprimir-relatorio">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Imprimir Relatório de Alta
+          </button>
+        </div>
+
+        <!-- [M6 P2] View de impressão — oculta em tela, exibida apenas no print -->
+        <div id="relatorio-print" class="relatorio-print-view" style="display:none">
+          <div class="rp-header">
+            <h1 class="rp-clinica">FisioClinic</h1>
+            <h2 class="rp-titulo">Relatório de Alta Fisioterapêutica</h2>
+          </div>
+          <div id="rp-paciente"></div>
+          <div id="rp-diagnostico"></div>
+          <div id="rp-tratamento"></div>
+          <div id="rp-objetivos"></div>
+          <div id="rp-orientacoes"></div>
+          <div id="rp-rodape"></div>
+        </div>
+
       </div><!-- /tab-alta -->
+
+      <!-- [M2/M5 P2] Aba Reavaliação — comparativo avaliação inicial vs mais recente -->
+      <div class="tab-panel" id="tab-reavaliacao">
+        <div id="reav-sem-dados" style="display:none"></div>
+        <div id="reav-tabela" style="display:none">
+          <div class="section-toolbar" style="margin-bottom:16px">
+            <h2>Comparativo de Avaliação</h2>
+          </div>
+          <div class="reav-tabela-wrap">
+            <div class="reav-cabecalho">
+              <div class="reav-col reav-col-label"></div>
+              <div class="reav-col reav-col-inicial" id="reav-data-inicial"></div>
+              <div class="reav-col reav-col-recente" id="reav-data-recente"></div>
+            </div>
+            <div id="reav-linhas"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- [Auditoria P2] Aba Histórico — trilha de eventos CFM 1.821/07 -->
+      <div class="tab-panel" id="tab-historico">
+        <div class="section-toolbar" style="margin-bottom:16px">
+          <h2>Histórico do Prontuário</h2>
+        </div>
+        <div id="auditoria-lista">
+          <!-- preenchido por JS -->
+        </div>
+      </div>
 
     </div><!-- /prontuario-content -->
   </main>

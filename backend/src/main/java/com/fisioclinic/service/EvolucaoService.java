@@ -46,10 +46,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EvolucaoService {
 
-    private final EvolucaoRepository      evolucaoRepository;
-    private final SessaoRepository        sessaoRepository;
-    private final FisioterapeutaRepository fisioterapeutaRepository;
+    private final EvolucaoRepository        evolucaoRepository;
+    private final SessaoRepository          sessaoRepository;
+    private final FisioterapeutaRepository  fisioterapeutaRepository;
     private final PlanoTratamentoRepository planoTratamentoRepository;
+    // [Auditoria P2] Registro de evento CFM 1.821/07 ao criar evolução
+    private final AuditoriaService          auditoriaService;
 
     // ── Listagem por paciente ────────────────────────────────────────────────
 
@@ -108,7 +110,12 @@ public class EvolucaoService {
         e.setCodigoTuss(dto.codigoTuss());
         e.setObservacoes(dto.observacoes());
 
-        return toResponse(evolucaoRepository.save(e));
+        Evolucao saved = evolucaoRepository.save(e);
+        // [Auditoria CFM] Registra criação da evolução — metadados não-clínicos apenas (LGPD)
+        UUID fisioId = saved.getFisioterapeuta() != null ? saved.getFisioterapeuta().getId() : null;
+        auditoriaService.registrar("EVOLUCAO", saved.getId(), saved.getPaciente().getId(),
+            "CRIACAO", fisioId, "{\"num_sessao\":" + saved.getNumSessao() + "}");
+        return toResponse(saved);
     }
 
     // ── Mapper ───────────────────────────────────────────────────────────────
