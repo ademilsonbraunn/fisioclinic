@@ -2,6 +2,57 @@
 
 ---
 
+## 📅 10/06/2026 — Terça-feira
+
+### ⏰ 16:35 — Backend + Frontend (Prioridade 2 — Funcionalidades Clínicas)
+
+**Feature 1 — Gráfico de Evolução do EVA (Chart.js)**
+- `pages/prontuario.html`: adicionado CDN Chart.js 4.4.0 no `<head>`
+- `pages/prontuario.html`: adicionado `#grafico-eva-section` com `<canvas id="grafico-eva">` na aba Evolução
+- `js/pages/prontuario.js`: adicionada função `renderGraficoEva()` — plota linha dupla EVA Antes / EVA Após, ordenados por data, com cleanup de instância anterior via `window._graficoEvaInstance`
+- `js/pages/prontuario.js`: `carregarEvolucoes()` chama `renderGraficoEva()` ao final
+- `css/pages/prontuario.css`: adicionados estilos `.grafico-eva-section`, `.grafico-eva-wrap`
+
+**Feature 2 — Reavaliação Comparativa**
+- `pages/prontuario.html`: adicionada aba "Reavaliação" e painel `#tab-reavaliacao` com grid comparativo
+- `js/pages/prontuario.js`: adicionada função `renderReavaliacao()` — compara primeira vs última anamnese, exibe indicadores ▼/=/▲ para EVA, postura, ADM, força muscular, goniometria
+- `js/pages/prontuario.js`: `bindTabs()` — lazy-load da aba Reavaliação
+- `css/pages/prontuario.css`: adicionados estilos `.reav-tabela-wrap`, `.reav-cabecalho`, `.reav-linha`, `.reav-indicador`, `.reav-melhora`, `.reav-piora`, `.reav-estavel`
+
+**Feature 3 — Relatório PDF da Alta**
+- `pages/prontuario.html`: adicionados `#btn-imprimir-wrap`, botão "Imprimir Relatório" e `#relatorio-print` (div oculta para impressão)
+- `js/pages/prontuario.js`: adicionada função `montarRelatorioPrint(alta)` — popula o relatório com dados do paciente, diagnóstico, sessões realizadas, objetivos e orientações
+- `css/pages/prontuario.css`: adicionado bloco `@media print` que oculta todo o layout e exibe apenas `.relatorio-print-view`
+
+**Feature 4 — Fotos Comparativas na Evolução**
+- `database/setup.sql`: colunas `nome_arquivo` e `tamanho_bytes` adicionadas à tabela `fotos_evolucao`
+- `model/FotoEvolucao.java` (novo): entidade JPA mapeando `fotos_evolucao`
+- `repository/FotoEvolucaoRepository.java` (novo): query por `evolucao_id` ordenada por `created_at`
+- `dto/FotoEvolucaoResponse.java` (novo): DTO de resposta com metadados da foto
+- `service/FotoEvolucaoService.java` (novo): upload/download/listagem/remoção de fotos em `uploads/evolucoes/{id}/`; valida tipo `image/*`
+- `controller/FotoEvolucaoController.java` (novo): endpoints `POST/GET /api/evolucoes/{id}/fotos`, `GET .../arquivo`, `DELETE .../fotos/{id}`
+- `js/api/evolucoes.js`: adicionadas funções `listarFotosEvolucao`, `uploadFotoEvolucao`, `deletarFotoEvolucao`, `urlFotoEvolucao`
+- `js/pages/prontuario.js`: galeria de fotos por card de evolução — upload por tipo (antes/depois), exibição autenticada via Blob URL, remoção individual
+- `css/pages/prontuario.css`: adicionados estilos `.evol-fotos-section`, `.evol-foto-label`, `.evol-foto-item`, `.evol-foto-thumb`, `.btn-deletar-foto`
+
+**Feature 5 — Histórico de Alterações (Auditoria CFM 1.821/07)**
+- `database/setup.sql`: tabela `auditoria_prontuario` adicionada com índice `idx_auditoria_paciente`
+- `model/AuditoriaProntuario.java` (novo): entidade imutável (sem setters); campo `dados_novos` com `@JdbcTypeCode(JSON)` para compatibilidade Hibernate 6 + PostgreSQL JSONB
+- `repository/AuditoriaRepository.java` (novo): query `findByPacienteId` com LEFT JOIN FETCH fisioterapeuta
+- `dto/AuditoriaResponse.java` (novo): DTO sem `dados_novos` (LGPD — dados sensíveis não expostos)
+- `service/AuditoriaService.java` (novo): `registrar()` fail-silent (try/catch); `listarPorPaciente()`
+- `controller/AuditoriaController.java` (novo): `GET /api/auditoria/paciente/{id}`
+- `service/EvolucaoService.java`: `criar()` — chama `auditoriaService.registrar("EVOLUCAO", ...)` após save
+- `service/AnamneseService.java`: `criar()` e `atualizar()` — chamam `auditoriaService.registrar("ANAMNESE", ...)` após save
+- `service/PlanoTratamentoService.java`: `criar()` — chama `auditoriaService.registrar("PLANO", ...)` após save
+- `service/AltaService.java`: `registrar()` — chama `auditoriaService.registrar("ALTA", ...)` após save
+- `js/api/auditoria.js` (novo): wrapper `listarAuditoriaPaciente(pacienteId)`
+- `pages/prontuario.html`: adicionada aba "Histórico" e painel `#tab-historico` com timeline de auditoria
+- `js/pages/prontuario.js`: funções `carregarAuditoria()` (lazy-load) e `renderAuditoria(eventos)` — timeline com ícone por tipo, data/hora pt-BR, nome do fisioterapeuta
+- `css/pages/prontuario.css`: adicionados estilos `.auditoria-timeline`, `.auditoria-item`, `.auditoria-icone`, `.auditoria-detalhe`, `.auditoria-tipo`, `.auditoria-acao`, `.auditoria-fisio`, `.auditoria-data`
+
+---
+
 ## 📅 13/06/2026 — Sábado
 
 ### ⏰ 10:00 — Frontend (M2 + M3 — Prioridade 1)
