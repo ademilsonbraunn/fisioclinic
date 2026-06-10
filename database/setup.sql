@@ -428,5 +428,15 @@ INSERT INTO atualizacoes_sistema (titulo, descricao, versao, tipo, data_lancamen
     U&'Agendamento de Sess\00F5es dispon\00EDvel',
     U&'Agende sess\00F5es para os pacientes, visualize a agenda semanal por fisioterapeuta e sala, e acompanhe o status de cada atendimento.',
     'v1.2', 'NOVO_RECURSO', '2026-06-05'
+),
+(
+    U&'Evolu\00E7\00E3o Cl\00EDnica (SOAP) dispon\00EDvel',
+    U&'Registre evolu\00E7\00F5es cl\00EDnicas no formato SOAP para cada sess\00E3o realizada. Inclui escala de dor EVA, t\00E9cnicas utilizadas e par\00E2metros de aparelhos.',
+    'v1.3', 'NOVO_RECURSO', '2026-06-09'
+),
+(
+    U&'Alta e Relat\00F3rios dispon\00EDveis',
+    U&'Registre a alta do paciente com motivo e resultado do tratamento. Gere relat\00F3rio de evolu\00E7\00E3o e documente orienta\00E7\00F5es domiciliares.',
+    'v1.4', 'NOVO_RECURSO', '2026-06-10'
 )
 ON CONFLICT DO NOTHING;

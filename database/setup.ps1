@@ -6,7 +6,7 @@
 
 $PG_BIN  = "C:\Program Files\PostgreSQL\11\bin"
 $PSQL    = "$PG_BIN\psql.exe"
-$SCHEMA  = "$PSScriptRoot\schema.sql"
+$SCHEMA  = "$PSScriptRoot\setup.sql"
 $DB_NAME = "fisioclinic"
 $DB_USER = "fisio"
 $DB_PASS = "fisio123"
@@ -92,7 +92,7 @@ if ($dbExists) {
 Write-Host "[4/4] Aplicando schema..." -ForegroundColor Yellow
 
 if (-not (Test-Path $SCHEMA)) {
-    Write-Host "     ERRO: Arquivo schema.sql nao encontrado em: $SCHEMA" -ForegroundColor Red
+    Write-Host "     ERRO: Arquivo setup.sql nao encontrado em: $SCHEMA" -ForegroundColor Red
     $env:PGPASSWORD = ""
     exit 1
 }
