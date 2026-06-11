@@ -5,7 +5,7 @@
 
 ---
 
-## Arquivos já modificados ✅
+## Arquivos modificados — Etapa 1 ✅
 
 ### `frontend/css/base.css`
 - `--bg` alterado de `#F0F0F0` para `#F4F6FB` (azul-acinzentado sutil)
@@ -47,16 +47,12 @@
 - Module cards: barra superior (before) de 3px → 4px com gradiente; ícone-wrap de 44px → 48px com gradiente radial e sombra colorida; hover com sombra mais intensa e borda colorida
 - Quick actions: padding maior, hover com `translateY(-1px)` e sombra azul
 
----
-
-## Pendente ⏳
-
-### `frontend/css/pages/agenda.css` ✅
+### `frontend/css/pages/agenda.css`
 - Eventos no calendário: `border-left` 3px → 4px, sombra base + hover com escala e sombra mais intensa
 - Botões de navegação de semana: envolvidos em container com fundo cinza e borda (estilo toggle group)
 - Dia atual (`is-today`): fundo accent-bg no cabeçalho + sombra colorida no número circular
 
-### `frontend/css/pages/prontuario.css` ✅
+### `frontend/css/pages/prontuario.css`
 - Patient header card: borda-left accent (4px) + gradiente no avatar + sombra colorida
 - Abas: removido border-bottom, adicionado container pill (fundo cinza, borda) com tab ativo branco e sombra — estilo segmented control
 - EVA slider: track 6px → 8px, 5 zonas de cor (verde→limão→âmbar→laranja→vermelho), thumb maior com sombra e hover scale, labels coloridos por extremo
@@ -64,6 +60,24 @@
 
 ---
 
-## ✅ CONCLUÍDO — Todas as alterações implementadas
+## Arquivos modificados — Etapa 2 ✅
+
+### `frontend/css/pages/alta.css`
+- `.resumo-tratamento` e `.alta-section`: `border-radius: 10px` → `var(--radius-lg)`, adicionado `box-shadow: var(--shadow-xs)`
+- `.alta-section`: adicionado `transition: box-shadow .18s`
+- `.resumo-stat`: `border-radius: 8px` → `var(--radius)`, hover com `translateY(-1px)` + sombra
+- Substituídas todas as cores hex hardcoded por variáveis CSS: `#dbe8ff` → `var(--accent-bg)`, `#fdecea` → `var(--red-bg)`, `#f0faf5` → `var(--green-bg)`, `#1a7f4b40` → `color-mix(in srgb, var(--green) 25%, transparent)`
+
+### `frontend/css/pages/usuarios.css`
+- `.stat-chip`: adicionado hover com `translateY(-1px)` + sombra
+- `.stat-icon`: sombras coloridas por variante (blue/green/amber)
+
+### `frontend/css/pages/admin.css`
+- `.stat-chip`: adicionado hover com `translateY(-1px)` + sombra
+- `.stat-icon`: sombras coloridas por variante (blue/green/amber; gray sem sombra colorida)
+
+---
+
+## ✅ CONCLUÍDO — Todas as melhorias visuais implementadas
 
 Nenhum arquivo JS tocado. Nenhuma classe renomeada. Paleta principal intacta.

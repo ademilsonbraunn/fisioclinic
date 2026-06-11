@@ -15,9 +15,10 @@
 .resumo-tratamento {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   padding: 18px 20px;
   margin-bottom: 20px;
+  box-shadow: var(--shadow-xs);
 }
 
 .resumo-tratamento-titulo {
@@ -37,9 +38,15 @@
 
 .resumo-stat {
   background: var(--surface2);
-  border-radius: 8px;
+  border-radius: var(--radius);
   padding: 12px;
   text-align: center;
+  transition: box-shadow .18s, transform .18s;
+}
+
+.resumo-stat:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.07);
 }
 
 .resumo-stat-valor {
@@ -72,9 +79,11 @@
 .alta-section {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   margin-bottom: 14px;
   overflow: hidden;
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow .18s;
 }
 
 .alta-section-header {
@@ -107,7 +116,7 @@
 }
 
 .alta-section-badge.obrigatorio {
-  background: #dbe8ff;
+  background: var(--accent-bg);
   color: var(--accent);
 }
 
@@ -161,7 +170,7 @@
 .motivo-chip input[type="radio"]:checked + label {
   border-color: var(--accent);
   color: var(--accent);
-  background: #dbe8ff;
+  background: var(--accent-bg);
 }
 
 .motivo-chip label:hover {
@@ -173,7 +182,7 @@
 .motivo-chip.risco input[type="radio"]:checked + label {
   border-color: var(--red);
   color: var(--red);
-  background: #fdecea;
+  background: var(--red-bg);
 }
 
 .motivo-chip.risco label:hover {
@@ -233,9 +242,9 @@
 
 /* ── Card de alta já registrada ────────────────────────────────────────────── */
 .alta-registrada-card {
-  background: #f0faf5;
-  border: 1.5px solid #1a7f4b40;
-  border-radius: 10px;
+  background: var(--green-bg);
+  border: 1.5px solid color-mix(in srgb, var(--green) 25%, transparent);
+  border-radius: var(--radius-lg);
   padding: 20px;
   margin-bottom: 20px;
 }

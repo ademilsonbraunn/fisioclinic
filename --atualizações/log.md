@@ -4,6 +4,26 @@
 
 ## 📅 11/06/2026 — Quarta-feira
 
+### ⏰ 21:00 — Frontend (Melhorias visuais — Etapa 2: alta.css, usuarios.css, admin.css)
+
+**`frontend/css/pages/alta.css`**
+- `.resumo-tratamento` e `.alta-section`: `border-radius: 10px` → `var(--radius-lg)`; adicionado `box-shadow: var(--shadow-xs)`
+- `.alta-section`: adicionado `transition: box-shadow .18s`
+- `.resumo-stat`: `border-radius: 8px` → `var(--radius)`; hover com `translateY(-1px)` + sombra suave
+- Todas as cores hex hardcoded substituídas por variáveis CSS: `#dbe8ff` → `var(--accent-bg)`, `#fdecea` → `var(--red-bg)`, `#f0faf5` → `var(--green-bg)`, `#1a7f4b40` → `color-mix(in srgb, var(--green) 25%, transparent)`
+
+**`frontend/css/pages/usuarios.css`**
+- `.stat-chip`: adicionado `transition` + hover com `translateY(-1px)` e sombra (mesmo padrão do dashboard)
+- `.stat-icon` blue/green/amber: adicionadas sombras coloridas sutis por variante
+
+**`frontend/css/pages/admin.css`**
+- `.stat-chip`: mesma melhoria de hover que usuarios.css
+- `.stat-icon` blue/green/amber: mesmas sombras coloridas; gray sem sombra colorida
+
+**`--atualizações/statusfrontend.md`**: reorganizado para refletir etapa 1 (concluída anteriormente) e etapa 2 (concluída agora); seção "Pendente ⏳" removida
+
+---
+
 ### ⏰ 20:00 — Backend (Sugestões de qualidade — itens 19–22 de corrigirprocedimentos.md)
 
 **Item 19 — Enum `StatusPlanoTratamento` integrado**
