@@ -116,13 +116,22 @@ fisioclinic/
 
 ---
 
-## Variáveis de ambiente (opcional)
+## Variáveis de ambiente
 
-O `application.properties` usa valores padrão prontos para desenvolvimento local. Para sobrescrever sem alterar o arquivo, defina as variáveis de ambiente antes de subir o backend:
+O `application.properties` usa valores padrão prontos para desenvolvimento local. Em produção, **substitua todas as variáveis marcadas como obrigatórias** antes de iniciar o backend.
 
 ```powershell
-$env:DB_URL      = "jdbc:postgresql://localhost:5411/fisioclinic"
+# Banco de dados (obrigatórias em produção)
+$env:DB_URL      = "jdbc:postgresql://<host>:<porta>/fisioclinic"
 $env:DB_USERNAME = "fisio"
-$env:DB_PASSWORD = "fisio123"
-$env:JWT_SECRET  = "sua-chave-segura-aqui"
+$env:DB_PASSWORD = "<senha-segura>"
+
+# JWT (obrigatória em produção — mínimo 32 caracteres aleatórios)
+$env:JWT_SECRET     = "<chave-aleatoria-minimo-32-chars>"
+$env:JWT_EXPIRATION = "28800000"   # 8 horas em ms (opcional — padrão já definido)
+
+# CORS — origens permitidas separadas por vírgula (obrigatória se o frontend não for localhost)
+$env:CORS_ALLOWED_ORIGINS = "https://seu-dominio.com"
 ```
+
+> **Atenção:** nunca use os valores padrão (`fisio123`, `troque-esta-chave-em-producao`) em produção.

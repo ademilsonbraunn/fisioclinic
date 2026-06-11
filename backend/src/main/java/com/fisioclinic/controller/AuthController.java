@@ -4,6 +4,7 @@ import com.fisioclinic.dto.LoginDTO;
 import com.fisioclinic.dto.SenhaDTO;
 import com.fisioclinic.dto.TokenResponse;
 import com.fisioclinic.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +39,8 @@ public class AuthController {
      * Autentica o usuário e retorna o token JWT.
      */
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginDTO dto) {
-        return ResponseEntity.ok(authService.login(dto));
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginDTO dto, HttpServletRequest request) {
+        return ResponseEntity.ok(authService.login(dto, request.getRemoteAddr()));
     }
 
     /**

@@ -96,8 +96,8 @@ public class AltaService {
 
             alta.setPlanoTratamento(plano);
 
-            // Marcar plano como concluído ao registrar a alta clínica
-            plano.setStatus("concluido");
+            // [M3→M6] Marcar plano como concluído ao registrar a alta clínica
+            plano.setStatus(com.fisioclinic.model.enums.StatusPlanoTratamento.CONCLUIDO);
             planoTratamentoRepository.save(plano);
         }
 
@@ -145,7 +145,7 @@ public class AltaService {
             ? new AltaResponse.PlanoResumo(
                 a.getPlanoTratamento().getId(),
                 a.getPlanoTratamento().getDiagnosticoCif(),
-                a.getPlanoTratamento().getStatus())
+                a.getPlanoTratamento().getStatus().getValor())
             : null;
 
         AltaResponse.FisioterapeutaResumo fisioResumo = a.getFisioterapeuta() != null

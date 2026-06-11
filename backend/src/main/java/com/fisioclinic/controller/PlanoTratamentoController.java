@@ -2,6 +2,7 @@ package com.fisioclinic.controller;
 
 import com.fisioclinic.dto.PlanoTratamentoDTO;
 import com.fisioclinic.dto.PlanoTratamentoResponse;
+import com.fisioclinic.model.enums.StatusPlanoTratamento;
 import com.fisioclinic.service.PlanoTratamentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +82,8 @@ public class PlanoTratamentoController {
         if (status == null || status.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(planoService.atualizarStatus(id, status));
+        // fromString lança IllegalArgumentException para status inválido — capturado pelo GlobalExceptionHandler → 400
+        StatusPlanoTratamento novoStatus = StatusPlanoTratamento.fromString(status);
+        return ResponseEntity.ok(planoService.atualizarStatus(id, novoStatus));
     }
 }

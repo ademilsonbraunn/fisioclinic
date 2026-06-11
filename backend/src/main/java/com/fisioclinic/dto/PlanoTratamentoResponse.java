@@ -1,6 +1,7 @@
 package com.fisioclinic.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fisioclinic.model.enums.StatusPlanoTratamento;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,7 +58,7 @@ public record PlanoTratamentoResponse(
     @JsonProperty("data_previsao_alta")
     LocalDate dataPrevisaoAlta,
 
-    String status,
+    StatusPlanoTratamento status,
 
     @JsonProperty("created_at")
     LocalDateTime createdAt

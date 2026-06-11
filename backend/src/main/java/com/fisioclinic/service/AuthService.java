@@ -1,6 +1,7 @@
 package com.fisioclinic.service;
 
 import com.fisioclinic.config.JwtUtil;
+import com.fisioclinic.config.LoginRateLimiter;
 import com.fisioclinic.dto.LoginDTO;
 import com.fisioclinic.dto.SenhaDTO;
 import com.fisioclinic.dto.TokenResponse;
@@ -40,6 +41,7 @@ public class AuthService {
     private final FisioterapeutaRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final LoginRateLimiter rateLimiter;
 
     @Value("${jwt.expiration:28800000}")
     private long expiration;
@@ -47,18 +49,21 @@ public class AuthService {
     // ── Login ────────────────────────────────────────────────────────────────
 
     @Transactional(readOnly = true)
-    public TokenResponse login(LoginDTO dto) {
+    public TokenResponse login(LoginDTO dto, String ip) {
+        // [Segurança] Bloqueia IP com 5+ falhas nos últimos 15 minutos
+        rateLimiter.verificar(ip);
+
         Fisioterapeuta fisio = repository.findByEmail(dto.email().trim().toLowerCase())
-            .orElseThrow(() -> new UnauthorizedException("Credenciais inválidas"));
+            .orElse(null);
 
-        if (!fisio.getAtivo()) {
-            throw new UnauthorizedException("Usuário inativo");
-        }
-
-        if (fisio.getSenhaHash() == null || !passwordEncoder.matches(dto.senha(), fisio.getSenhaHash())) {
+        if (fisio == null || !fisio.getAtivo()
+                || fisio.getSenhaHash() == null
+                || !passwordEncoder.matches(dto.senha(), fisio.getSenhaHash())) {
+            rateLimiter.registrarFalha(ip);
             throw new UnauthorizedException("Credenciais inválidas");
         }
 
+        rateLimiter.registrarSucesso(ip);
         String token = jwtUtil.gerarToken(fisio);
         return new TokenResponse(token, fisio.getNome(), fisio.getPerfil().name(), expiration);
     }

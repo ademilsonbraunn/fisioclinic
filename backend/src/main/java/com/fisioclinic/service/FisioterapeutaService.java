@@ -73,10 +73,11 @@ public class FisioterapeutaService {
         f.setTelefone(dto.telefone() != null ? dto.telefone().replaceAll("\\D", "") : null);
         f.setPerfil(dto.perfil() != null ? dto.perfil() : Fisioterapeuta.Perfil.FISIOTERAPEUTA);
 
-        String senhaInicial = dto.senha() != null && !dto.senha().isBlank()
-            ? dto.senha()
-            : "Fisio@123";
-        f.setSenhaHash(passwordEncoder.encode(senhaInicial));
+        // CORREÇÃO: senha padrão "Fisio@123" removida — admin deve definir senha explicitamente ao cadastrar
+        if (dto.senha() == null || dto.senha().isBlank()) {
+            throw new IllegalArgumentException("Senha é obrigatória ao cadastrar um fisioterapeuta");
+        }
+        f.setSenhaHash(passwordEncoder.encode(dto.senha()));
 
         return toResponse(repository.save(f));
     }

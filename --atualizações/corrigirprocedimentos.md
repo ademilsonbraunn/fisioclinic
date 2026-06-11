@@ -40,10 +40,10 @@
 
 | # | Problema | Arquivo | Status |
 |---|----------|---------|--------|
-| 19 | Validação de status do PlanoTratamento sem enum | `backend/.../controller/PlanoTratamentoController.java:75` | 🔄 Em andamento |
-| 20 | Senha padrão `Fisio@123` hardcoded para novos fisioterapeutas | `backend/.../service/FisioterapeutaService.java:73` | ⬜ Pendente |
-| 21 | Sem rate limiting no endpoint de login (brute force) | `backend/.../controller/AuthController.java:40` | ⬜ Pendente |
-| 22 | Sem README de deploy com instruções e variáveis obrigatórias | Ausência de `README.md` | ⬜ Pendente |
+| 19 | Validação de status do PlanoTratamento sem enum | `backend/.../controller/PlanoTratamentoController.java:75` | ✅ Concluído |
+| 20 | Senha padrão `Fisio@123` hardcoded para novos fisioterapeutas | `backend/.../service/FisioterapeutaService.java:73` | ✅ Concluído |
+| 21 | Sem rate limiting no endpoint de login (brute force) | `backend/.../controller/AuthController.java:40` | ✅ Concluído |
+| 22 | Sem README de deploy com instruções e variáveis obrigatórias | Ausência de `README.md` | ✅ Concluído |
 
 ---
 

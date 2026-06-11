@@ -1,5 +1,6 @@
 package com.fisioclinic.model;
 
+import com.fisioclinic.model.enums.StatusPlanoTratamento;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,8 @@ import java.util.UUID;
  *   Funcionalidade (CIF) — campo obrigatório pelo CFM.
  * cid10: opcional, código CID-10 para faturamento de convênio.
  * tecnicas: lista JSON de técnicas e recursos fisioterapêuticos planejados.
- * status: "ativo" | "concluido" | "suspenso" — string simples (candidato a
- *   enum em refatoração futura, ver issue no corrigirprocedimentos.md #19).
+ * status: ATIVO | CONCLUIDO | CANCELADO — enum StatusPlanoTratamento (item #19 resolvido).
+ *   O StatusPlanoTratamentoConverter @Converter(autoApply=true) persiste como lowercase.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 @Entity
@@ -88,8 +89,9 @@ public class PlanoTratamento {
     @Column(name = "data_previsao_alta")
     private LocalDate dataPrevisaoAlta;
 
-    @Column(name = "status", length = 15, nullable = false)
-    private String status = "ativo";
+    // Converter @Converter(autoApply=true) cuida da persistência como lowercase — sem @Enumerated nem length
+    @Column(name = "status", nullable = false)
+    private StatusPlanoTratamento status = StatusPlanoTratamento.ATIVO;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)

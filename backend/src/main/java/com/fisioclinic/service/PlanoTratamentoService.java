@@ -7,6 +7,7 @@ import com.fisioclinic.model.Anamnese;
 import com.fisioclinic.model.Fisioterapeuta;
 import com.fisioclinic.model.Paciente;
 import com.fisioclinic.model.PlanoTratamento;
+import com.fisioclinic.model.enums.StatusPlanoTratamento;
 import com.fisioclinic.repository.AnamneseRepository;
 import com.fisioclinic.repository.FisioterapeutaRepository;
 import com.fisioclinic.repository.PacienteRepository;
@@ -40,9 +41,6 @@ import java.util.UUID;
 @Transactional
 @RequiredArgsConstructor
 public class PlanoTratamentoService {
-
-    // Status aceitos pelo sistema — validado manualmente pois é String, não enum
-    private static final List<String> STATUS_VALIDOS = List.of("ativo", "concluido", "cancelado");
 
     private final PlanoTratamentoRepository planoRepository;
     private final PacienteRepository        pacienteRepository;
@@ -92,7 +90,7 @@ public class PlanoTratamentoService {
         // [Auditoria CFM] Registra criação do plano — metadados não-clínicos apenas (LGPD)
         UUID fisioId = saved.getFisioterapeuta() != null ? saved.getFisioterapeuta().getId() : null;
         auditoriaService.registrar("PLANO", saved.getId(), saved.getPaciente().getId(),
-            "CRIACAO", fisioId, "{\"status\":\"" + saved.getStatus() + "\"}");
+            "CRIACAO", fisioId, "{\"status\":\"" + saved.getStatus().getValor() + "\"}");
         return toResponse(saved);
     }
 
@@ -119,22 +117,14 @@ public class PlanoTratamentoService {
         if (dto.hipotesesTratamento()  != null) plano.setHipotesesTratamento(dto.hipotesesTratamento());
         if (dto.dataInicio()           != null) plano.setDataInicio(dto.dataInicio());
         if (dto.dataPrevisaoAlta()     != null) plano.setDataPrevisaoAlta(dto.dataPrevisaoAlta());
-        if (dto.status()               != null) {
-            if (!STATUS_VALIDOS.contains(dto.status())) {
-                throw new IllegalArgumentException("Status inválido: " + dto.status());
-            }
-            plano.setStatus(dto.status());
-        }
+        if (dto.status()               != null) plano.setStatus(dto.status());
 
         return toResponse(planoRepository.save(plano));
     }
 
     // ── Atualização de status ─────────────────────────────────────────────────
 
-    public PlanoTratamentoResponse atualizarStatus(UUID id, String status) {
-        if (!STATUS_VALIDOS.contains(status)) {
-            throw new IllegalArgumentException("Status inválido. Use: ativo, concluido ou cancelado");
-        }
+    public PlanoTratamentoResponse atualizarStatus(UUID id, StatusPlanoTratamento status) {
         PlanoTratamento plano = encontrarOuLancar(id);
         plano.setStatus(status);
         return toResponse(planoRepository.save(plano));
@@ -157,7 +147,7 @@ public class PlanoTratamentoService {
         p.setHipotesesTratamento(dto.hipotesesTratamento());
         p.setDataInicio(dto.dataInicio() != null ? dto.dataInicio() : LocalDate.now());
         p.setDataPrevisaoAlta(dto.dataPrevisaoAlta());
-        p.setStatus(dto.status() != null && STATUS_VALIDOS.contains(dto.status()) ? dto.status() : "ativo");
+        p.setStatus(dto.status() != null ? dto.status() : StatusPlanoTratamento.ATIVO);
     }
 
     private PlanoTratamentoResponse toResponse(PlanoTratamento p) {

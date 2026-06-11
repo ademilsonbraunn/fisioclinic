@@ -2,6 +2,31 @@
 
 ---
 
+## 📅 11/06/2026 — Quarta-feira
+
+### ⏰ 20:00 — Backend (Sugestões de qualidade — itens 19–22 de corrigirprocedimentos.md)
+
+**Item 19 — Enum `StatusPlanoTratamento` integrado**
+- `model/PlanoTratamento.java`: campo `status` migrado de `String` para `StatusPlanoTratamento` (converter JPA persiste como lowercase sem migration SQL)
+- `dto/PlanoTratamentoDTO.java` e `PlanoTratamentoResponse.java`: campo `status` tipado com `StatusPlanoTratamento`
+- `service/PlanoTratamentoService.java`: removida constante `STATUS_VALIDOS` e validações manuais; enum + GlobalExceptionHandler cuidam da validação automaticamente
+- `controller/PlanoTratamentoController.java`: `atualizarStatus()` chama `StatusPlanoTratamento.fromString()` antes de passar ao service
+- `service/AltaService.java`: corrigido `setStatus("concluido")` → `StatusPlanoTratamento.CONCLUIDO` e `getStatus().getValor()` no mapper
+
+**Item 20 — Senha hardcoded removida**
+- `service/FisioterapeutaService.java`: fallback `"Fisio@123"` substituído por `IllegalArgumentException` — senha passa a ser obrigatória no cadastro de fisioterapeuta
+
+**Item 21 — Rate limiting no login**
+- Criado `config/LoginRateLimiter.java`: máximo 5 falhas por IP em 15 minutos; `@Scheduled` faz limpeza automática a cada 15 min
+- `service/AuthService.java`: `login()` aceita IP, verifica e registra falhas/sucessos no `LoginRateLimiter`
+- `controller/AuthController.java`: extrai IP via `HttpServletRequest.getRemoteAddr()` e repassa ao service
+- `FisioclinicApplication.java`: adicionado `@EnableScheduling`
+
+**Item 22 — README de deploy completado**
+- `README.md`: seção "Variáveis de ambiente" expandida com todas as variáveis obrigatórias em produção (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `JWT_EXPIRATION`, `CORS_ALLOWED_ORIGINS`) e aviso sobre valores padrão
+
+---
+
 ## 📅 10/06/2026 — Terça-feira
 
 ### ⏰ 16:35 — Backend + Frontend (Prioridade 2 — Funcionalidades Clínicas)

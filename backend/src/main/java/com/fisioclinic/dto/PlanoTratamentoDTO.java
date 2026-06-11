@@ -1,6 +1,7 @@
 package com.fisioclinic.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fisioclinic.model.enums.StatusPlanoTratamento;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -19,7 +20,7 @@ import java.util.UUID;
  * frequenciaSemanal: validado entre 1 e 7 (máximo uma sessão por dia da semana).
  * tecnicas: lista JSON de técnicas planejadas — valores livres (sem enum),
  *   exemplos: "Ultrassom 1MHz", "TENS convencional", "Cinesioterapia".
- * status: string "ativo" | "concluido" | "suspenso" — validado no Service.
+ * status: StatusPlanoTratamento (ATIVO | CONCLUIDO | CANCELADO) — desserializado pelo Jackson via @JsonCreator.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 public record PlanoTratamentoDTO(
@@ -71,6 +72,6 @@ public record PlanoTratamentoDTO(
     @JsonProperty("data_previsao_alta")
     LocalDate dataPrevisaoAlta,
 
-    String status
+    StatusPlanoTratamento status
 
 ) {}
